@@ -1,0 +1,343 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Computer Organization - Experiment 2</title>
+  <link rel="stylesheet" type="text/css" href="/~csci250/css/de.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+
+<center>
+
+<h1>Computer Organization</h1>
+<h1>Experiment 2</h1>
+<h1>Arithmetic and Functions</h2>
+
+</center
+
+<h2>Goals and Objectives</h2>
+
+<p>
+The goal of this lab is to give you experience in writing
+a simple procedure using basic arithmetic and control structures.
+</p>
+
+<h2>Overview</h2>
+
+<p>
+In this experiment, you will write some code in a pair of functions that
+are used to simplify a fraction.
+</p>
+
+<h2>Background</h2>
+
+<h3>Simple Greatest Common Divisor (GCD) Test</h3>
+
+<p>
+In this experiment you will need to compute the GCD between two numbers.
+This value is the largest number that divides the two numbers.
+The algorithm you can use to compute the GCD of the two numbers
+(<code>num1</code> and <code>num2</code>) is:
+</p>
+
+<blockquote><pre>
+While num1 != num2,
+   D = | num1 - num2 |
+   if num1 &gt; num2,
+      num1 = D
+   else
+      num2 = D
+</pre></blockquote>
+
+<p>
+The GCD will be in <code>num1</code>.
+</p>
+
+<p>
+Before starting this experiment, read the assembler, linker, and
+simulator documents available from the course website's
+<a href="/~csci250/">home page</a>.
+In particular, the <em>RSIM Reference Manual</em>
+will show you the various options you can use with the simulator
+for tracing the execution of your program and doing interactive
+debugging.
+</p>
+
+<h2>Activities</h2>
+
+<h3>Activity 1</h3>
+
+<p>
+First, run the command
+</p>
+
+<blockquote><pre>
+get csci250 lab2
+</pre></blockquote>
+
+<p>
+This will create these files in your working directory:
+</p>
+
+<table border>
+<tr>
+  <th>Name</th>
+  <th>Contents</th>
+</tr>
+<tr>
+  <td><code>simplify.asm</code></td>
+  <td>partially-completed source code for Activity 1</td>
+</tr>
+<tr>
+  <td><code>Makefile</code></td>
+  <td>a control file for <code>make</code>, for rebuilding the program</td>
+</tr>
+</table>
+
+<p>
+You will write the statements which implement the subroutines
+<code>find_gcd</code>
+(which computes the GCD between two numbers) and
+<code>simplify</code>
+(which takes a complex fraction and produces a fraction in its simplest
+form - e.g., this routine might receive a fraction such as 210/50 and
+would reduce it to the number 4 and 1/5).
+</p>
+
+<p>
+To simplify a fraction you will start with the fraction in the form
+numerator/denominator, and then loop while the numerator is greater
+than the denominator, subtracting the denominator from the numerator
+and adding one to the integer part.
+Once the integer part of the fraction has been removed, the function
+should divide the numerator and the denominator by their GCD (using the
+<code>find_gcd</code> function).
+</p>
+
+<p>
+To keep this experiment simple, you do not have to deal with negative
+values for the numerator or the denominator.
+Also, you are guaranteed that the denominator will not be equal to zero.
+Note that it is legal for the numerator to be equal to zero; if the
+fraction's numerator is ever zero then your simplified fraction should
+always have a fractional part of <code>0/1</code> (i.e. 30/10 should
+result in 3 and 0/1).
+</p>
+
+<blockquote><pre>
+# ##### BEGIN STUDENT CODE BLOCK n #####
+# ###### END STUDENT CODE BLOCK n ######
+</pre></blockquote>
+
+<p>
+All the code you write will go in between these comment lines.
+<em><strong>
+Do not modify these comments or any other code in this file in any way!
+</strong></em>
+If you do, your program may not work properly when you submit it.
+The only line you should change outside of these comments is the
+"<code>&lt;&lt;&lt;YOUR NAME HERE&gt;&gt;&gt;</code>"
+comment at the beginning of the file.
+</p>
+
+<p>
+The code you are writing is the body of the two subroutines named
+<code>find_gcd</code> and <code>simplify</code>.
+Registers <code>s0</code> through <code>s7</code> are already
+saved at the beginning of these subroutines and restored at the end,
+so you may use as many of these registers as you need in your code.
+For additional registers to work with, remember that by convention the
+temporary registers <code>t0</code> through <code>t9</code> can be
+changed freely.
+Keep in mind that the convention also allows other code to change and
+not restore these registers, so if you make a system call or a
+call to another procedure in the middle of your code, then you are not
+guaranteed that the temporary registers will maintain their value.
+</p>
+
+<p>
+For convenience, we have also provided you with a utility function named
+<code>print_number</code>.
+This routine prints the number you pass to it in register
+<code>a0</code>, then prints a newline.
+</p>
+
+<!-- paw 135 -->
+<h3>Programming Notes</h3>
+<p>
+You are required to write this program using the two functions specified
+in the code.  Your functions must follow the specifications outlined in
+the comments.  Failure to do this will result in a loss of points on your
+grade.
+<p>
+Also note that for both functions that you will be writing we have
+saved/restored the <tt>S#</tt> registers (and the <tt>ra</tt> register)
+for you in the code outside the <tt>BEGIN STUDENT</tt> and <tt>END
+STUDENT</tt> comments.
+This means you you don't have to worry about the function linkage, 
+and focus on writing the code to solve the task at hand.
+<!-- paw 092 -->
+<h3>Tools and Debugging Hints</h3>
+Assemble and link your program by running the command
+</p>
+
+<blockquote><pre>
+make
+</pre></blockquote>
+
+<p>
+This will create several files:
+<code>simplify.obj</code>, the assembled version of the program;
+<code>simplify.lst</code>, the assembly listing produced by the assembler;
+<code>simplify.map</code>, the load map created by the linker; and
+<code>simplify.out</code>, the load module created by the linker.
+You will see the commands that are executed to create these files, along
+with any error messages produced by the assembler or linker.
+</p>
+
+<p>
+If you receive any error messages from the assembler, 
+you should look in the listing file to find
+the statement(s) causing the error(s).
+</p>
+
+<p>
+To run your program, use the command
+</p>
+
+<blockquote><pre>
+/home/fac/wrc/bin/rsim  simplify.out
+</pre></blockquote>
+
+<p>
+This will run the simulator, <code>rsim</code>, and tell it to execute
+the program found in your <code>simplify.out</code> file.
+</p>
+
+<p>
+If your code assembles and links without errors but doesn't run
+properly,
+compare your code to the example code in the rest of the program
+Also, remember that changing code outside the ``student code'' blocks
+greatly increases the chance of a problem with the program.
+</p>
+
+<p>
+If the simulator reports a runtime error, it will tell you the address
+of
+the instruction that caused the problem.
+This address will be something like <code>0x004000c0</code>.
+You can figure out where in the program that instruction is by looking
+at the listing file, <code>simplify.lst</code>.  The listing file
+contains information about every line of code in the program, for
+example:
+<blockquote><pre>
+ 121 00c0 8FB20008              lw      $s2, 8($sp)
+</pre></blockquote>
+<ul>
+<code>121</code> : is the source code line number
+<br>
+<code>00c0</code> : is the offset of this line in the code block of the
+object module
+<br>
+<code>8FB20008</code> : is the assembled line of code
+<br>
+<code>lw      $s2, 8($sp)</code> : is the original source line of code
+</ul>
+Now to map back from the address of the error to a line of code in the
+listing file, you need to realize that the linker places the beginning
+of your code part of your program at <code>0x00400000</code>
+(this is the <code>text segment load point</code> as specified in the
+<code>.map</code> file).
+
+So you'll
+need to subtract this from the error address to get the line of code
+where the error occurred.
+<!-- PAW
+at the load map file, <code>simplify.map</code>
+That file contains a list of all the symbols (including labels) together
+with their "values" (which, in the case of labels, are the addresses
+associated with the labels).
+-->
+From this information, you can figure out where in your code the problem
+has occurred.
+</p>
+<p>
+
+<p>
+Many of the problems we anticipate you will run into are quite subtle
+variations in the instruction mnemonics and the names of registers.
+Here are some examples:
+</p>
+
+<blockquote><pre>
+slti $t0, $s1, 0   vs.   slt $t0, $s1, 0
+li $a1, data       vs.   lw $a1, data
+li $a1, data       vs.   la $a1, data
+li $a1, 10         vs.   li $a1, $10
+</pre></blockquote>
+<!-- paw 092 -->
+
+<h2>Submission</h2>
+
+<!-- PAW submit now done in lab0_debug
+<p>
+Before you can submit your work, you will need to register with the
+grader account if you didn't already do this to submit Experiment 0.
+Execute this command:
+</p>
+
+<blockquote><pre>
+try grd-250 register /dev/null
+</pre></blockquote>
+
+<p>
+Once you are registered, you can submit your work using the following
+command:
+</p>
+
+-->
+<p>
+Use this command to submit your work:
+command:
+</p>
+
+<blockquote><pre>
+try grd-250 lab2-1 simplify.asm
+</pre></blockquote>
+
+<p>
+Your code will be extracted from this file and inserted into a new copy
+of the original <code>simplify.asm</code> file to ensure that you haven't
+modified anything that you shouldn't change.
+To make this possible, you <em>must not</em> modify the 
+<code>BEGIN STUDENT CODE BLOCK</code> and
+<code>END STUDENT CODE BLOCK</code> comments <em>in any way</em>;
+if you do, the submission will be rejected.
+Other than changing the 
+"<code>&lt;&lt;&lt;YOUR NAME HERE&gt;&gt;&gt;</code>"
+comment at the beginning of the file, you should make no changes outside
+of the begin/end <code>STUDENT CODE</code> blocks.
+</p>
+
+<h2>Grade</h2>
+
+<p>
+Your grade will be based on the following:
+</p>
+
+<!--
+.(G
+.{submitted.activity} "Functionality" 10
+.{other.activity} "Style" 5
+.)G
+-->
+<table>
+<tr> <td>Functionality:</td> <td>10</td> </tr>
+<tr> <td>Style:</td> <td>5</td> </tr>
+</table>
+
+<hr>
+</body>
+</html>
