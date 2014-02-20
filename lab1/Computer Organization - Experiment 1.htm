@@ -1,0 +1,1524 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Computer Organization - Experiment 1</title>
+  <link rel="stylesheet" type="text/css" href="/~csci250/css/de.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script language="javascript"> 
+
+function toggle(elementId) {
+        var ele = document.getElementById(elementId);
+        if(ele.style.display == "block") {
+                ele.style.display = "none";
+        }
+        else {
+                ele.style.display = "block";
+        }
+} 
+</script>
+
+</head>
+
+<body>
+
+<center>
+
+<h1>Computer Organization</h1>
+<h1>Experiment 1</h1>
+<h1>"Debugging Assembly Language Programs"</h1>
+
+</center
+
+<h2>Goals and Objectives</h2>
+
+<p>
+The goal of this lab is to teach you the techniques you will need
+to debug your assembly language programs.
+To do this, you must also become familiar with the debugging
+capabilities
+of
+<tt>rsim</tt> ,
+the MIPS
+simulator that you will be using to execute your programs.
+A secondary goal is to show you several common assembly language
+errors so you will be able to
+recognize them more easily when you next see them.
+</p>
+
+<h2>Overview</h2>
+
+<p>
+This experiment consists of finding and fixing the bugs in
+an existing assembly language program.
+Because you don't yet know much about this assembly language,
+we will walk you through the procedure in considerable detail.
+While it is possible to follow these steps without thinking just to get
+the
+work done, this is a bad idea: without a good working knowledge of
+these debugging techniques, you will find it extremely difficult
+to get the rest of the programs that you write to work properly.
+</p>
+
+<h2>Background</h2>
+
+<p>
+The debugging tools available for use with assembly languages are
+usually quite primitive compared with those used with high-level
+languages.
+The main reason for this is that while high-level languages have become
+widely used, assembly languages are not used as often, so there is
+little motivation to develop fancy debuggers for them.
+</p>
+<p>
+<tt>rsim</tt>
+the MIPS simulator that you will be using, is no exception.
+While its debugging capabilities are complete, they are often much less
+convenient than those of high-level language debuggers.
+This can be alleviated to some extent by having a
+<b>current</b>
+listing of your program handy while you are debugging;
+it makes no difference whether the listing is printed or is in a window,
+<i>but it must be current</i>
+to be of any value!
+You should note 
+that changes to the assembly language source code often cause
+corresponding changes in the placement of things within memory; as a
+result, the addresses associated with symbols may change, so an old
+listing
+can actually be worse than useless - it can cost you time and effort.
+</P>
+<p>
+<center>
+<table border=1 bgcolor="aaaaaa">
+<tr>
+<td><center><b>TIP</b></center>
+<br>
+Get a new listing every time you assemble your program
+</tr>
+</table>
+</center>
+<p>
+Before starting this experiment, read the
+<a href="http://www.cs.rit.edu/~csci250/documents/rsim.html">
+RSIM Reference Manual</a> ,
+particularly the part that describes
+<b>3. The RSIM Debugger</b>
+A familiarity with the commands will make the experiment more useful.
+</p>
+
+<h2>Activities</h2>
+
+<h3>Activity 0</h3>
+
+<p>
+In your account on the DCS systems, run the following command:
+</p>
+
+<blockquote><pre>
+get csci250 lab1
+</pre></blockquote>
+
+<p>
+This will create several files in your working directory:
+</p>
+
+<table border>
+<tr>
+  <th>Name</th>
+  <th>Contents</th>
+</tr>
+<tr>
+  <td><code>sum.asm</code></td>
+  <td>source code for this lab</td>
+</tr>
+<tr>
+  <td><code>Makefile</code></td>
+  <td>a control file for <code>make</code>, for rebuilding the program</td>
+</tr>
+</table>
+
+<p>
+The file named <code>sum.asm</code>
+contains an error filled MIPS program for computing the sum of a 
+list of numbers.  
+<p>
+When corrected the program will prompt the user to enter up to 10 
+numbers, or
+until you enter the sentinel value <tt><b>9999</b></tt>.  Once the
+values have been entered the program will then print out all the
+numbers, and then the sum.  So an example run would look like:
+</p>
+<blockquote><pre>
+Enter Number: 10
+Enter Number: 5
+Enter Number: 105
+Enter Number: 22
+Enter Number: 6
+Enter Number: 1
+Enter Number: 9999
+
+Values entered: 10 5 105 22 6 1 
+Sum= 149
+</pre></blockquote>
+
+<h3>Activity 1</h3>
+<p>
+Assemble and link your program by running the command
+</p>
+
+<blockquote><pre>
+make
+</pre></blockquote>
+<p>
+This will run the assembler and the linker on your program using the
+command:
+<blockquote><pre>
+/home/fac/wrc/bin/rasm -l sum.asm > sum.lst
+/home/fac/wrc/bin/rlink -m -o sum.out sum.obj >sum.map
+</pre></blockquote>
+
+<p>
+Which will create several files:
+<ul>
+<li><code>sum.obj</code>, the assembled version of the program;
+<li><code>sum.lst</code>, the assembly listing produced by the assembler;
+<li><code>sum.map</code>, the load map created by the linker; and
+<li><code>sum.out</code>, the load module (MIPS executable) 
+created by the linker.
+</ul>
+You will see the commands that are executed to create these files, along
+with any error messages produced by the assembler or linker (there are no
+errors, so that's great).
+</p>
+
+<p>
+Now you can run the program with the command:
+</p>
+<blockquote><pre>
+/home/fac/wrc/bin/rsim sum.out
+</pre></blockquote>
+
+<p>Enter the values:
+<blockquote><pre>
+1
+2 
+3 
+9999
+</pre></blockquote>
+<p>
+You will get a message that looks something like this:
+<blockquote><pre>
+Error #9:  Break instruction executed
+
+Fault address:  00400198
+
+Register contents:
+
+ $zero: 00000000   $at: 00000000   $v0: 00000000   $v1: 00000000
+   $a0: 1000002e   $a1: 0000000a   $a2: 00000000   $a3: 00000000
+   $t0: 00000000   $t1: 1000000c   $t2: 00000000   $t3: 00000000
+   $t4: 00000000   $t5: 00000000   $t6: 00000000   $t7: 00000000
+   $s0: 00000000   $s1: 00000000   $s2: 00000000   $s3: 00000000
+   $s4: 00000000   $s5: 00000000   $s6: 00000000   $s7: 00000000
+   $t8: 00000000   $t9: 0000270f   $k0: 00000000   $k1: 00000000
+   $gp: 00000000   $sp: 7fffe8f4   $fp: 00000000   $ra: 00000000
+    pc: 0040019c    hi: 00000000    lo: 00000000
+
+Current instruction:    000bad0d (at 00400198)
+
+Decoded instruction:  break
+</pre></blockquote>
+
+<p>
+A notes about this output, the numbers displayed by <tt>rsim</tt>
+directly (not printed to output by your program) will all be in
+hexadecimal (base 16).
+
+<p>
+The first part of the message tells us that the fault occurred at
+<tt><b>Fault address:  00400198</b></tt> so the first thing to do is to
+find this address on the listing.  Well, first we need to understand the
+format of the listing file (<tt>sum.lst</tt>).  The first part of the
+listing file contains the information about the assembled code.  A
+typical line would look like:
+<pre><blockquote>
+ 126 005c 014B5020              add     $t2,$t2,$t3             # add it to the sum
+</pre></blockquote>
+The way you interpret this is:
+<table border="1">
+<tr bgcolor="DDDDDD">
+<td>Source code line#
+<td>memory loc <br>(in <tt>.obj</tt> file)
+<td>data at that loc <br>(machine language)
+<td>line of assembly code directly from your .asm file
+</tr>
+<tr>
+<td>126
+<td>005c
+<td>014B5020
+<td>add     $t2,$t2,$t3             # add it to the sum
+</tr>
+</table>
+<p>
+We will come back and look at more of the information in the 
+<tt>.lst</tt> file later.
+<!-- PAW move to where it is appropriate
+<p>At the bottom of the .lst file is the symbol table for the file.  It
+looks like:
+<pre><blockquote>
+parray          000000AC R  text
+</pre></blockquote>
+we will discuss this information later.
+-->
+
+<p>Now back to the error location: <tt><b>Fault address:
+00400198</b></tt>.  if we look at the listing file we don't see any
+memory location that is close to 400000 hex, no less 00400198.  This is
+because when the program is assembled the assembler assumes that this
+code will start at memory location 0.  When the linker converts the
+object file to an executable, it moves all the code to start at 400000
+hex (all data will start at 10000000 hex).
+<center>
+<table bgcolor="AAAAAA" border="1" width="33%" >
+<tr>
+<td><center><b>TIP</b></center>
+<br>When looking at a executable memory address in the rsim
+output, you have to subtract 400000 hex from the value
+(and 10000000 hex for data addresses).
+</tr>
+</table>
+</center>
+<p>
+So this means that the fault wasn't at <tt>0x00400198</tt> in the object
+file, it would be at location <tt>0x198</tt>.  Now go to the
+<tt>sum.lst</tt> file and field that address, what do you find?
+<p>
+<hr>
+<center>
+<a id="displayText" href="javascript:toggle('toggleText');">
+Do this now before you click here</a>
+</center>
+<hr>
+<div onclick="javascript:toggle('toggleText');"
+	id="toggleText" style="display:none; 
+	border-width:2px; border-style:solid">
+There is nothing there!  This address is beyond the end of the program.
+The problem here is clear; whoever wrote this forgot the
+instruction to return from the subroutine.
+To fix this, add the instruction
+<pre><blockquote>
+jr	$ra
+</pre></blockquote>
+to the program after the last line of code.
+(be sure to put an appropriate comment on it).
+<p>
+Note what this line does is change execution location to the value saved
+in the <tt>$ra</tt> (the return address) register.
+</div>
+<h3>Activity 2</h3>
+<p>
+Now assemble the program (and get a new listing!), run it again,
+and enter the same four numbers as before (1, 2, 3, 9999).
+What happens?
+
+<p>
+It produces the error:
+<pre><blockquote>
+Error #16:  Attempt to use nonexistent memory
+
+Fault address:  00000000
+</pre></blockquote>
+<p>
+So now the program is failing at location <tt>00000000</tt>.  
+But wait, this does
+not follow our rule of code addresses starting at <tt>400000</tt>, 
+so how did we
+get all down there?  Well, since we fixed the problem at <tt>400198</tt>, 
+the error
+must have happened after that.  This leads us to an debugging principle:
+<center>
+<table bgcolor="AAAAAA" border="1" width="33%" >
+<tr>
+<td><center><b>TIP</b></center>
+<br>
+Changes you make to instructions in the program will have no effect until
+execution reaches the point of the change.
+</tr>
+</table>
+</center>
+<p>
+This means that the new error at location
+<tt>00000000</tt>
+occurs <i>after</i>
+the instruction we just added to the program,
+not before.
+We will prove this in a moment, but first another tip:
+<p>
+<center>
+<table bgcolor="AAAAAA" border="1" width="33%" >
+<tr>
+<td><center><b>TIP</b></center>
+<br>
+Only fix one thing at a time.
+</tr>
+</table>
+</center>
+<p>
+Each change you make may reveal or even introduce new bugs in the
+program.
+If you make a whole bunch of changes and some new problem occurs,
+you will have no idea which change is the cause.
+In our case, we know exactly where to look for this next problem.
+<p>
+We will use the debugger inside <tt>rsim</tt> to help find this problem.
+Run the program again, but with the debugger turned on, 
+like this:
+<pre><blockquote>
+rsim -d sum
+</blockquote></pre>
+You will get a <i>rbug</i> 
+prompt, indicating that the debugger is awaiting
+your commands.
+We'd like to run the program, but stop it just before it
+executes the <tt>jr $ra</tt>
+instruction.
+This is easily done by setting a <b>breakpoint</b>
+on that instruction.
+From the listing (You did get a new listing, didn't you?) 
+we know that the address of the <tt>jr</tt> instruction is
+<tt>0198</tt> to which we add in the 400000 to get the run time address
+of <tt>00400198</tt>.  Set the breakpoint with the <tt>set</tt> command
+like:
+<pre><blockquote>
+set 0x00400198
+</blockquote></pre>
+<p>
+Note that in rbug numbers will be in decimal unless you specify
+otherwise.  The prefix <tt>0x</tt> tells the debugger that the value your
+entering is in hex.
+<p>
+Now run the program with the <tt>run</tt> command.
+Don't forget to type in the same input values.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<p>
+The program stops just before the <tt>jr</tt> is executed, and the
+<i>vbug</I>
+prompt is printed again.
+<p>
+Let's examine the state of the machine.
+You can print the contents of a register by simply typing in its name,
+or you can print all the registers by entering the
+<tt>register</tt>
+command (which can be abbreviated as <tt>r</tt>).
+<hr>
+<center>
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<p>
+Note that the
+<tt>pc</tt>
+contains the value
+<tt>00400198</tt>,
+which is the address of the <tt>jr $ra</tt> instruction, 
+so the breakpoint stopped us at the correct spot.
+<!--
+which is the address of the next instruction after the
+<tt>jr $ra</tt> 
+instruction (all instructions are 4 bytes long).
+This is because the
+<tt>jr $ra</tt> 
+instruction has been fetched, which updates the
+<tt>pc</tt>
+but it has not been executed yet.
+-->
+<p>
+When it is executed, the
+<tt>jr $ra</tt> 
+will replace the value in the
+<tt>pc</tt>
+with the value from the <tt>ra</tt> register.  This value was removed
+from the stack by two lines ahead of the <tt>jr</tt> by the line:
+<pre><blockquote>
+lw      $ra, 0($sp)     # restore the ra from the stack
+</blockquote></pre>
+<p>
+Since the address <tt>00000000</tt>
+can't possibly be the location that we want to return
+to, then there must be something wrong with the stack, so lets examine
+the stack by printing the contents of the first few memory
+locations that hold the stack.
+<p>
+The stack pointer (<tt>sp</tt>)register contains the 
+address of the top of the stack.
+Look at the register dump to find its value.
+The actual value in the
+<tt>sp</tt>
+will vary according to the program you're running and where in its
+execution you are, so we can't predict what it will be exactly,
+but it will be some value greater than <tt>7fff0000</tt>.
+<p>
+The
+<tt>memory</tt>
+command is used to print the contents of memory; use it now to print
+the ten words beginning at the memory address you found in the
+<tt>sp</tt> (don't forget to add the <i>0x</i> to the front of the
+address).
+What is the value on the top of the stack?
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+It is <tt>00000000</tt>, 
+so that is the address that we'll return to after the
+<tt>jr</tt> is executed.  
+<p>
+The
+<tt>step</tt>
+command causes
+<i>rbug</i>
+to execute one instruction and then stop again.
+Do that now to execute the <tt>jr</tt> and then see what is in the
+<i>pc</i> register.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<p>
+This moves the <tt>pc</tt> to <tt>00000000</tt>, which is now no longer
+within our program. Now to prove that this is the cause of the error, 
+do another <tt>step</tt>.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<p>
+This is the halt message that we saw before.
+This means that the <tt>jr</tt> seems to be sending the computer to the
+wrong place in the program.
+<p>
+Where should the
+<tt>jr</tt> be returning to?
+Look at the listing in the main program, and find the
+<tt>jal</tt>
+instruction that calls the
+<tt>readarray</tt>
+subroutine.
+What is the address of the instruction just after the
+<tt>jal</tt>?
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+It is the
+<tt>la      $t0,size</tt> instruction, and it is at location
+<tt>001c</tt> (which when we convert to a run-time address is
+<tt>0040001c</tt>).  Yet the address that the function was trying to return
+to was zero.
+If you look at the dump of the stack (with the <tt>mem 0x7fffe8f4,10</tt>
+command, where you get the memory address for the <tt>$sp</tt> 
+from your registers), you'll see the value
+<tt>0040001c</tt>
+is there, but it was four bytes past the <i>sp</i>.
+<p>
+Quit <tt>rsim</tt>
+and start it again, but this time set a breakpoint at the
+beginning of the
+<tt>readarray</tt> 
+routine (the function begins in the program at the location where the
+label <tt>readarray:</tt> in defined).
+Notice that the first two lines of code in the routine are using the
+<i>sp</i>.  They are saving the return address on the stack.  
+Run the program again, and when the breakpoint is reached,
+<tt>step</tt> once, to see the routine make room on the stack for the
+<tt>ra</tt>, and then <tt>step</tt> again to see it store the value.
+Now
+examine the stack, and notice that the return address is now on the top
+of stack.  This means that the subroutine itself must have somehow
+trashed
+the stack.
+If you haven't found the source of the error already,
+the things we've learned about the bug should make it easy to spot:
+just read the code.
+<hr>
+<center>
+<a id="displayText" href="javascript:toggle('toggleText2');">
+Do this now before you click here</a>
+</center>
+<hr>
+<div onclick="javascript:toggle('toggleText2');"
+	id="toggleText2" style="display:none; border-width:2px;
+	border-style:solid">
+The subroutine saves the values of <tt>s0</tt> and <tt>s1</tt> on the
+stack under the <tt>$sp</tt>.  The reason for this is because it 
+plans on modifying those two registers 
+so it saves them on the stack.
+However, it never restores them, so the
+<pre><blockquote>
+lw      $ra, 0($sp)     # restore the ra from the stack
+</blockquote></pre>
+instruction at the bottom of the function 
+is getting one of these saved values
+rather than the return address.
+This is a common error:
+</div>
+<p>
+<center>
+<table bgcolor="AAAAAA" border="1" width="33%" >
+<tr>
+<td><center><b>Common Assembly Error</b></center>
+<br>
+Failing to clean up the stack before returning from a subroutine.
+</tr>
+</table>
+</center>
+<p>
+Here is how we found it:
+<p>
+<center>
+<table bgcolor="AAAAAA" border="1" width="33%" >
+<tr>
+<td><center><b>TIP</b></center>
+<br>
+Set breakpoints at subroutine returns to find errors caused by 
+a corrupted stack.
+</tr>
+</table>
+</center>
+<p>
+This is easily fixed by inserting the missing instructions:
+<pre><blockquote>
+lw      $s1, 0($sp)     # restore the s1 from the stack
+addi    $sp, $sp, 4
+lw      $s0, 0($sp)     # restore the s0 from the stack
+addi    $sp, $sp, 4
+</blockquote></pre>
+in the code before you restore the <i>ra</i>. Just make sure you remove
+the items off the stack in the reverse order that you put them on.  So
+you must remove them in the order <i>s1, s0</i>, and then <i>ra</i>.
+<p>
+Add the code now, and then 
+re-make your code, and then run the program again.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<h3>Activity 3</h3>
+<p>
+Now the program runs, but blows up with an 
+<pre><blockquote>
+Error #16:  Attempt to use nonexistent memory
+</blockquote></pre>
+<p>
+But this isn't the only problem.  Above the error message is a problem,
+the program is suppose to echo the numbers that were entered, but instead
+it just printed out:
+<pre><blockquote>
+Values entered: 
+</blockquote></pre>
+<p>
+To track this down lets restart <tt>rbug</tt> and try to find were the
+values were printed out.  The program has a function <tt>parray</tt>
+which is used to print out the contents of the array, so this might be a
+good location to begin searching.  Place a breakpoint at the first line
+of the <tt>parray</tt> function, and then run the code.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+The first thing the function does is set up some registers with the
+location of the array of data <tt>array</tt>, 
+and the number of elements that the user entered <tt>size</tt>.
+Do five <tt>step</tt>s to execute the next three lines of code.  Why 5
+and not 3, well two of the instructions executed were
+pseudo-instructions, which assembled to 2 lines of code each.  You can
+see that by looking at the listing file and see that the <tt>la
+$a0,array</tt> instruction uses addresses <tt>00a8</tt> and
+<tt>00ac</tt>
+<p>
+<center>
+<table bgcolor="AAAAAA" border="1" width="33%" >
+<tr>
+<td><center><b>TIP</b></center>
+<br>
+Not all lines of assembly generate only 1 line of machine code, use the
+listing file to keep track of where you are in the program when you
+<tt>step</tt> through the code</tt>.
+</tr>
+</table>
+</center>
+<p>
+Now then look at the values of the registers
+<tt>a0</tt> (address of array) and <tt>a1</tt> (the number of elements
+entered).
+You will see that <tt>a0=10000000</tt> and <tt>a1=00000000</tt>.  We can
+see that <tt>a0</tt> is correct by looking at the symbol table at the end
+of the listing and seeing what the address of <tt>array</tt> is:
+<pre><blockquote>
+array           00000000 R  data
+</blockquote></pre>
+Notice that <tt>array</tt> is inside the <tt>data</tt> block, and so to
+convert from an address in the listing to a run-time address we need to
+add 0x10000000 to its value.  This means that register <tt>a0</tt> contains
+the correct value.
+<p>
+As for <tt>a1</tt> this should be the number of elements the user entered
+(and the number of elements in the array), but here we have a problem
+since it has a value of 0, and we know we entered 3 values.  
+<p>
+First lets see if this is a problem with the saved value in memory, or
+with the code to load the value.  To do this we need to find the run-time
+memory location for size, we do this by again looking at the symbol table
+at the bottom of the listing file:
+<pre><blockquote>
+size            00000028 R  data
+</blockquote></pre>
+<p>
+Then taking the assemble-time address and adding 0x10000000 to its value,
+getting 0x10000028.  Now we can print out the content of memory at this
+address:
+<hr>
+<!-- hide -->
+<center>
+<a id="displayText" href="javascript:toggle('toggleText3');">
+Do this now before you click here</a>
+</center>
+<hr>
+<div onclick="javascript:toggle('toggleText3');"
+	id="toggleText3" style="display:none; border-width:2px;
+	border-style:solid">
+<p>
+We see that the value out in memory is 00000000, so there must be an
+error someplace back before this.
+</div>
+<p>
+We will need to track backwards from this point at the beginning of
+<tt>parray</tt> to the find where this value goes bad.
+If you look back into the code, to before <tt>parray</tt> was
+called (with the line <tt>jal parray</tt>) you will find that the
+number of elements in the array
+is returned from the <tt>readarray</tt> function and
+then stored out in memory at location <tt>size</tt>.
+This seems like a good place to look, so lets re-start the debugger, and
+place a break point at the line after the call to <tt>readarray</tt>
+(at the line <tt>la      $t0,size</tt>).  Now run the program.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+At this point in time register <tt>v0</tt> should contain the number of
+elements in the array, does it?
+<hr>
+<!-- hide -->
+<center>
+<a id="displayText" href="javascript:toggle('toggleText4');">
+Do this now before you click here</a>
+</center>
+<hr>
+<div onclick="javascript:toggle('toggleText4');"
+	id="toggleText4" style="display:none; border-width:2px;
+	border-style:solid">
+<p>
+No, it contains the value 00000000.  So this means that something is
+going wrong in the <tt>readarray</tt> function.
+</div>
+<p> 
+OK, lets go back to <tt>readarray</tt>'s code and see what is 
+happening.  From the comments we see that that function is using the
+<tt>t0</tt> register to hold the count of the number of elements that
+have been entered.  So, lets monitor the loop and see that it is keeping
+the count correctly.
+<p>
+So re-start the debugger, and then
+set a breakpoint at the beginning for the loop (at
+the line
+<pre><blockquote>
+beq     $t0,$a1,ra_done 	# done if num_ele == max allowed
+</blockquote></pre>
+<p>
+This line terminates the loop if we reach the max number of elements
+allowed.
+Once the breakpoint is in place, run the program.  When it reaches the
+breakpoint, print out the registers, and see what the value of
+<tt>t0</tt> is:
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<p>
+the value is <tt>00000000</tt>, 
+which makes sense since we haven't entered any values.
+Now we want to run one time through the loop, here we could use the
+<tt>step</tt> command to walk through the loop, but that would be a pain.
+A better way to do this is to use the <tt>run</tt> command again, since
+this will run to the next breakpoint, and since there is a breakpoint at
+the top of the loop, it will execute through all the code in the loop,
+and stop again at the top.  So execute the <tt>run</tt> command, and then
+look at the value for register <tt>t0</tt> again.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<p>
+Now the value is <tt>00000001</tt>. 
+Since this value is good, we might want to make sure that the value
+entered was placed correctly into the array, so lets use the <tt>mem</tt>
+command again to check.  To do this we need to find the array in memory.
+We have found this before, but to refresh, we can
+look at the symbol table at the bottom of the .lst file and see that:
+<pre><blockquote>
+array           00000000 R  data
+</blockquote></pre>
+<p>
+Which we need to add 0x10000000 to (since its in the data block) to get
+its run-time address.
+Now to print out the whole array we need to print 10 words (a word is 4
+bytes), so we do that with the command:
+<pre><blockquote>
+mem 0x10000000,10
+</blockquote></pre>
+and this shows us the complete contents of the array.  Notice that at
+location <tt>10000000</tt> we have the value <tt>00000001</tt> that we
+entered.
+
+<p>
+So that all looks good, so what next, we need to 
+continue looping and monitoring the value of <tt>t0</tt>, and the
+contents of the array.  
+<p>
+Now
+<tt>rbug</tt> has a feature that allow us to watch values without having
+to do so many commands, called the <tt>auto</tt> command.  
+What this command
+does is allows you to specify a command to run every time the debugger 
+interrupts the execution of your program.  The two big uses of this are
+to view the registers, or view some specific memory location(s).
+<p>
+In our case we want to watch the value of the registers, and contents of
+the array, so we want to do
+a <tt>register</tt> command and a <tt>mem 0x10000000,10</tt>
+each time we stop, so to do this with
+<tt>auto</tt> we need to do the command
+<pre><blockquote>
+auto 'register; mem 0x10000000,10'
+</blockquote></pre>
+at the <tt>rbug</tt> prompt.  Note that <tt>rbug</tt> allows you to put
+more than one command on a single line separated by semi-colons.  Also
+note that if you want to put a space in the command that <tt>auto</tt>
+runs you have to include the whole command inside quotes.
+<p>
+With the auto command in place we can now use the <tt>run</tt> command
+again to enter the 2nd number, and then look at <tt>t0</tt>, what do we
+see:
+<hr>
+<!-- hide -->
+<center>
+<a id="displayText" href="javascript:toggle('toggleText5');">
+Do this now before you click here</a>
+</center>
+<hr>
+<div onclick="javascript:toggle('toggleText5');"
+	id="toggleText5" style="display:none; border-width:2px;
+	border-style:solid">
+<p>
+The value in memory is correct: 
+<pre><blockquote>
+10000000  00000001 00000002 00000000 00000000  ................
+10000010  00000000 00000000 00000000 00000000  ................
+10000020  00000000 00000000                    ........
+</blockquote></pre>
+but the contents of <tt>t0</tt> is still <tt>00000001</tt>.
+</div>
+<p>
+Looking at the loop, you see that the register 
+<tt>t0</tt> only appears on two lines:
+<pre><blockquote>
+beq     $t0,$a1,ra_done # done if num_ele == max allowed
+
+addi    $t0,$t0,1       # and increment the count
+</blockquote></pre>
+<p> 
+The first line <tt>beq</tt> is a comparison statement (like an "if") that
+looks at the value of <tt>t0</tt>, but doesn't modify it.
+<p>
+The second line
+is the same as the HLL code <tt>t0=t0+1</tt>, so if <tt>t0</tt> was
+<tt>00000001</tt> after the first number was entered, then this line
+should advance it to <tt>00000002</tt>.
+So now what, it doesn't look like we are doing anything that would keep
+the value at <tt>00000001</tt>, but it isn't changing.  
+This leads us to
+some important Assembly concepts.
+<center>
+<table bgcolor="AAAAAA" border="1" width="33%" >
+<tr>
+<td><center><b>TIP</b></center>
+<br>
+There is no scope in assembly language, all registers and memory
+locations are global.
+</tr>
+</table>
+</center>
+<p>
+So while we don't change <tt>t0</tt> in this loop, we do call another
+function <tt>readnumber</tt> in the middle of the loop.  Since the
+<tt>t0</tt> is global, and the <tt>readnumber</tt> does modify
+<tt>t0</tt> with the line:
+<pre><blockquote>
+slti    $t0, $v0, 0
+</blockquote></pre>
+(which is used to see if the value entered is >0), then when that
+function returns to us back in the loop, our value of <tt>t0</tt> will be
+lost.
+To fix this we will need to keep in mind an important convention about
+register use:
+<center>
+<table bgcolor="AAAAAA" border="1" width="33%" >
+<tr>
+<td><center><b>MIPS Register Convention</b></center>
+<br>
+<ul>
+<li>Registers <tt>t0-t9</tt> are temporary registers, which can be used by
+functions without having to be restored when the function is done.
+<li>Registers <tt>s0-s7</tt> are system registers, which if modified by a
+function, must be restored after the function is complete.
+</ul>
+</tr>
+</table>
+</center>
+<p>
+So when the <tt>readarray</tt> calls <tt>readnumber</tt>,
+there is no guarantee that the value of any <tt>t#</tt>
+register will be maintained after <tt>readnumber</tt> returns.  On
+the other hand, if <tt>readarray</tt> uses <tt>s#</tt> registers, then
+if <tt>readnumber</tt> wanted to modified one of them, it would be
+required to restore its value before it returns.
+<p>
+Now this problem is not with the <tt>readnumber</tt> function, because it
+is within the standards for it to modify <tt>t#</tt> registers without
+restoring them.  Instead this is an issue with the <tt>readarray</tt>
+function.  If that function wants to have values saved in registers which
+shouldn't be changed by other functions (not that they can't be modified,
+but any function that follows the standards won't change their value), 
+then is the <tt>readarray</tt>
+functions responsibility to use the <tt>s#</tt> registers.
+<p>
+So to fix this, go through the <tt>readarray</tt> function and replace
+all reference to <tt>t0</tt> with <tt>s0</tt> and all references to
+<tt>t1</tt> to <tt>s1</tt>.
+Note, <tt>readarray</tt> also uses the <tt>t9</tt> register, shouldn't we
+change that to an <tt>s#</tt> register?  We could, but we don't have to,
+notice that <tt>t9</tt> is set on one line, and used on the next line.
+We don't make a function call between the time we set it, and the time we
+use it.  So, even if <tt>readnumber</tt> modifies the value of
+<tt>t9</tt> it wouldn't effect us since we are always resetting it before
+we use it.
+<p>
+An important note about the <tt>s#</tt> registers.  Now that we are using
+them in <tt>readarray</tt> we have to follow the standards ourselves, so
+we have to make sure that their values are restored before we leave this
+function.  This has already been taken care of.  If you notice at the top
+of the function we saved the value of these two registers on the stack:
+<pre><blockquote>
+addi    $sp, $sp, -4
+sw      $s0, 0($sp)     # save s0 on stack
+addi    $sp, $sp, -4
+sw      $s1, 0($sp)     # save s1 on stack
+</blockquote></pre>
+<p>
+and when we fixed an error above we added code to restore the values of
+the registers at the bottom of the function:
+<pre><blockquote>
+lw      $s1, 0($sp)     # restore s1 from the stack
+addi    $sp, $sp, 4
+lw      $s0, 0($sp)     # restore s0 from the stack
+addi    $sp, $sp, 4
+</blockquote></pre>
+<p>
+This is the way that you simulate scope in assembly language.
+<p>
+Once you've finished fixing the code, re-make your program and run it,
+now what happens:
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<h3>Activity 4</h3>
+<p>
+The program still doesn't print out the complete content of the array,
+and it also blows up with an <tt>Error #5:  Unaligned word memory
+reference</tt>.
+Lets start the debugger up and see if we can find the problem.  First
+lets look to make sure the <tt>readarray</tt> function is working
+correctly to get the values from the user.  Place a break point on the
+line of code after the call to <tt>readarray</tt>
+(the line after the <tt>jal     readarray</tt>) and run the program.
+when we reach the breakpoint we can look at the value of <tt>v0</tt> to
+see that the number of values entered, and it should be 00000003.  We can
+also print out the memory of the array, and it should be:
+<pre><blockquote>
+PC=0040001c rbug> mem 0x10000000,10
+
+10000000  00000001 00000002 00000003 00000000  ................
+10000010  00000000 00000000 00000000 00000000  ................
+10000020  00000000 00000000                    ........
+</blockquote></pre>
+<p>
+So it looks like the data was read in correctly.  So it looks like the
+error is in the code that prints out the array.  This is done in the
+<tt>parray</tt> function.
+<p>
+This function uses a loop that loops <tt>size</tt> times, each time
+reading an element from the array and printing it.  So to see what is
+happening, lets put a breakpoint at the top of the <tt>pa_loop</tt> on
+the line:
+<pre><blockquote>
+beq     $t0,$a1,done    # done if i==n
+</blockquote></pre>
+<p>
+and do the <tt>run</tt> command to get there, and then look at the value
+of the registers.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<p>
+You should see that <tt>$a1: 00000003</tt> the number of elements
+entered, <tt>$t0: 00000000</tt> the loop counter, and <tt>$t1:
+10000000</tt> the pointer into the array (note that this is the first
+location in the array, so it looks good).  <tt>t1</tt> is going to be
+used to read in the arrays values (since MIPS assembly doesn't provide us
+array syntax like <tt>array[i]</tt>) and we will have to do pointer
+arithmetic to move through the array.
+Lets use the run command to see if the loop prints out the first number
+correctly.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<p>
+It does, the value 1 was printed.  Now lets look at the registers again,
+and see what we have:
+<pre><blockquote>
+$a1: 00000003
+$t0: 00000001
+$t1: 10000001
+</blockquote></pre>
+<p>
+so our size is still 3, our loop counter is 1, and the address for the
+next element is 10000001.  Lets do another run command to see if we get
+the 2nd element.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<p>
+No, we get the <tt>Error #5:  Unaligned word memory reference</tt>.  The
+error specifically calls the error is at address <tt>Fault address:
+004000b8</tt> which is the line of code
+<pre><blockquote>
+Decoded instruction:  lw        $a0, 0($t1)     (0x10000001)
+</blockquote></pre>
+<p>
+The problem here is that in MIPS you can only access data that is aligned
+(a piece of data is aligned if the address of the data is evenly
+divisible by the length).  The length of the data is specified by the
+load command.
+<ul>
+<li><tt>lw</tt> - reads a word (4-byte piece of data)
+<li><tt>lh</tt> - reads a half-word (2-byte piece of data)
+<li><tt>lb</tt> - reads a byte (1-byte piece of data)
+</ul>
+So when you try to read a word, the address must be evenly divisible by
+4.  The address that we are trying to read from is 0x10000001, which is
+not word aligned, so that is the error.  To find out where the error
+occurred we have to figure out how the <tt>lw</tt> instruction works.
+Lets look at the instruction:
+<pre><blockquote>
+lw        $a0, 0($t1)
+</blockquote></pre>
+What this instruction does is reads 4-bytes of data from memory, and
+stores it in a register.  The register where we store the result is the
+first operand, so register <tt>a0</tt>.  The next operand is used to
+compute the address in memory to read from.
+MIPS computes addresses in memory using <i>displacement address mode</i> 
+and the address that we compute we will refer to as the <i>Effective
+Address</i> (the <i>EA</i>).  
+The way it is computed the <i>EA</i> is by adding a constant to the
+contents of a register.  So for this instruction, the constant is
+<tt>0</tt> and the register that we will get its content from is
+register <tt>t1</tt>.  From above we know that the contents of the
+<tt>t1</tt> register is <tt>0x10000001</tt> which is not divisible by 4,
+so that is why we are getting the "Unaligned word memory reference"
+error.  
+<p>
+Now to fix this we need to look at how we come up with the
+address for the next element of the array.  
+Since each element of the
+array is a word, each element should be 4-bytes past the last one, so if
+the address of the first element is <tt>0x10000000</tt>, then the second
+element should be at <tt>0x10000004</tt>
+so we should have added 4 to the value of <tt>t1</tt>, but if we look near
+the bottom of the loop we see:
+<pre><blockquote>
+addi    $t1,$t1,1       # update pointer
+</blockquote></pre>
+<p>
+This needs to be adding 4 to the pointer to move to the next address.
+<p>
+Make the necissary changes to the code and 
+re-make and run it again, and what happens:
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<h3> Activity 5</h3>
+<p>
+Now we see that the array was printed correctly, but we blew up with a:
+<pre><blockquote>
+Error #16:  Attempt to use nonexistent memory
+
+Fault address:  00400058
+
+Register contents:
+
+ $zero: 00000000   $at: 00000000   $v0: 00000004   $v1: 00000000
+   $a0: 1000002e   $a1: 00000003   $a2: 00000000   $a3: 00000000
+   $t0: 00000020   $t1: 10000028   $t2: 08a75ee6   $t3: 00000000
+   $t4: 00000000   $t5: 00000000   $t6: 00000000   $t7: 00000000
+   $s0: 10000080   $s1: 00000000   $s2: 00000000   $s3: 00000000
+   $s4: 00000000   $s5: 00000000   $s6: 00000000   $s7: 00000000
+   $t8: 00000000   $t9: 0000270f   $k0: 00000000   $k1: 00000000
+   $gp: 00000000   $sp: 7fffe8a4   $fp: 00000000   $ra: 0040003c
+    pc: 0040005c    hi: 00000000    lo: 00000000
+
+Current instruction:    8e0b0000 (at 00400058)
+
+Decoded instruction:  lw        $t3, 0($s0)     (0x10000080)
+</blockquote></pre>
+<p>
+Here again the program is failing on a <tt>lw</tt> instruction.  Here
+that the address we are trying to read from is <tt>0x10000080</tt> which
+is divisible by 4, so its not an alignment issue.  Instead its giving an
+<tt>Attempt to use nonexistent memory</tt>, which seems like a legal
+address to me (legal addresses are from 0x00000000 to 0xffffffff).
+Based on the error message, 
+the problem here is that the address is outside the range that the
+program has defined.  Now this line of code is inside the
+<tt>sum_loop</tt>, where we are reading elements from the array, and
+computing a running sum of their values.  
+Lets put a breakpoint on that line, and <tt>run</tt> the program to
+see what is happening:
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+<p>
+At this point we want to look at what's going in the registers, now we
+could print them all out with the <tt>register</tt> command, but that can
+be a pain forcing us to search through them for the values we want.  
+The <i>rbug</i> debugger
+gives us an option of just displaying the contents of a single register
+by just entering the register name (preceded by a <tt>$</tt>).  So at
+this point we know that register <tt>$t2</tt> is the running total, and
+<tt>$s0</tt> is the pointer into the array that we use to read a value
+(and the location that is becoming illegal).  We can print out these two
+values by entering the command:
+<pre><blockquote>
+$t2;$s0
+</blockquote></pre>
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+Now <tt>$t2: 00000000</tt> looks good, since we haven't added 
+any value into the sum yet.  <tt>$s0: 10000000</tt> 
+looks good as the address of the first element of the array (we computed
+this above).  
+<p>
+Since these look good at the moment, we will want to run the loop a
+couple of times to see how its working, and hopefully see what's broken.
+Since we plan on watching registers <tt>$t2</tt> and <tt>$s0</tt> we
+might as well use the <tt>auto</tt> command to cut down on typing, so
+enter the command:
+<pre><blockquote>
+auto '$t2;$s0'
+</blockquote></pre>
+and then <tt>run</tt> the program to move through the loop once.
+<hr>
+<center>
+<!-- doit -->
+<b>Do this now before you continue</b>
+</center>
+<hr>
+When we reached the breakpoint we see that:
+<pre><blockquote>
+$t2: 00000001
+$s0: 10000004
+</blockquote></pre>
+<p>
+This looks good since the first value we entered was 1, which we added to
+the total (<tt>$t2</tt>) and we moved <tt>$s0</tt> to the next element of
+the array (which is 4 bytes past the first element).  This means we still
+haven't found the problem, so lets run the loop a couple more times
+keeping a watch on the registers.  The next run gives us:
+<pre><blockquote>
+$t2: 00000003
+$s0: 10000008
+</blockquote></pre>
+<p>
+Still good, so run again gives us:
+<pre><blockquote>
+$t2: 00000006
+$s0: 1000000c
+</blockquote></pre>
+<p>
+Now this was the last element of the array, so when we run it now we
+should leave the loop.
+<hr>
+<!-- hide -->
+<center>
+<a id="displayText" href="javascript:toggle('toggleText5a');">
+Do this now before you click here</a>
+</center>
+<hr>
+<div onclick="javascript:toggle('toggleText5a');"
+        id="toggleText5a" style="display:none; border-width:2px;
+        border-style:solid">
+<p>
+But we don't leave the loop, we run through it another time, and see:
+<pre><blockquote>
+$t2: 00000006
+$s0: 10000010
+</blockquote></pre>
+<p>
+So there is something wrong with the loop terminating condition.
+The line of code that has us terminating the loop is:
+<pre><blockquote>
+beq     $t0,$t1,sum_loop_end
+</blockquote></pre>
+<p>
+What this does is check if <tt>$t0 == $t1</tt> then goto the
+label <tt>sum_loop_end</tt>.  Now <tt>$t0</tt> is the loop counter, and
+<tt>$t1</tt> contains the number of elements read in, so lets look at
+their values.
+<pre><blockquote>
+$t0: 00000004
+$t1: 10000028
+</blockquote></pre>
+<p>
+we have moved through the loop 4 times, so <tt>$t0</tt> seems to have the
+correct value, but <tt>$t1</tt> doesn't look correct.
+<tt>t1</tt>'s value is 0x10000028 
+(or 268,435,496 decimal) and clearly we didn't have that many 
+values entered.
+</div>
+<p>
+So the error that we saw was that we were going though this loop millions
+of times each time advancing the 
+<tt>$s0</tt> register to the next element, which will eventually move us
+out of the array, and out of any memory that this program uses.
+<p>
+Now to fix the problem we have to look up at where we set <tt>t1</tt>, we
+do it with the line of code:
+<pre><blockquote>
+la      $t1,size                # t1 is number of elements read
+</blockquote></pre>
+It is this instruction that is causing the problem.  What this
+instruction is doing is moving the value of the label into the
+<tt>t1</tt> register.  The value of a label is the location in memory
+where the code/data at the label would be.  
+We can see this by looking at the symbol
+table at the bottom of the listing and seeing that <tt>size</tt> is at
+memory location 0x00000028 in the data block 
+(which becomes 0x10000028 when we convert it
+into a runtime address).  This is not the number of elements that we read
+in, but the location of memory where the number of elements read in was
+stored.  You can verify that by looking at the memory at location
+0x10000028: 
+<hr>
+<!-- hide -->
+<center>
+<a id="displayText" href="javascript:toggle('toggleText6');">
+Do this now before you click here</a>
+</center>
+<hr>
+<div onclick="javascript:toggle('toggleText6');"
+	id="toggleText6" style="display:none; border-width:2px;
+	border-style:solid">
+<p>
+Here we see the value 00000003, the correct number of
+elements.
+<p>
+So to fix the error we need to read the value of memory at location
+0x10000028 and store it in register <tt>$t1</tt>.  So we need to add a
+new line after the <tt>la      $t1,size</tt> such that the two lines will
+read:
+<blockquote><pre>
+la      $t1,size                # t1 is <b>addr in mem of the size val
+lw      $t1,0($t1)		# t1 is number of elements read</b>
+</pre></blockquote>
+<p>
+Where I have <b>bolded</b> the changed comment and the new line.
+</div>
+This leads us to a common MIPS error:
+<center>
+<table bgcolor="AAAAAA" border="1" width="33%" >
+<tr>
+<td><center><b>Common Assembly Error</b></center>
+<br>
+The <tt>la</tt> pseudo-instruciton does not read memory, it just takes
+the label, which is a 32-bit constant, and moves it value into a
+register.
+</tr>
+</table>
+</center>
+<p>
+With that fixed, re-make, and re-run your program:
+<hr>
+<!-- hide -->
+<center>
+<a id="displayText" href="javascript:toggle('toggleText7');">
+Do this now before you click here</a>
+</center>
+<hr>
+<div onclick="javascript:toggle('toggleText7');"
+	id="toggleText7" style="display:none; border-width:2px;
+	border-style:solid">
+<center>
+<h1> It worked!</h1>
+</center>
+<p>
+You should run some more tests on the program to make sure all the errors
+are fixed.  When you are confident that the program is correct, submit
+your solution.
+</div>
+
+
+<!-- PAW TODO continue from here -->
+<h2>Setting up a mail forward</h2>
+<p>Your grades for the labs and projects in this course
+will be emailed back to your Department of
+Computer Science (DCS) email account.  If you are like most people, you
+will not want to keep track of another email account, so the easiest way
+around this is to set up you DCS email to be forwarded to another
+account.
+<p>
+The DCS email systems, is configured to use a
+<b><code>.forward</code></b>
+file to forward e-mail. The file must appear in your home directory and
+contain lines that list one or more forwarding addresses. To create a
+<b><code>.forward</code></b> file, simply follow the steps listed below:
+				
+<ul>
+<li> Open up a terminal window.
+<li> Change directory to your home directory by typing
+
+<pre>
+	$ <font color="darkgreen">cd</font>
+</pre>						
+<li> Edit a file called <b><code>.forward</code></b>
+
+<li> On the first line, enter the address to which you wish to forward
+your email (something like 
+	  <font
+color="darkgreen"><i>your.email.account</i>@gmail.com</font>).
+</pre>
+<li> Save the file and exit. 
+<li> To test the forward, open your RIT email (or any other email client)
+and send an email to <b><code>your_DCS_ID@cs.rit.edu</code></b>.
+<li> Check the forwarded account to see if the mail arrived (it may
+take several minutes).
+<li> If the mail does not arrive in a reasonable amount of time, check
+the
+address in your <b><code>.forward</code></b> to ensure that it is
+correct.
+
+</li>
+</ul>
+
+<h2>Account Registration for <tt>try</tt></h2>
+
+<p>
+This course will be using the <i><tt>try</tt></i> program for lab and
+project
+submissions.  Before you can submit any work through <i><tt>try</tt></i>
+
+you will first need to register, so that <i><tt>try</tt></i> knows what
+section you are in (this makes sure that the work you submit is placed
+in the correct location for grading).
+<p>
+To register, you will
+first need to log into one of the CS computers (arkansas, ...)
+using <tt>ssh</tt> for unix/macs, or PuTTY for PCs.
+Then, from the unix prompt, type:
+<blockquote><pre>
+try grd-250 register /dev/null
+</pre></blockquote>
+<p>
+You will then be prompted to select a lecture section, after which try
+will display your information.
+Please make sure to double check and enter
+the correct number, if you make a mistake, you will need to inform your
+lecture instructor, who can correct your entry.
+<!--
+Note that it will display a 
+<tt><font color="darkgreen">Lab section:  ##</font></tt>, 
+(where <tt><font color="darkgreen">##</font></tt> 
+is a default value based on your lecture section number).
+don't worry about this as we generally won't be using <i><tt>try</tt></i> 
+with the labs.
+-->
+<p>
+For more information about the <i><tt>try</tt></i> program, you can find
+documentation at:
+
+<ul>
+ <A HREF="http://www.cs.rit.edu/~vcss243/Misc/try.html">
+Guide to the <b>try</b> submission tool</a>
+</ul>
+
+<h2>Submission</h2>
+
+<!-- 
+<p>
+Before you can submit your work, you will need to register with the
+grader account if you didn't already do this to submit Experiment 0.
+Execute this command:
+</p>
+
+<blockquote><pre>
+try grd-250 register /dev/null
+</pre></blockquote>
+
+<p>
+When you are asked to enter your lab section number, enter the number
+that goes with your lecture instructor's name.
+(Note that if you already did this for Experiment 0, you don't have to do
+it again.)
+</p>
+-->
+
+<p>
+Once you are registered, you can submit your work using the following
+command:
+</p>
+
+<blockquote><pre>
+try grd-250 lab1-1 sum.asm
+</pre></blockquote>
+
+<p>
+Your code will be extracted from this file and inserted into a new copy
+of the original <code>sum.asm</code> file to ensure that you haven't
+modified anything that you shouldn't change.
+To make this possible, you <em>must not</em> modify the 
+<code>BEGIN STUDENT CODE BLOCK</code> and
+<code>END STUDENT CODE BLOCK</code> comments <em>in any way</em>;
+if you do, the submission will be rejected.
+Other than changing the 
+"<code>&lt;&lt;&lt;YOUR NAME HERE&gt;&gt;&gt;</code>"
+comment at the beginning of the file, you should make no changes outside
+of the begin/end <code>STUDENT CODE</code> blocks.
+</p>
+<p>
+Your program will be run through a couple tests to make sure you fixed
+all the errors.  Be aware that we will generally not show you the result
+of all/some of the tests, to make sure that you test your solutions.
+
+<p>Some notes about try submission:
+</p><ul>
+<li>Generally, if your code assembles, <tt>try</tt> will save your code in
+the
+grader account for grading, no matter if the code works or not when run.
+</li><li>You can see that things get saved by looking at the last couple
+of
+output messages from <tt>try</tt>.  You should see something like:
+<pre>        Files being saved:
+        sum.asm
+
+        lab1-1 has been submitted.
+</pre>
+</li><li>If you see messages like:
+<pre>        ERROR: Your account, paw0000, is not registered.
+               If you are in this course, see your instructor.
+        ***** Submission unsuccessful
+</pre>
+It means that your not registered in try, or there was an error during
+the registration process.  To fix this re-register in <tt>try</tt> and
+then re-submit your code.  See above for instructions on <tt>try</tt>
+registration.
+</li><li><tt>try</tt> uses a program called <tt>more</tt> to display the
+output for your submission one page at a time, you can move to the next
+page by hitting <i>spacebar</i> and to the next line by hitting
+<i>return</i>.
+</li><li>If you terminate the <tt>try</tt> command with a ctrl-C, or by
+your
+network connection going down, while it is
+displaying the output, try will generally not save anything.  You will
+have to run the <tt>try</tt> command again.
+</li><li><tt>try</tt> does not support directory submissions, when you
+submit files to try they are all placed in the same directory.  
+<!-- not an issue in assembly
+Because
+of this, you should not use Java <tt>packages</tt> as they rely upon a 
+directory hierarchy that <tt>try</tt> doesn't support.
+-->
+</li></ul>
+
+<h2>Grade</h2>
+
+<p>
+Your grade will be based on the following:
+</p>
+
+<!--
+.(G
+.{submitted.activity} "Functionality" 10
+.)G
+-->
+<table>
+<tr> <td>Functionality:</td> <td>10</td> </tr>
+</table>
+
+<hr>
+</body>
+</html>
