@@ -174,6 +174,28 @@ simplify:
 # ######################################
 # ##### BEGIN STUDENT CODE BLOCK 1 #####
 
+									# destination, source
+		move 	$s0, $a0			# store the original numerator in s0
+		move	$s1, $a1			# store the original denominator in s1
+		li		$t9, $zero			# set the whole number value to zero
+		
+get_whole_number:
+		sub		$s0, $s0, $s1		# s0 = s0 - s1; subtract d from n
+		addi	$t9, $t9, 1			# increment the whole number value
+		slt		$t1, $s0, $s1		# s0 < s1 => t1 = 1; check if n is less than d
+		bne		$t1, $zero, get_whole_number_done		# got whole number
+		j		get_whole_number	# repeat; keep reducing n by d
+		
+get_whole_number_done:
+		beq		$s0, $zero, done	# if n cannot be reduced any further, go to done
+		move	$a0, $s0			# store s0 (the n to find gcd of), into a0
+		move	$a1, $s1			# store s1 (the n to find gcd of), into a1
+		jal		find_gcd			# reduce n and d; get gcd of n and d
+		#
+		
+done:
+		#
+
 # ###### END STUDENT CODE BLOCK 1 ######
 # ######################################
 
