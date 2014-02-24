@@ -1,7 +1,7 @@
 # FILE:         $File$
 # AUTHOR:       P. White
 # CONTRIBUTORS: M. Reek, W. Carithers
-# 		<<<YOUR NAME HERE>>>
+# 				Jenny Zhen
 #
 # DESCRIPTION:
 #	In this experiment, you will write some code in a pair of 
@@ -173,7 +173,6 @@ simplify:
 	
 # ######################################
 # ##### BEGIN STUDENT CODE BLOCK 1 #####
-
 
 # ###### END STUDENT CODE BLOCK 1 ######
 # ######################################
