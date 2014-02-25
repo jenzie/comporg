@@ -189,6 +189,8 @@ get_whole_number:
 get_whole_number_done:
 		add		$s0, $s0, $s1		# add back the denominator after going negative
 		beq		$s0, $zero, done	# if n cannot be reduced any further, go to done
+		slt		$t6, $s0, $s1		# check if n < d; there is no gcd
+		bne		$t6, $zero, done	# no gcd found
 		move	$a0, $s0			# store s0 (the n to find gcd of), into a0
 		move	$a1, $s1			# store s1 (the n to find gcd of), into a1
 		jal		find_gcd			# reduce n and d; get gcd of n and d
@@ -244,11 +246,10 @@ find_gcd:
 									# destination, source
 		move 	$s0, $a0			# store the original numerator in s0
 		move	$s1, $a1			# store the original denominator in s1
+		move	$v0, $a0			# store the original n as temp gcd
 		
 find_gcd_loop:
-		beq		$s0, $s1, done		# check if n == d; if equal, go to done
-		slt		$t6, $s0, $s1		# check if n < d; there is no gcd
-		bne		$t6, $zero, done	# no gcd found
+		beq		$s0, $s1, find_gcd_done		# check if n == d; if equal, go to done
 		sub		$t8, $s0, $s1		# t8 = s0 - s1; subtract d from n
 		j		find_absolute_value
 		
@@ -269,6 +270,7 @@ set_denominator:
 		
 set_numerator:
 		move	$s0, $t8			# set new numerator
+		move	$v0, $s0			# save the return value of the gcd
 		j		find_gcd_loop
 
 # ###### END STUDENT CODE BLOCK 2 ######

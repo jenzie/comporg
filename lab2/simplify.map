@@ -2,43 +2,43 @@ Load map
 ========
 
 Module:  simplify.obj
- Text segment:  616 bytes, load point 0x00400000
+ Text segment:  624 bytes, load point 0x00400000
  Data segment:  248 bytes, load point 0x10000000
  Symbols:
                    Name Section Mode    Value
                into_msg   Data   R   0x10000000
              and_string   Data   R   0x100000e9
-                   done   Text   R   0x00400170
-    find_absolute_value   Text   R   0x004001e8
+                   done   Text   R   0x00400178
+    find_absolute_value   Text   R   0x004001ec
              den_string   Data   R   0x100000a2
                READ_INT          A   0x00000005
-        set_denominator   Text   R   0x00400204
-           update_value   Text   R   0x004001f8
+        set_denominator   Text   R   0x00400208
+           update_value   Text   R   0x004001fc
                 newline   Data   R   0x10000051
-          find_gcd_loop   Text   R   0x004001d4
-               find_gcd   Text   R   0x004001a4
+          find_gcd_loop   Text   R   0x004001e0
+               find_gcd   Text   R   0x004001ac
   get_whole_number_done   Text   R   0x00400148
             ask_for_den   Text   R   0x00400050
              num_string   Data   R   0x1000007b
-          simplify_done   Text   R   0x00400178
+          simplify_done   Text   R   0x00400180
            PRINT_STRING          A   0x00000004
-           print_string   Text   R   0x0040025c
+           print_string   Text   R   0x00400264
                    main   Text   RG  0x00400000
             ask_for_num   Text   R   0x00400020
              div_string   Data   R   0x100000ef
-          set_numerator   Text   R   0x0040020c
+          set_numerator   Text   R   0x00400210
             input_error   Data   R   0x10000053
                simplify   Text   R   0x00400100
                den_good   Text   R   0x00400080
-           print_number   Text   R   0x00400240
-          find_gcd_done   Text   R   0x00400214
+           print_number   Text   R   0x00400248
+          find_gcd_done   Text   R   0x0040021c
               PRINT_INT          A   0x00000001
              res_string   Data   R   0x100000cb
        get_whole_number   Text   R   0x00400134
 
 Module:  r2k_startup.obj
- Text segment:  36 bytes, load point 0x00400268
+ Text segment:  36 bytes, load point 0x00400270
  Symbols:
                    Name Section Mode    Value
               SYS_EXIT2          A   0x00000011
-         __r2k__entry__   Text   RG  0x0040026c
+         __r2k__entry__   Text   RG  0x00400274
