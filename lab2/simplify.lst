@@ -1,0 +1,399 @@
+   1 0000               # FILE:         $File$
+   2 0000               # AUTHOR:       P. White
+   3 0000               # CONTRIBUTORS: M. Reek, W. Carithers
+   4 0000               # 				Jenny Zhen
+   5 0000               #
+   6 0000               # DESCRIPTION:
+   7 0000               #	In this experiment, you will write some code in a pair of 
+   8 0000               #	functions that are used to simplify a fraction.
+   9 0000               #
+  10 0000               # ARGUMENTS:
+  11 0000               #       None
+  12 0000               #
+  13 0000               # INPUT:
+  14 0000               #	The numerator and denominator of a fraction
+  15 0000               #
+  16 0000               # OUTPUT:
+  17 0000               #	The fraction in simplified form (ie 210/50 would be simplified
+  18 0000               #	to "4 and 1/5")
+  19 0000               #
+  20 0000               # REVISION HISTORY:
+  21 0000               #       Dec  13, 04         - P. White, created program
+  22 0000               #
+  23 0000               
+  24 0000               #
+  25 0000               # CONSTANT DECLARATIONS
+  26 0000               #
+  27 0000               PRINT_INT	= 1		# code for syscall to print integer
+  28 0000               PRINT_STRING	= 4		# code for syscall to print a string
+  29 0000               READ_INT	= 5		# code for syscall to read an int
+  30 0000               
+  31 0000               #
+  32 0000               # DATA DECLARATIONS
+  33 0000               #
+  34 0000               	.data
+  35 0000               into_msg:
+  36 0000 0A2A2A2A		.ascii  "\n*************************\n"
+          2A2A2A2A
+          2A2A2A2A
+          2A2A2A2A
+          2A2A2A2A
+          2A2A2A2A
+  37 001b 2A2A2046		.ascii	  "** Fraction Simplifier **\n"
+          72616374
+          696F6E20
+          53696D70
+          6C696669
+          6572202A
+  38 0035 2A2A2A2A		.asciiz   "*************************\n\n"
+          2A2A2A2A
+          2A2A2A2A
+          2A2A2A2A
+          2A2A2A2A
+          2A2A2A2A
+  39 0051               newline:
+  40 0051 0A00    		.asciiz "\n"
+  41 0053               input_error:
+  42 0053 0A457272		.asciiz "\nError with previous input, try again.\n"
+          6F722077
+          69746820
+          70726576
+          696F7573
+          20696E70
+  43 007b               num_string:
+  44 007b 0A456E74		.asciiz "\nEnter the Numerator of the fraction: "
+          65722074
+          6865204E
+          756D6572
+          61746F72
+          206F6620
+  45 00a2               den_string:
+  46 00a2 0A456E74		.asciiz "\nEnter the Denominator of the fraction: "
+          65722074
+          68652044
+          656E6F6D
+          696E6174
+          6F72206F
+  47 00cb               res_string:
+  48 00cb 0A546865		.asciiz "\nThe simplified fraction is: "
+          2073696D
+          706C6966
+          69656420
+          66726163
+          74696F6E
+  49 00e9               and_string:
+  50 00e9 20616E64		.asciiz " and "
+          2000    
+  51 00ef               div_string:
+  52 00ef 2F00    		.asciiz "/"
+  53 00f1               #
+  54 00f1               # MAIN PROGRAM
+  55 00f1               #
+  56 0000               	.text
+  57 0000               	.align	2
+  58 0000               	.globl	main
+  59 0000               main:
+  60 0000 23BDFFF0	        addi    $sp, $sp, -16  	# space for return address/doubleword aligned
+  61 0004 AFBF000C	        sw      $ra, 12($sp)    # store the ra on the stack
+  62 0008 AFB20008	        sw      $s2, 8($sp)
+  63 000c AFB10004	        sw      $s1, 4($sp)
+  64 0010 AFB00000	        sw      $s0, 0($sp)
+  65 0014               
+  66 0014 3C040000		la	$a0, into_msg
+     0018 34840000
+  67 001c 0C000097	        jal	print_string
+  68 0020               
+  69 0020               ask_for_num:
+  70 0020 3C040000		la	$a0, num_string
+     0024 34840000
+  71 0028 0C000097	        jal	print_string
+  72 002c               
+  73 002c 34020005		la	$v0, READ_INT
+  74 0030 0000000C		syscall
+  75 0034 00408021		move	$s0, $v0	# s0 will be the numerator
+  76 0038               
+  77 0038 28480000		slti    $t0, $v0, 0
+  78 003c 11000004		beq	$t0, $zero, ask_for_den
+  79 0040               
+  80 0040 3C040000	        la      $a0, input_error
+     0044 34840000
+  81 0048 0C000097		jal     print_string
+  82 004c               
+  83 004c 08000008		j	ask_for_num
+  84 0050               
+  85 0050               ask_for_den:
+  86 0050 3C040000		la	$a0, den_string
+     0054 34840000
+  87 0058 0C000097		jal	print_string
+  88 005c               
+  89 005c 34020005		la	$v0, READ_INT
+  90 0060 0000000C		syscall
+  91 0064 00402821		move	$a1, $v0	# a1 will be the denominator
+  92 0068               
+  93 0068 28480001		slti	$t0, $v0, 1
+  94 006c 11000004		beq	$t0, $zero, den_good
+  95 0070               
+  96 0070 3C040000	        la      $a0, input_error
+     0074 34840000
+  97 0078 0C000097		jal	print_string
+  98 007c               
+  99 007c 08000014		j	ask_for_den
+ 100 0080               
+ 101 0080               den_good:
+ 102 0080 02002021		move	$a0, $s0	# copy the numerator into a0
+ 103 0084 0C000040		jal	simplify
+ 104 0088               
+ 105 0088 00408021		move	$s0, $v0	# save the numerator
+ 106 008c 00608821		move	$s1, $v1	# save the denominator
+ 107 0090 03209021		move	$s2, $t9	# save the integer part
+ 108 0094               	
+ 109 0094 3C040000	        la      $a0, res_string
+     0098 34840000
+ 110 009c 0C000097		jal	print_string
+ 111 00a0               
+ 112 00a0 02402021		move	$a0, $s2
+ 113 00a4 34020001		li	$v0, PRINT_INT
+ 114 00a8 0000000C		syscall
+ 115 00ac               
+ 116 00ac 3C040000	        la      $a0, and_string
+     00b0 34840000
+ 117 00b4 0C000097		jal	print_string
+ 118 00b8               
+ 119 00b8 02002021	        move    $a0, $s0
+ 120 00bc 34020001		li	$v0, PRINT_INT
+ 121 00c0 0000000C		syscall
+ 122 00c4               
+ 123 00c4 3C040000	        la      $a0, div_string
+     00c8 34840000
+ 124 00cc 0C000097		jal	print_string
+ 125 00d0               
+ 126 00d0 02202021	        move    $a0, $s1
+ 127 00d4 34020001		li	$v0, PRINT_INT
+ 128 00d8 0000000C		syscall
+ 129 00dc               
+ 130 00dc 3C040000	        la      $a0, newline
+     00e0 34840000
+ 131 00e4 0C000097		jal	print_string
+ 132 00e8               
+ 133 00e8                       #
+ 134 00e8                       # Now exit the program.
+ 135 00e8               	#
+ 136 00e8 8FBF000C	        lw      $ra, 12($sp)	# clean up stack
+ 137 00ec 8FB20008	        lw      $s2, 8($sp)
+ 138 00f0 8FB10004	        lw      $s1, 4($sp)
+ 139 00f4 8FB00000	        lw      $s0, 0($sp)
+ 140 00f8 23BD0010	        addi    $sp, $sp, 16
+ 141 00fc 03E00008	        jr      $ra
+ 142 0100               
+ 143 0100               #
+ 144 0100               # Name:		simplify 
+ 145 0100               #
+ 146 0100               # Description:	Simplify a fraction.
+ 147 0100               #
+ 148 0100               # Arguments:	a0:	the original numerator
+ 149 0100               #		a1:	the original denominator
+ 150 0100               # Returns:	v0:	the simplified numerator
+ 151 0100               #		v1:	the simplified denominator
+ 152 0100               #		t9:	the simplified integer part
+ 153 0100               #
+ 154 0100               #######################################################################
+ 155 0100               # 		NOTE: 	this function uses a non-standard return register
+ 156 0100               #			t9 will contain the integer part of the
+ 157 0100               #			simplified fraction
+ 158 0100               #######################################################################
+ 159 0100               #
+ 160 0100               #
+ 161 0100               
+ 162 0100               simplify:
+ 163 0100 23BDFFD8	        addi    $sp, $sp, -40	# allocate stack frame (on doubleword boundary)
+ 164 0104 AFBF0020	        sw      $ra, 32($sp)    # store the ra & s reg's on the stack
+ 165 0108 AFB7001C	        sw      $s7, 28($sp)
+ 166 010c AFB60018	        sw      $s6, 24($sp)
+ 167 0110 AFB50014	        sw      $s5, 20($sp)
+ 168 0114 AFB40010	        sw      $s4, 16($sp)
+ 169 0118 AFB3000C	        sw      $s3, 12($sp)
+ 170 011c AFB20008	        sw      $s2, 8($sp)
+ 171 0120 AFB10004	        sw      $s1, 4($sp)
+ 172 0124 AFB00000	        sw      $s0, 0($sp)
+ 173 0128               	
+ 174 0128               # ######################################
+ 175 0128               # ##### BEGIN STUDENT CODE BLOCK 1 #####
+ 176 0128               
+ 177 0128               									# destination, source
+ 178 0128 00808021			move 	$s0, $a0			# store the original numerator in s0
+ 179 012c 00A08821			move	$s1, $a1			# store the original denominator in s1
+ 180 0130 34190000			li		$t9, 0				# set the whole number value to zero
+ 181 0134               		
+ 182 0134               get_whole_number:
+ 183 0134 02118022			sub		$s0, $s0, $s1		# s0 = s0 - s1; subtract d from n
+ 184 0138 0200482A			slt		$t1, $s0, $zero		# s0 < 0 => t1 = 1; check if n is negative
+ 185 013c 15200002			bne		$t1, $zero, get_whole_number_done		# got whole number
+ 186 0140 23390001			addi	$t9, $t9, 1			# increment the whole number value
+ 187 0144 0800004D			j		get_whole_number	# repeat; keep reducing n by d
+ 188 0148               		
+ 189 0148               get_whole_number_done:
+ 190 0148 02118020			add		$s0, $s0, $s1		# add back the denominator after going negative
+ 191 014c 12000008			beq		$s0, $zero, done	# if n cannot be reduced any further, go to done
+ 192 0150 02002021			move	$a0, $s0			# store s0 (the n to find gcd of), into a0
+ 193 0154 02202821			move	$a1, $s1			# store s1 (the n to find gcd of), into a1
+ 194 0158 0C000069			jal		find_gcd			# reduce n and d; get gcd of n and d
+ 195 015c 0202001A			div		$s0, $s0, $v0		# apply the gcd found to reduce n and d (t8)
+     0160 00008012
+ 196 0164 0222001A			div		$s1, $s1, $v0
+     0168 00008812
+ 197 016c 0800005C			j		done
+ 198 0170               		
+ 199 0170               done:
+ 200 0170 02001021			move	$v0, $s0			# store the return value of the numerator in v0
+ 201 0174 02201821			move	$v1, $s1			# store the return value of the denominator in v1
+ 202 0178               									# return value of the whole number is in t9
+ 203 0178               
+ 204 0178               # ###### END STUDENT CODE BLOCK 1 ######
+ 205 0178               # ######################################
+ 206 0178               
+ 207 0178               simplify_done:
+ 208 0178 8FBF0020	        lw      $ra, 32($sp)    # restore the ra & s reg's from the stack
+ 209 017c 8FB7001C	        lw      $s7, 28($sp)
+ 210 0180 8FB60018	        lw      $s6, 24($sp)
+ 211 0184 8FB50014	        lw      $s5, 20($sp)
+ 212 0188 8FB40010	        lw      $s4, 16($sp)
+ 213 018c 8FB3000C	        lw      $s3, 12($sp)
+ 214 0190 8FB20008	        lw      $s2, 8($sp)
+ 215 0194 8FB10004	        lw      $s1, 4($sp)
+ 216 0198 8FB00000	        lw      $s0, 0($sp)
+ 217 019c 23BD0028	        addi    $sp, $sp, 40      # clean up stack
+ 218 01a0 03E00008		jr	$ra
+ 219 01a4               
+ 220 01a4               #
+ 221 01a4               # Name:		find_gcd 
+ 222 01a4               #
+ 223 01a4               # Description:	computes the GCD of the two inputed numbers
+ 224 01a4               # Arguments:  	a0	The first number
+ 225 01a4               #		a1	The second number
+ 226 01a4               # Returns: 	v0	The GCD of a0 and a1.
+ 227 01a4               #
+ 228 01a4               
+ 229 01a4               find_gcd:
+ 230 01a4 23BDFFD8	        addi	$sp, $sp, -40	# allocate stackframe (doubleword aligned)
+ 231 01a8 AFBF0020	        sw      $ra, 32($sp)    # store the ra & s reg's on the stack
+ 232 01ac AFB7001C	        sw      $s7, 28($sp)
+ 233 01b0 AFB60018	        sw      $s6, 24($sp)
+ 234 01b4 AFB50014	        sw      $s5, 20($sp)
+ 235 01b8 AFB40010	        sw      $s4, 16($sp)
+ 236 01bc AFB3000C	        sw      $s3, 12($sp)
+ 237 01c0 AFB20008	        sw      $s2, 8($sp)
+ 238 01c4 AFB10004	        sw      $s1, 4($sp)
+ 239 01c8 AFB00000	        sw      $s0, 0($sp)
+ 240 01cc               
+ 241 01cc               # ######################################
+ 242 01cc               # ##### BEGIN STUDENT CODE BLOCK 2 #####
+ 243 01cc               
+ 244 01cc               									# destination, source
+ 245 01cc 00808021			move 	$s0, $a0			# store the original numerator in s0
+ 246 01d0 00A08821			move	$s1, $a1			# store the original denominator in s1
+ 247 01d4               		
+ 248 01d4               find_gcd_loop:
+ 249 01d4 1211FFE6			beq		$s0, $s1, done		# check if n == d; if equal, go to done
+ 250 01d8 0211702A			slt		$t6, $s0, $s1		# check if n < d; there is no gcd
+ 251 01dc 15C0FFE4			bne		$t6, $zero, done	# no gcd found
+ 252 01e0 0211C022			sub		$t8, $s0, $s1		# t8 = s0 - s1; subtract d from n
+ 253 01e4 0800007A			j		find_absolute_value
+ 254 01e8               		
+ 255 01e8               find_absolute_value:
+ 256 01e8 0300782A			slt 	$t7, $t8, $zero		# t8 < 0 => t7 = 1; check if the result is negative
+ 257 01ec 11E00002			beq		$t7, $zero, update_value				# pos, skip the absolute value
+ 258 01f0 0018C022			sub		$t8, $zero, $t8		# neg => pos, t8 = 0 - t8
+ 259 01f4 0800007E			j		update_value
+ 260 01f8               
+ 261 01f8               update_value:
+ 262 01f8 0211C02A			slt		$t8, $s0, $s1		# s0 < s1 => t8 = 1; check if n < d
+ 263 01fc 17000001			bne		$t8, $zero, set_denominator				# set new value in denominator
+ 264 0200 13000002			beq		$t8, $zero, set_numerator				# set new value in numerator
+ 265 0204               	
+ 266 0204               set_denominator:
+ 267 0204 03008821			move	$s1, $t8			# set new denominator
+ 268 0208 08000075			j		find_gcd_loop
+ 269 020c               		
+ 270 020c               set_numerator:
+ 271 020c 03008021			move	$s0, $t8			# set new numerator
+ 272 0210 08000075			j		find_gcd_loop
+ 273 0214               
+ 274 0214               # ###### END STUDENT CODE BLOCK 2 ######
+ 275 0214               # ######################################
+ 276 0214               
+ 277 0214               find_gcd_done:
+ 278 0214 8FBF0020	        lw      $ra, 32($sp)    # restore the ra & s reg's from the stack
+ 279 0218 8FB7001C	        lw      $s7, 28($sp)
+ 280 021c 8FB60018	        lw      $s6, 24($sp)
+ 281 0220 8FB50014	        lw      $s5, 20($sp)
+ 282 0224 8FB40010	        lw      $s4, 16($sp)
+ 283 0228 8FB3000C	        lw      $s3, 12($sp)
+ 284 022c 8FB20008	        lw      $s2, 8($sp)
+ 285 0230 8FB10004	        lw      $s1, 4($sp)
+ 286 0234 8FB00000	        lw      $s0, 0($sp)
+ 287 0238 23BD0028	        addi    $sp, $sp, 40      # clean up the stack
+ 288 023c 03E00008		jr	$ra
+ 289 0240               
+ 290 0240               #
+ 291 0240               # Name;		print_number 
+ 292 0240               #
+ 293 0240               # Description:	This routine reads a number then a newline to stdout
+ 294 0240               # Arguments:	a0:  the number to print
+ 295 0240               # Returns:	nothing
+ 296 0240               #
+ 297 0240               print_number:
+ 298 0240               
+ 299 0240 34020001	        li 	$v0, PRINT_INT
+ 300 0244 0000000C	        syscall			#print a0
+ 301 0248               
+ 302 0248 3C040000	        la	$a0, newline
+     024c 34840000
+ 303 0250 34020004	        li      $v0, PRINT_STRING
+ 304 0254 0000000C	        syscall			#print a newline
+ 305 0258               
+ 306 0258 03E00008	        jr      $ra
+ 307 025c               
+ 308 025c               #
+ 309 025c               # Name;		print_string 
+ 310 025c               #
+ 311 025c               # Description:	This routine prints out a string pointed to by a0
+ 312 025c               # Arguments:	a0:  a pointer to the string to print
+ 313 025c               # Returns:	nothing
+ 314 025c               #
+ 315 025c               print_string:
+ 316 025c               
+ 317 025c 34020004	        li 	$v0, PRINT_STRING
+ 318 0260 0000000C	        syscall			#print a0
+ 319 0264               
+ 320 0264 03E00008	        jr      $ra
+
+
+PRINT_INT              = 00000001   
+PRINT_STRING           = 00000004   
+READ_INT               = 00000005   
+and_string               000000E9 R  data 
+ask_for_den              00000050 R  text 
+ask_for_num              00000020 R  text 
+den_good                 00000080 R  text 
+den_string               000000A2 R  data 
+div_string               000000EF R  data 
+done                     00000170 R  text 
+find_absolute_value      000001E8 R  text 
+find_gcd                 000001A4 R  text 
+find_gcd_done            00000214 R  text 
+find_gcd_loop            000001D4 R  text 
+get_whole_number         00000134 R  text 
+get_whole_number_done    00000148 R  text 
+input_error              00000053 R  data 
+into_msg                 00000000 R  data 
+main                     00000000 RG text 
+newline                  00000051 R  data 
+num_string               0000007B R  data 
+print_number             00000240 R  text 
+print_string             0000025C R  text 
+res_string               000000CB R  data 
+set_denominator          00000204 R  text 
+set_numerator            0000020C R  text 
+simplify                 00000100 R  text 
+simplify_done            00000178 R  text 
+update_value             000001F8 R  text 

@@ -177,22 +177,23 @@ simplify:
 									# destination, source
 		move 	$s0, $a0			# store the original numerator in s0
 		move	$s1, $a1			# store the original denominator in s1
-		li		$t9, 0			# set the whole number value to zero
+		li		$t9, 0				# set the whole number value to zero
 		
 get_whole_number:
 		sub		$s0, $s0, $s1		# s0 = s0 - s1; subtract d from n
-		addi	$t9, $t9, 1			# increment the whole number value
-		slt		$t1, $s0, $s1		# s0 < s1 => t1 = 1; check if n is less than d
+		slt		$t1, $s0, $zero		# s0 < 0 => t1 = 1; check if n is negative
 		bne		$t1, $zero, get_whole_number_done		# got whole number
+		addi	$t9, $t9, 1			# increment the whole number value
 		j		get_whole_number	# repeat; keep reducing n by d
 		
 get_whole_number_done:
+		add		$s0, $s0, $s1		# add back the denominator after going negative
 		beq		$s0, $zero, done	# if n cannot be reduced any further, go to done
 		move	$a0, $s0			# store s0 (the n to find gcd of), into a0
 		move	$a1, $s1			# store s1 (the n to find gcd of), into a1
 		jal		find_gcd			# reduce n and d; get gcd of n and d
-		div		$s0, $s0, $t8		# apply the gcd found to reduce n and d
-		div		$s1, $s1, $t8
+		div		$s0, $s0, $v0		# apply the gcd found to reduce n and d (t8)
+		div		$s1, $s1, $v0
 		j		done
 		
 done:
@@ -246,20 +247,22 @@ find_gcd:
 		
 find_gcd_loop:
 		beq		$s0, $s1, done		# check if n == d; if equal, go to done
+		slt		$t6, $s0, $s1		# check if n < d; there is no gcd
+		bne		$t6, $zero, done	# no gcd found
 		sub		$t8, $s0, $s1		# t8 = s0 - s1; subtract d from n
-		move	$a0, $t8			# set up arg to get absolute value
-		jal		find_absolute_value
-		move	$t8, $a0			# move positive value to t8
-		slt		$t8, $s0, $s1		# s0 < s1 => t8 = 1; check if n < d
-		bne		$t8, $zero, set_denominator				# set new value in denominator
-		beq		$t8, $zero, set_numerator				# set new value in numerator
+		j		find_absolute_value
 		
 find_absolute_value:
 		slt 	$t7, $t8, $zero		# t8 < 0 => t7 = 1; check if the result is negative
-		# if not negative, return...otherwise...
-		sub		$v0, $zero, $t8		# v0 = 0 - t8
-		jr		$ra
-		
+		beq		$t7, $zero, update_value				# pos, skip the absolute value
+		sub		$t8, $zero, $t8		# neg => pos, t8 = 0 - t8
+		j		update_value
+
+update_value:
+		slt		$t8, $s0, $s1		# s0 < s1 => t8 = 1; check if n < d
+		bne		$t8, $zero, set_denominator				# set new value in denominator
+		beq		$t8, $zero, set_numerator				# set new value in numerator
+	
 set_denominator:
 		move	$s1, $t8			# set new denominator
 		j		find_gcd_loop
