@@ -67,13 +67,17 @@ add_loop:
 	li	$t9, 0				# reset value of carry to 0
 	slt	$t5, $t7, $t4		# 58 < t4; t4 >= 58 => 1; check for overflow
 	bne	$t5, $zero, carry	# if t5 !=0; if t5 == 1; if overflow, go to carry
-	add	$t6, $s2, $s3		# get the address of the next 'digit' of the result
-	sb	$t4, 0($t6)			# store the result of the sum of the input for the 'digit'
-	j	add_loop			# loop to get sum of next pair of 'digits'
+	j	store_sum			# store the result, with no overflow
 
 carry:
 	addi	$t4, $t4, -10	# remove the carry from the sum
 	li		$t9, 1			# set the carry
+	j		store_sum		# store the result, after modifying for carry
+	
+store_sum:
+	add	$t6, $s2, $s3		# get the address of the next 'digit' of the result
+	sb	$t4, 0($t6)			# store the result of the sum of the input for the 'digit'
+	j	add_loop			# loop to get sum of next pair of 'digits'
 
 done:
 

@@ -51,34 +51,58 @@
   51 0030 8C920008		lw	$s2, 8($a0)		# storage of result; s0 = address at 8 bits of offset from a0
   52 0034 8C93000C		lw	$s3, 12($a0)	# length; s0 = address at 12 bits of offset from a0
   53 0038 34190000		li	$t9, 0			# set the carry value to 0
-  54 003c               	
-  55 003c               add_loop:
-  56 003c               
-  57 003c               carry:
-  58 003c               
-  59 003c               done:
-  60 003c               
-  61 003c               # ###### END STUDENT CODE BLOCK 1 ######
-  62 003c               
-  63 003c               #
-  64 003c               # Restore registers ra and s0 - s7 from the stack.
-  65 003c               #
-  66 003c 8FBF0024		lw 	$ra, -4+A_FRAMESIZE($sp)
-  67 0040 8FB7001C		lw 	$s7, 28($sp)
-  68 0044 8FB60018		lw 	$s6, 24($sp)
-  69 0048 8FB50014		lw 	$s5, 20($sp)
-  70 004c 8FB40010		lw 	$s4, 16($sp)
-  71 0050 8FB3000C		lw 	$s3, 12($sp)
-  72 0054 8FB20008		lw 	$s2, 8($sp)
-  73 0058 8FB10004		lw 	$s1, 4($sp)
-  74 005c 8FB00000		lw 	$s0, 0($sp)
-  75 0060 23BD0028		addi 	$sp, $sp, A_FRAMESIZE
-  76 0064               
-  77 0064 03E00008		jr	$ra			# Return to the caller.
+  54 003c 2418FFD0		li	$t8, -48		# set the ascii offset to -48 (48 represents 0 in ascii)
+  55 0040 340F003A		li	$t7, 58			# set the overflow ascii value (58 represents 10 in ascii)
+  56 0044               	
+  57 0044               add_loop:
+  58 0044 12600012		beq	$s3, $zero, done	# go to done, if length of input is zero
+  59 0048 2273FFFF		addi $s3, $s3, -1		# decrement the counter for the number of digits left
+  60 004c 02134020		add	$t0, $s0, $s3		# get the address of the next 'digit' of 1st input
+  61 0050 02334820		add $t1, $s1, $s3		# get the address of the next 'digit' of 2nd input
+  62 0054 810A0000		lb	$t2, 0($t0)			# t2 = next digit of 1st input
+  63 0058 812B0000		lb	$t3, 0($t1)			# t3 = next digit of 2nd input
+  64 005c 014B6020		add $t4, $t2, $t3		# t4 = digit of 1st input + digit of 2nd input
+  65 0060 01996020		add	$t4, $t4, $t9		# t4 = sum of digits + carry
+  66 0064 01986020		add $t4, $t4, $t8		# t4 = sum of digits + carry + offset
+  67 0068 34190000		li	$t9, 0				# reset value of carry to 0
+  68 006c 01EC682A		slt	$t5, $t7, $t4		# 58 < t4; t4 >= 58 => 1; check for overflow
+  69 0070 15A00001		bne	$t5, $zero, carry	# if t5 !=0; if t5 == 1; if overflow, go to carry
+  70 0074 08000021		j	store_sum			# store the result, with no overflow
+  71 0078               
+  72 0078               carry:
+  73 0078 218CFFF6		addi	$t4, $t4, -10	# remove the carry from the sum
+  74 007c 34190001		li		$t9, 1			# set the carry
+  75 0080 08000021		j		store_sum		# store the result, after modifying for carry
+  76 0084               	
+  77 0084               store_sum:
+  78 0084 02537020		add	$t6, $s2, $s3		# get the address of the next 'digit' of the result
+  79 0088 A1CC0000		sb	$t4, 0($t6)			# store the result of the sum of the input for the 'digit'
+  80 008c 08000011		j	add_loop			# loop to get sum of next pair of 'digits'
+  81 0090               
+  82 0090               done:
+  83 0090               
+  84 0090               # ###### END STUDENT CODE BLOCK 1 ######
+  85 0090               
+  86 0090               #
+  87 0090               # Restore registers ra and s0 - s7 from the stack.
+  88 0090               #
+  89 0090 8FBF0024		lw 	$ra, -4+A_FRAMESIZE($sp)
+  90 0094 8FB7001C		lw 	$s7, 28($sp)
+  91 0098 8FB60018		lw 	$s6, 24($sp)
+  92 009c 8FB50014		lw 	$s5, 20($sp)
+  93 00a0 8FB40010		lw 	$s4, 16($sp)
+  94 00a4 8FB3000C		lw 	$s3, 12($sp)
+  95 00a8 8FB20008		lw 	$s2, 8($sp)
+  96 00ac 8FB10004		lw 	$s1, 4($sp)
+  97 00b0 8FB00000		lw 	$s0, 0($sp)
+  98 00b4 23BD0028		addi 	$sp, $sp, A_FRAMESIZE
+  99 00b8               
+ 100 00b8 03E00008		jr	$ra			# Return to the caller.
 
 
 A_FRAMESIZE        = 00000028   
 add_ascii_numbers    00000000 RG text 
-add_loop             0000003C R  text 
-carry                0000003C R  text 
-done                 0000003C R  text 
+add_loop             00000044 R  text 
+carry                00000078 R  text 
+done                 00000090 R  text 
+store_sum            00000084 R  text 
