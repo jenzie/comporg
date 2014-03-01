@@ -1,0 +1,484 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Concepts of Computer Systems - Experiment 3</title>
+  <link rel="stylesheet" type="text/css" href="/~csci250/css/de.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+
+<div align="center">
+
+<h1>Concepts of Computer Systems</h1>
+<h1>Experiment 3</h1>
+<h1>Arithmetic and Addressing</h1>
+
+</div>
+
+<h2>Goals and Objectives</h2>
+
+<p>
+The goal of this experiment is to give you experience in writing
+a simple program using basic control structures.
+In addition, this experiment will also get you use to working with
+pointers and addressing, and with separate assembly and linking of a
+program.
+</p>
+
+<h2>Overview</h2>
+
+<p>
+In this experiment, you will write the last statements in an assembly
+language program that does addition of numbers represented as ASCII
+character strings.
+</p>
+
+<h2>Background</h2>
+
+<h3>ASCII Arithmetic</h3>
+
+<p>
+Nearly all computers these days perform arithmetic in binary because
+it is fast and efficient, but the earliest computers did
+their arithmetic in decimal.
+They used the same techniques as humans to manipulate numbers
+digit by digit.
+One of the advantages of doing arithmetic like this is that there is no
+fixed limit on the size of the numbers that can be processed.
+</p>
+
+<p>
+In this experiment, you will complete an assembly language subroutine
+that performs addition on two same-length strings of ASCII digits.
+The technique is simple: get the digits at the corresponding positions
+in the two strings, add them, and store the resulting digit.
+This process begins at the last digit of the strings and proceeds
+from right to left until all digits have been added.
+Adding two digits may generate a carry; if this occurs, the carry
+must be added in with the next pair of digits to be processed.
+</p>
+
+<p>
+The algorithm is simple; you've been doing it since first grade.
+The only difficulty is that the program will be adding digits which are
+represented by ASCII characters, not just the digits themselves.
+As you know, computer memory can only store sequences of binary digits;
+thus, in order to represent characters, we assign a unique bit sequence
+to represent each character, and store those bit sequences (usually
+interpreted as unsigned integers) instead.
+The association between these numbers and the characters they represent is
+called a <strong>character set</strong>;
+the American Standard Code for Information Interchange 
+(<strong>ASCII</strong>) code is one such set.
+</p>
+
+<p>
+In ASCII, the digits zero through nine are represented by the integers
+48 through 57 (really, the bit sequences <code>00110000</code> through
+<code>00111001</code>).
+The digit strings you will be adding will in fact be a sequence of
+eight-bit (one byte) integers in this range, and the result you produce
+must be the same kind of sequence.
+</p>
+
+<p>
+Let's do an example:
+</p>
+
+<blockquote><pre>
+ 475
++283
+----
+ 758
+</pre></blockquote>
+
+<p>
+Working from right to left, we add 5 + 3 and get 8.
+We then add 7 + 8 and get 15; the answer is 5, with a carry of 1.
+We then add 4 + 2 + 1 (the carry) to get 7.
+The result is therefore 758.
+</p>
+
+<p>
+What is really going on in the computer's memory is a little different.
+These digits are really stored as their ASCII codes:
+</p>
+
+<blockquote><pre>
+  52 55 53
++ 50 56 51
+----------
+  55 53 56
+</pre></blockquote>
+
+<p>
+This answer is computed almost exactly as described above, but one
+additional step is required because the numbers used are not equal to
+the digits they represent: they are larger by 48.
+Consider the addition of 53 and 51:
+</p>
+
+<blockquote><pre>
+53 + 51 &equiv; ( 48 + 5 ) + ( 48 + 3 )
+</pre></blockquote>
+
+<p>
+In other words, we're adding 5 and 3, but we're also adding two 48's.
+The result we want is 56, which is ( 48 + 8 ),
+but if we just add the two digits, we'll get 104 because we have
+an extra 48; this is the ASCII code for the letter <code>h</code>,
+which is clearly not what we want.
+The solution, of course, is to subtract 48 from the result (104 - 48 = 56);
+this is the extra step that is required in the algorithm.
+</p>
+
+<p>
+One last point:  in real life, a carry out of the leftmost digit is
+written as the first digit of the answer.
+Here, the answer string will be the same length as the two strings
+to be added, so there is no room to do this.
+<em>A carry out of the leftmost digit is therefore discarded</em>,
+despite the fact that this makes the result incorrect.
+Because we are treating these digit sequences as unsigned values, the sum
+will also be an unsigned value; thus, a carry out of the leftmost digit means
+we can't represent the entire magnitude of the number.
+This condition is called <strong>overflow</strong>.
+</p>
+
+<h3>Using Displacement Mode for Indirect Addressing</h3>
+
+<p>
+To access data stored in memory, the assembly language programmer must
+know the address where the data is stored.
+Fortunately, the assembler itself helps in this regard
+by allowing us to specify the address symbolically, as in this example
+which loads a value into the <code>$s1</code> register:
+</p>
+
+<blockquote><pre>
+data:	.word	25
+	...
+	lw	$s1, data	# Copy the contents at data to s1
+</pre></blockquote>
+
+<p>
+The problem with this is that the instruction above is limited:
+it will access the same data each and every time it is executed.
+Frequently, you must write instructions that manipulate different
+pieces of data; the ones that you will write to add the numbers
+in this experiment are a perfect example.
+</p>
+
+<p>
+<strong>Indirect addressing</strong>
+is a method for accessing memory in which a register contains the
+location where the data is.  This is just like pointers in a
+high level language. Here the register is a pointer to the 
+data, and the use of indirect addressing is the way in which you 
+de-reference the pointer.
+</p>
+
+<p>
+The MIPS architecture does not directly support indirect addressing;
+instead they only support <strong>displacement Addressing</strong>.
+This is not really a problem, because indirect addressing is really just
+a special case of displacement addressing where the displacement
+is zero.
+</p>
+
+<p>
+Now if we want to use indirect addressing to access the data
+in the previous example we would just load a register with the
+address of the data, then use displacement addressing 
+with an offset of 0 to access the data at that location.
+</p>
+
+<blockquote><pre>
+data:	.word	25
+	...
+	la	$t0, data	# Put address of data in t0,
+	lw	$s1, 0($t0)	# and the data itself to s1
+</pre></blockquote>
+
+<p>
+This code uses indirect addressing to accomplish the same result
+as the previous example.
+First, the address (not the contents) of the desired data is copied to
+register <code>$t0</code>.
+Next, the second instruction copies the data itself to
+<code>$s1</code>.
+(This is the same idea as the use of pointer variables in languages like
+Pascal, C, and C++.)
+</p>
+
+<p>
+The value of this becomes more clear in a larger example:
+</p>
+
+<blockquote><pre>
+data:	.word	25, 10, 15, 4, 16, -3, 38, 72, 16, 1
+	...
+	move $s0, $zero		# s0 will be the running sum
+	la   $s2, data		# Address of first of the values
+	addi $s3, $zero, 10	# there are 10 Numbers in array
+
+loop: 
+	beq  $s3, $zero, done	# stop after adding all numbers
+	lw   $t1, 0($s2)	# get the value pointed to by s2
+	add  $s0, $s0, $t1	# add next value to sum
+	addi $s2, $s2, 4	# advance the pointer in the array
+				# (each element is a word = 4 bytes)
+	addi $s3, $s3, -1	# decrease number of numbers left
+	j    loop		# go back to top
+done:
+	...
+</pre></blockquote>
+
+<p>
+Indirect addressing enables the <code>lw</code> instruction
+to fetch a different value each time through the loop.
+This is much better than writing ten separate add instructions;
+this loop can actually add any number of values by using
+the appropriate value in <code>$s3</code>.
+The values themselves are in words, each of which occupies four bytes
+of memory; thus, to change the address in <code>$s2</code>
+so that it points to the next word, we must increment it by four, not
+by one.
+</p>
+
+<h3>Indexing</h3>
+
+<p>
+Indexing is another name for displacement, in that it is a method of
+using an index (constant) off a base address to get to a field that is
+a constant distance from the base address.
+(The general name for this technique is indexing, but many computers,
+including the MIPS, give different names to the addressing mode that
+actually <em>implements</em> the technique.
+Do not be confused by the nomenclature.)
+</p>
+
+<blockquote><pre>
+	lw	$t0, 12($s1)	# Get value from 12 bytes
+				#  past the address found in s1
+</pre></blockquote>
+
+<p>
+This instruction fetches the data that resides 12 bytes past the
+address found in <code>$s1</code> (the operand expression <code>12($s1)</code>
+is often described as ``contents of <code>$s1</code> plus 12'').
+The <strong>index</strong> or <strong>offset</strong> (12, in this example)
+may be any value you want, positive or negative.
+However, if the index is zero, the effect is exactly the same
+as indirect addressing.
+</p>
+
+<p>
+Indexing is handy when you have the address of a fixed-size block of data
+in a register, and want to access various parts of the data without
+actually modifying the address.
+For example, suppose that <code>$s0</code>
+contains the address of one of the brackets from the tax table in the
+example below:
+</p>
+
+<blockquote><pre>
+#
+# Tax table entries for each tax bracket include:
+#	minimum income for this bracket,
+#	base amount of tax owed,
+#	marginal tax rate.
+# Find the largest bracket whose minimum income is less than
+# your income.  Your tax is the base tax amount plus the
+# marginal tax rate multiplied by the difference between
+# your income and the minimum income for the bracket.
+#
+bracket1:
+	.word	15000, 0, 15
+bracket2:
+	.word	64000, 5150, 28
+bracket3:
+	.word	96400, 21200, 31
+bracket4:
+	.word	160000, 35000, 36
+	...
+	lw	$t1, 0($s0)	# Get minimum earnings limit
+	lw	$t2, 4($s0)	# Get base tax amount
+	lw	$t3, 8($s0)	# Get percentage for amount of
+				#   earnings in excess of t1
+</pre></blockquote>
+
+<p>
+Indexing allows us to access the second and third values from
+the table without having to modify the address in <code>$s0</code>.
+</p>
+
+<h2>Activities</h2>
+
+<h3>Activity 1</h3>
+
+<p>
+In your account on the DCS systems, run the following command:
+</p>
+
+<blockquote><pre>
+get csci250 lab3
+</pre></blockquote>
+
+<p>
+This will retrieve a <code>Makefile</code> and a partially-completed
+program which adds ASCII digit strings.
+Unlike previous experiments, however, this program comes in two parts:
+a file named <code>add_strings.asm</code> (which contains the main
+routine and serves as a "driver" program), and a file named
+<code>add_ascii_numbers.asm</code> (which contains the subroutine
+that performs the addition of two ASCII numbers).
+</p>
+
+<p>
+You will write the statements which implement the subroutine
+that does the addition in the <code>add_ascii_numbers.asm</code> file.
+(Note that you will not be changing the <code>add_strings.asm</code>
+file at all.)
+You will find two comments that look like this:
+</p>
+
+<blockquote><pre>
+# ##### BEGIN STUDENT CODE BLOCK 1 #####
+# ###### END STUDENT CODE BLOCK 1 ######
+</pre></blockquote>
+
+<p>
+All the code you write will go in between these comment lines.
+<strong><em>
+Do not modify these comments or any other code in this file in any way!
+</em></strong>
+If you do, your program will not work properly when you submit it.
+The only line you should change outside of these comments is the
+"<code>&lt;&lt;&lt;YOUR NAME HERE&gt;&gt;&gt;</code>"
+comment at the beginning of the file.
+</p>
+
+<p>
+The code you are writing is the body of a subroutine named
+<code>add_ascii_numbers</code>
+which adds a pair of ASCII digit strings and stores the answer.
+Registers <code>$s0</code> through <code>$s7</code>
+are saved at the beginning of this subroutine
+and restored at the end, so you may use as many of these registers
+as you need in your code.
+For additional registers to work with, remember that by convention the 
+temporary registers <code>$t0</code> through <code>$t9</code>
+can be changed freely. 
+Keep in mind that the convention also allows other code to change and
+not restore these registers, so if you make a system call or a
+call to another procedure in the middle of your code, then you are not
+guaranteed that the temporary registers will maintain their value. 
+</p>
+
+<p>
+When this subroutine is called, <code>$a0</code> will contain the address
+of a <strong>parameter block</strong>.
+A parameter block is an alternate way of passing parameters into a
+subroutine, and is often used on systems which have relatively few
+general registers available.
+(This obviously isn't a problem with the MIPS architecture, but we're
+using a parameter block for this experiment to broaden your experience
+with assembly language programming techniques.)
+</p>
+
+<p>
+The parameter block your code will be given contains four words, and
+is structured like this:
+</p>
+
+<img src="exp2-pblock2.gif" title="Parameter Block Format" alt="parameter block format">
+
+<p>
+The first word in the block (i.e., the first parameter) contains the
+address of the <em>beginning</em>
+of the first digit string to be added.
+This is followed by the beginning address of the second digit string,
+and then the address where the results should be stored.
+The final parameter is an integer representing the length of all three
+strings (two source strings and one result string).
+</p>
+
+<p>
+Your code must implement the addition algorithm described previously
+so that it is performed on the data specified by the parameter block.
+You must use indexing to access the parameters,
+and indirect addressing to process the digits.
+The digit strings are guaranteed to be correct (every character will be
+a digit from 0 to 9, and both source strings and the result area will
+all be the correct length).
+</p>
+
+<p>
+Remember that you are given the address of the <em>beginning</em>
+of each source string and the result area, but you must process the
+strings starting at their <em>ends</em>.
+Strings are stored in memory with the first (leftmost) character in the
+lowest-addressed byte of memory, and the last (rightmost) character in the
+highest-addressed byte.
+Fortunately, you know how long each string is, so you can easily
+determine the locations of the rightmost characters.
+Don't forget that you may need to carry from one addition to the next.
+Store the result digit by digit in the area given in the parameter block,
+and do not modify the input strings in any way.
+</p>
+
+<p>
+The program prints both input strings and the result, so it should be
+easy to see if your code is working properly.
+</p>
+
+<h2>Submission</h2>
+
+<p>
+Use the command below to submit your program:
+</p>
+
+<blockquote><pre>
+try grd-250 lab3-1 add_ascii_numbers.asm
+</pre></blockquote>
+
+<p>
+Your code will be extracted from this file
+and inserted into a new copy of the original
+<code>add_ascii_numbers.asm</code>
+file to ensure that you haven't modified anything you shouldn't.
+To make this possible, you <em>must not</em> modify the
+"<code>STUDENT CODE BLOCK</code>" comments in any way; if you do, the submission
+will be rejected.
+Other than changing the
+"<code>&lt;&lt;&lt;YOUR NAME HERE&gt;&gt;&gt;</code>"
+comment at the beginning of the file, you should make no changes outside of
+the 
+"<code>YOUR CODE</code>"
+comments.
+</p>
+
+<p>
+Note that you should <strong>not</strong> submit the driver program
+(<code>add_strings.asm</code>) with your solution - just the file whose
+contents you changed.
+</p>
+
+<h2>Grading</h2>
+
+<!-- HIDDEN
+.(G
+.{submitted.activity} "Functionality" 10
+.{other.activity} "Style" 5
+.)G
+HIDDEN -->
+<table>
+<tr> <td>Functionality:</td> <td>10</td> </tr>
+<tr> <td>Style:</td> <td>5</td> </tr>
+</table>
+
+<hr>
+</body>
+</html>
