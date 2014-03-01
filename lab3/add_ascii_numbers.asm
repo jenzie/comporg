@@ -1,7 +1,7 @@
 # File:		add_ascii_numbers.asm
 # Author:	K. Reek
 # Contributors:	P. White, W. Carithers
-#		<<YOUR NAME HERE>>
+#				Jenny Zhen
 #
 # Updates:
 #		3/2004	M. Reek, named constants
@@ -45,6 +45,19 @@ A_FRAMESIZE = 40
 	sw 	$s0, 0($sp)
 	
 # ##### BEGIN STUDENT CODE BLOCK 1 #####
+
+	lw	$s0, 0($a0)		# 1st input; s0 = address at 0 bits of offset from a0
+	lw	$s1, 4($a0)		# 2nd input; s0 = address at 4 bits of offset from a0
+	lw	$s2, 8($a0)		# storage of result; s0 = address at 8 bits of offset from a0
+	lw	$s3, 12($a0)	# length; s0 = address at 12 bits of offset from a0
+	li	$t9, 0			# set the carry value to 0
+	
+add_loop:
+
+carry:
+
+done:
+
 # ###### END STUDENT CODE BLOCK 1 ######
 
 #
