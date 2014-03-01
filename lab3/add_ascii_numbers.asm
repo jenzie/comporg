@@ -65,8 +65,8 @@ add_loop:
 	add	$t4, $t4, $t9		# t4 = sum of digits + carry
 	add $t4, $t4, $t8		# t4 = sum of digits + carry + offset
 	li	$t9, 0				# reset value of carry to 0
-	slt	$t5, $t7, $t4		# 58 < t4; t4 >= 58 => 1; check for overflow
-	bne	$t5, $zero, carry	# if t5 !=0; if t5 == 1; if overflow, go to carry
+	slt	$t5, $t4, $t7		# t4 < 58 => 1; if 0, check for overflow
+	beq	$t5, $zero, carry	# if t5 == 0; if overflow, go to carry
 	j	store_sum			# store the result, with no overflow
 
 carry:

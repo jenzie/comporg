@@ -65,8 +65,8 @@
   65 0060 01996020		add	$t4, $t4, $t9		# t4 = sum of digits + carry
   66 0064 01986020		add $t4, $t4, $t8		# t4 = sum of digits + carry + offset
   67 0068 34190000		li	$t9, 0				# reset value of carry to 0
-  68 006c 01EC682A		slt	$t5, $t7, $t4		# 58 < t4; t4 >= 58 => 1; check for overflow
-  69 0070 15A00001		bne	$t5, $zero, carry	# if t5 !=0; if t5 == 1; if overflow, go to carry
+  68 006c 018F682A		slt	$t5, $t4, $t7		# t4 < 58 => 1; if 0, check for overflow
+  69 0070 11A00001		beq	$t5, $zero, carry	# if t5 == 0; if overflow, go to carry
   70 0074 08000021		j	store_sum			# store the result, with no overflow
   71 0078               
   72 0078               carry:
