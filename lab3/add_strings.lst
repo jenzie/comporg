@@ -1,0 +1,343 @@
+   1 0000               # File:		add_strings.asm
+   2 0000               # Author:	K. Reek
+   3 0000               # Contributors:	P. White, W. Carithers
+   4 0000               #
+   5 0000               # Description:	Experiment 2
+   6 0000               #		This program adds variable length of numbers by
+   7 0000               #		performing arithmetic on the ASCII digits themselves.
+   8 0000               #
+   9 0000               # Updates:
+  10 0000               #		3/2004	M. Reek, named constants
+  11 0000               #		10/2007 W. Carithers, alignment
+  12 0000               #		09/2009 W. Carithers, separate assembly
+  13 0000               
+  14 0000               #
+  15 0000               # Name:		Constant definitions
+  16 0000               #
+  17 0000               # Description:	These constants define values used for system calls,
+  18 0000               #		and some other miscellaneous values.
+  19 0000               #
+  20 0000               
+  21 0000               # Constants for system calls
+  22 0000               #
+  23 0000               PRINT_INT       = 1             # code for syscall to print integer
+  24 0000               PRINT_STRING    = 4             # code for syscall to print a string
+  25 0000               READ_INT        = 5             # code for syscall to read an integer
+  26 0000               
+  27 0000               #
+  28 0000               # Name:		Data areas
+  29 0000               #
+  30 0000               # Description:	Much of the data for the program is here, including
+  31 0000               #		the ASCII digit strings to be added, the buffers
+  32 0000               #		into which the results are stored, and some of the
+  33 0000               #		strings used to identify the output.
+  34 0000               #
+  35 0000               
+  36 0000               #
+  37 0000               # The ASCII digit strings to be adding
+  38 0000               #
+  39 0000               	.data
+  40 0000               	.align 0
+  41 0000               
+  42 0000 3100    	str_a1:	.asciiz	"1"
+  43 0002               
+  44 0002 3500    	str_a2:	.asciiz	"5"
+  45 0004               
+  46 0004               #		 ----+----1
+  47 0004 30303030	str_b1:	.asciiz	"0000000000"
+          30303030
+          303000  
+  48 000f               
+  49 000f 31323334	str_b2:	.asciiz	"1234567890"
+          35363738
+          393000  
+  50 001a               
+  51 001a 35353535	str_b3:	.asciiz	"5555555555"
+          35353535
+          353500  
+  52 0025               
+  53 0025               #		 ----+----1----+----2----+----3----+----4----+----5----+----6
+  54 0025 34353934	str_c1:	.asciiz	"459487674739209198487516885011886385488413584897812587984532"
+          38373637
+          34373339
+          32303931
+          39383438
+          37353136
+  55 0062               
+  56 0062 31373738	str_c2:	.asciiz	"177898124879752312578975138488674345349797549878432168798748"
+          39383132
+          34383739
+          37353233
+          31323537
+          38393735
+  57 009f               
+  58 009f               #
+  59 009f               # Buffers into which the sums will be stored.  These have text
+  60 009f               # defined both before and after them to assist in printing the
+  61 009f               # sum and to ensure that it does not spill out of the alotted space.
+  62 009f               #
+  63 009f 52657375	out_a:	.ascii	"Result..........."
+          6C742E2E
+          2E2E2E2E
+          2E2E2E2E
+          2E      
+  64 00b0 202E    	buf_a:	.ascii	" ."
+  65 00b2 0A200A00		.asciiz	"\n \n"
+  66 00b6               
+  67 00b6 52657375	out_b:	.ascii	"Result..........."
+          6C742E2E
+          2E2E2E2E
+          2E2E2E2E
+          2E      
+  68 00c7               #		 ----+----1
+  69 00c7 20202020	buf_b:	.ascii	"          ."
+          20202020
+          20202E  
+  70 00d2 0A200A00		.asciiz	"\n \n"
+  71 00d6               
+  72 00d6 52657375	out_b2:	.ascii	"Result..........."
+          6C742E2E
+          2E2E2E2E
+          2E2E2E2E
+          2E      
+  73 00e7               #		 ----+----1
+  74 00e7 20202020	buf_b2:	.ascii	"          ."
+          20202020
+          20202E  
+  75 00f2 0A200A00		.asciiz	"\n \n"
+  76 00f6               
+  77 00f6 52657375	out_c:	.ascii	"Result..........."
+          6C742E2E
+          2E2E2E2E
+          2E2E2E2E
+          2E      
+  78 0107               #		 ----+----1----+----2----+----3----+----4----+----5----+----6
+  79 0107 20202020	buf_c:	.ascii	"                                                            ."
+          20202020
+          20202020
+          20202020
+          20202020
+          20202020
+  80 0144 0A200A00		.asciiz	"\n \n"
+  81 0148               
+  82 0148               #
+  83 0148               # Strings used to identify the results when they are printed
+  84 0148               #
+  85 0148               result1:
+  86 0148 46697273		.asciiz	"First operand...."
+          74206F70
+          6572616E
+          642E2E2E
+          2E00    
+  87 015a               
+  88 015a               result2:
+  89 015a               #	.ascii	"."
+  90 015a               #	.ascii	"\n"
+  91 015a 2E0A5365		.asciiz	".\nSecond operand..."
+          636F6E64
+          206F7065
+          72616E64
+          2E2E2E00
+  92 016e               
+  93 016e               result3:
+  94 016e               #	.ascii	"."
+  95 016e 2E0A00  		.asciiz	".\n"
+  96 0171               
+  97 0171               #
+  98 0171               # Name:		Main program
+  99 0171               #
+ 100 0171               # Description:	Main controlling logic for the program.  The
+ 101 0171               #		parameter block for each problem is passed,
+ 102 0171               #		one by one, to a routine that does the work.
+ 103 0171               #
+ 104 0000               	.text				# this is program code
+ 105 0000               	.align	2			# code must be on word boundaries
+ 106 0000               	.globl	main			# main is a global label
+ 107 0000               	.globl add_ascii_numbers	# external function we call
+ 108 0000               
+ 109 0000               main:
+ 110 0000               M_FRAMESIZE = 8
+ 111 0000 23BDFFF8		addi 	$sp, $sp, -M_FRAMESIZE	# allocate space for the return address
+ 112 0004 AFBF0004		sw 	$ra, -4+M_FRAMESIZE($sp)# store the ra on the stack
+ 113 0008               	
+ 114 0008 3C040000		la	$a0, problem1	# Address of parameters for 
+     000c 34840000
+ 115 0010 0C000017		jal	do_problem	#   problem 1, and do it.
+ 116 0014               
+ 117 0014 3C040000		la	$a0, problem2a
+     0018 34840000
+ 118 001c 0C000017		jal	do_problem
+ 119 0020               
+ 120 0020 3C040000		la	$a0, problem2b
+     0024 34840000
+ 121 0028 0C000017		jal	do_problem
+ 122 002c               
+ 123 002c 3C190000		la	$t9, buf_b	# fixing up buf_b to use as input
+     0030 37390000
+ 124 0034 A320000A		sb	$zero, 10($t9)	# put a <null> at end of buf_b
+ 125 0038               
+ 126 0038 3C040000		la	$a0, problem2c
+     003c 34840000
+ 127 0040 0C000017		jal	do_problem
+ 128 0044               
+ 129 0044 3C040000		la	$a0, problem3
+     0048 34840000
+ 130 004c 0C000017		jal	do_problem
+ 131 0050               
+ 132 0050               #
+ 133 0050               # All done -- exit the program!
+ 134 0050               #
+ 135 0050 8FBF0004		lw 	$ra, -4+M_FRAMESIZE($sp)	# restore the ra
+ 136 0054 23BD0008		addi 	$sp, $sp, M_FRAMESIZE  	# deallocate stack space 
+ 137 0058 03E00008		jr 	$ra			# return from main and exit spim
+ 138 005c               	
+ 139 005c               
+ 140 005c               #
+ 141 005c               # Name:		Parameter blocks defining the addition problems
+ 142 005c               #
+ 143 005c               # Description:	These are the parameter blocks that define each of the
+ 144 005c               #		addition problems.  Each block includes addresses of
+ 145 005c               #		the two strings and the output buffer, and the length
+ 146 005c               #		of these three areas (they are all the same length).
+ 147 005c               #		Each block then contains the address and length needed
+ 148 005c               #		to print the result, though these last two values are
+ 149 005c               #		unused by the addition routine itself.
+ 150 005c               #
+ 151 0171               	.data
+ 152 0171 000000  		.align	2
+ 153 0174               
+ 154 0174               problem1:
+ 155 0174 00000000		.word	str_a1		# First number
+ 156 0178 00000002		.word	str_a2		# Second number
+ 157 017c 000000B0		.word	buf_a		# Place to store the result
+ 158 0180 00000001		.word	1		# Length of both numbers and result buf
+ 159 0184 0000009F		.word	out_a		# Where to start printing the answer
+ 160 0188               
+ 161 0188               problem2a:
+ 162 0188 00000004		.word	str_b1, str_b2, buf_b, 10, out_b
+     018c 0000000F
+     0190 000000C7
+     0194 0000000A
+     0198 000000B6
+ 163 019c               
+ 164 019c               problem2b:
+ 165 019c 0000000F		.word	str_b2, str_b3, buf_b, 10, out_b
+     01a0 0000001A
+     01a4 000000C7
+     01a8 0000000A
+     01ac 000000B6
+ 166 01b0               
+ 167 01b0               problem2c:
+ 168 01b0 0000001A		.word	str_b3, buf_b, buf_b2, 10, out_b2
+     01b4 000000C7
+     01b8 000000E7
+     01bc 0000000A
+     01c0 000000D6
+ 169 01c4               
+ 170 01c4               problem3:
+ 171 01c4 00000025		.word	str_c1, str_c2, buf_c, 60, out_c
+     01c8 00000062
+     01cc 00000107
+     01d0 0000003C
+     01d4 000000F6
+ 172 01d8               
+ 173 01d8               #
+ 174 01d8               # Name:		do_problem
+ 175 01d8               #
+ 176 01d8               # Description:	Main logic for doing one individual problem.
+ 177 01d8               # Arguments:	a0: address of the parameter block describing the problem.
+ 178 01d8               #
+ 179 01d8               
+ 180 005c               	.text 			#begin subroutine code
+ 181 005c               do_problem:
+ 182 005c               DO_FRAMESIZE = 16
+ 183 005c 23BDFFF0		addi 	$sp, $sp, -DO_FRAMESIZE 
+ 184 0060 AFBF000C		sw 	$ra, -4+DO_FRAMESIZE($sp)	# store the ra on the stack
+ 185 0064 AFB00008		sw 	$s0, -8+DO_FRAMESIZE($sp)	# store the s0 on the stack
+ 186 0068               	
+ 187 0068               #
+ 188 0068               # Print the original values
+ 189 0068               #
+ 190 0068               
+ 191 0068 00808021		move	$s0, $a0		# copy the location of the parm block to s0
+ 192 006c               
+ 193 006c 34020004		li 	$v0, PRINT_STRING 	# print 1st number label	
+ 194 0070 3C040000		la 	$a0, result1
+     0074 34840000
+ 195 0078 0000000C		syscall
+ 196 007c               
+ 197 007c 34020004		li 	$v0, PRINT_STRING	# print 1st number	
+ 198 0080 8E040000		lw 	$a0, 0($s0)
+ 199 0084 0000000C		syscall
+ 200 0088               
+ 201 0088 34020004		li 	$v0, PRINT_STRING	# print 2nd number label	
+ 202 008c 3C040000		la 	$a0, result2
+     0090 34840000
+ 203 0094 0000000C		syscall
+ 204 0098               
+ 205 0098 34020004		li 	$v0, PRINT_STRING	# print 2nd number	
+ 206 009c 8E040004		lw 	$a0, 4($s0)
+ 207 00a0 0000000C		syscall
+ 208 00a4               
+ 209 00a4               
+ 210 00a4 34020004		li 	$v0, PRINT_STRING	# print newline at end	
+ 211 00a8 3C040000		la 	$a0, result3
+     00ac 34840000
+ 212 00b0 0000000C		syscall
+ 213 00b4               
+ 214 00b4               #
+ 215 00b4               # Now, call the add_ascii_numbers subroutine to do the addition.
+ 216 00b4               # The address of the parameter block is still in r8.
+ 217 00b4               #
+ 218 00b4               
+ 219 00b4 02002021		move	$a0, $s0		# set up argument for function
+ 220 00b8 0C000000		jal	add_ascii_numbers
+ 221 00bc               
+ 222 00bc               #
+ 223 00bc               # Print the result
+ 224 00bc               #
+ 225 00bc               
+ 226 00bc 34020004		li 	$v0, PRINT_STRING	# print answer	
+ 227 00c0 8E040010		lw 	$a0, 16($s0)
+ 228 00c4 0000000C		syscall
+ 229 00c8               
+ 230 00c8               #
+ 231 00c8               # Return to the calling program.
+ 232 00c8               #
+ 233 00c8 8FB00008		lw 	$s0, -8+DO_FRAMESIZE($sp)	# restore s0
+ 234 00cc 8FBF000C		lw 	$ra, -4+DO_FRAMESIZE($sp)	# restore ra
+ 235 00d0 23BD0010		addi 	$sp, $sp, DO_FRAMESIZE		# deallocate stack space 
+ 236 00d4 03E00008		jr	$ra
+
+
+DO_FRAMESIZE       = 00000010   
+M_FRAMESIZE        = 00000008   
+PRINT_INT          = 00000001   
+PRINT_STRING       = 00000004   
+READ_INT           = 00000005   
+add_ascii_numbers    ******** XG
+buf_a                000000B0 R  data 
+buf_b                000000C7 R  data 
+buf_b2               000000E7 R  data 
+buf_c                00000107 R  data 
+do_problem           0000005C R  text 
+main                 00000000 RG text 
+out_a                0000009F R  data 
+out_b                000000B6 R  data 
+out_b2               000000D6 R  data 
+out_c                000000F6 R  data 
+problem1             00000174 R  data 
+problem2a            00000188 R  data 
+problem2b            0000019C R  data 
+problem2c            000001B0 R  data 
+problem3             000001C4 R  data 
+result1              00000148 R  data 
+result2              0000015A R  data 
+result3              0000016E R  data 
+str_a1               00000000 R  data 
+str_a2               00000002 R  data 
+str_b1               00000004 R  data 
+str_b2               0000000F R  data 
+str_b3               0000001A R  data 
+str_c1               00000025 R  data 
+str_c2               00000062 R  data 

@@ -51,10 +51,29 @@ A_FRAMESIZE = 40
 	lw	$s2, 8($a0)		# storage of result; s0 = address at 8 bits of offset from a0
 	lw	$s3, 12($a0)	# length; s0 = address at 12 bits of offset from a0
 	li	$t9, 0			# set the carry value to 0
+	li	$t8, -48		# set the ascii offset to -48 (48 represents 0 in ascii)
+	li	$t7, 58			# set the overflow ascii value (58 represents 10 in ascii)
 	
 add_loop:
+	beq	$s3, $zero, done	# go to done, if length of input is zero
+	addi $s3, $s3, -1		# decrement the counter for the number of digits left
+	add	$t0, $s0, $s3		# get the address of the next 'digit' of 1st input
+	add $t1, $s1, $s3		# get the address of the next 'digit' of 2nd input
+	lb	$t2, 0($t0)			# t2 = next digit of 1st input
+	lb	$t3, 0($t1)			# t3 = next digit of 2nd input
+	add $t4, $t2, $t3		# t4 = digit of 1st input + digit of 2nd input
+	add	$t4, $t4, $t9		# t4 = sum of digits + carry
+	add $t4, $t4, $t8		# t4 = sum of digits + carry + offset
+	li	$t9, 0				# reset value of carry to 0
+	slt	$t5, $t7, $t4		# 58 < t4; t4 >= 58 => 1; check for overflow
+	bne	$t5, $zero, carry	# if t5 !=0; if t5 == 1; if overflow, go to carry
+	add	$t6, $s2, $s3		# get the address of the next 'digit' of the result
+	sb	$t4, 0($t6)			# store the result of the sum of the input for the 'digit'
+	j	add_loop			# loop to get sum of next pair of 'digits'
 
 carry:
+	addi	$t4, $t4, -10	# remove the carry from the sum
+	li		$t9, 1			# set the carry
 
 done:
 
