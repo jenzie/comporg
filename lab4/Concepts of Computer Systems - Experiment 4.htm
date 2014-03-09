@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Concepts of Computer Systems - Experiment 4</title>
+  <link rel="stylesheet" type="text/css" href="/~csci250/css/de.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+
+<div align="center">
+
+<h1>Concepts of Computer Systems</h1>
+<h1>Experiment 4</h1>
+<h1>Polymorphic Function Calls</h1>
+
+</div>
+
+<h2>Goals and Objectives</h2>
+
+<p>
+In this experiment you will implement some of the important
+concepts underlying object-oriented programming.  Specifically, you
+will look at how to
+create objects, and how to include in them subroutines whose
+implementation
+is not fixed, but varies with the exact ``type'' of the object
+(i.e. polymorphic function).
+</p>
+
+<h2>Overview</h2>
+
+<p>
+You will be working with a collection of figure objects.
+The idea for the experiment is that you want to work with 2 kinds of
+figures,
+<code>BLOCK</code>s
+and
+<code>CIRCLE</code>s.
+To simplify writing the code for these classes it was decided to
+factor out the two figures' common states and behaviors into a
+superclass
+<code>FIGURE</code>.
+Inside the class
+<code>FIGURE</code>
+we have the common states of height and width (i.e. the bounding box of
+the
+object).
+The subclasses
+<code>BLOCK</code>
+and
+<code>CIRCLE</code>
+will each have their own polymorphic functions to compute the area
+and perimeter/circumference of
+the figure.
+Here is the UML for these classes:
+</p>
+
+<img src="exp3-uml.gif" title="Block/Circle UML" alt="Block/Circle UML">
+
+<h2>Background</h2>
+
+<p>
+If objects only contained data, they would be implemented like the
+<em>structures</em>
+used in a prior experiment for passing parameters.
+The object has a starting address, and the object's class defines the
+offsets to the various fields inside the object.
+For example,
+</p>
+
+<blockquote><pre>
+class Point {
+    int x;
+    int y;
+} // POINT
+</pre></blockquote>
+
+<p>
+might possibly translate to
+</p>
+
+<blockquote><pre>
+# A Point contains two words
+#               x is at offset 0 in Point object
+#               y is at offset 4 in Point object
+# Making the Point object's size 12 bytes
+#
+# if a0 is the address to a point
+        lw      $t0, 0($a0)      # loads the pts's x loc into t0
+        lw      $t1, 4($a0)      # loads the pts's y loc into t1
+</pre></blockquote>
+
+<p>
+Non-polymorphic routines, which you get in C++ by omitting the
+<code>virtual</code>
+keyword from a member function declaration, are not a
+problem.
+The routines address is well-known; one just has to remember
+to include a pointer to the target object as an extra argument.
+<em>
+(In object-oriented languages, an additional "hidden" argument is always
+passed to all member routines: the address of the object itself.
+Inside the routine, the parameter is named <code>this</code> in C++
+and Java, and <code>self</code> in Smalltalk.
+That is how the routine has access to its object's data.)
+</em>
+In this way, the routine can access its target object's data.
+</p>
+
+<p>
+A call to a polymorphic routine does not generate a direct
+<em><strong>jump-and-link</strong></em>
+instruction, but rather generates code to
+</p>
+
+<ol>
+<li>determine the type of the target object,
+<li>figure out where that object's routine actually is, and
+<li>call that routine.
+</ol>
+
+<p>
+Some languages do this by having each object point to a run-time
+representation of its class, and having each class point to a
+<em><strong>dictionary</strong></em>
+associating the names of routines with the code that should be executed.
+This is a very flexible, powerful system, but also rather slow.
+</p>
+
+<p>
+Java and C++ use a more efficient technique often called a
+<em><strong>virtual function table</strong></em>, or
+<em><strong>v-table</strong></em> for short.
+In this technique, each object contains a pointer to a table
+that contains a list of routine addresses.
+</p>
+
+<img src="exp3-vtbl.gif"
+title="Use of a Virtual Function Table for Polymorphic Objects"
+alt="Use of a Virtual Function Table for Polymorphic Objects" >
+
+<p>
+The compiler knows the offset
+into this table for each polymorphic routine exported by the object's
+class, and thus can find out what should be called.
+This means that a statement doing a polymorphic routine call would
+translate into the following:
+</p>
+
+<ol>
+<li>store arguments in the appropriate place, as usual
+<li>look in the target object for the address of the v-table
+<li>look in the v-table for the address of the routine
+<li>call the routine
+<li>fetch the results, if any, as usual
+</ol>
+
+<p>
+Although storing the table of routine addresses directly in the object
+might
+save a bit of time, it would be terribly inefficient because all
+instances of a class use the same set of routines,
+as illustrated below.
+</p>
+
+<img src="exp3-vtbl2.gif"
+title="Virtual Function Tables for BLOCKs and CIRCLEs"
+alt="Virtual Function Tables for BLOCKs and CIRCLEs">
+
+<h2>Activities</h2>
+
+<h3>Activity 1</h3>
+
+<p>
+In your account on the DCS systems, run the following command:
+</p>
+
+<blockquote><pre>
+get csci250 lab4
+</pre></blockquote>
+
+<p>
+This will retrieve a <code>Makefile</code> and a partially-completed
+program in a file named
+<code>figure.asm</code>.
+At the top of the program you will find the data areas and constants
+used by the program.  Following that you will see the main program that
+does gets the reading of the input to get the information about the
+creation of a figure.
+Then, you will see a memory management routine named
+<code>new_figure</code>
+that allocates the space for all instances of class
+<code>FIGURE</code>.
+We have simplified the experiment by not having the subclasses add any
+additional attributes; this makes all figures the same size.
+</p>
+
+<p>
+The area in the program labeled <code>STUDENT CODE BLOCK 1</code>
+is the largest piece of code you have to implement.
+It is the implementation of class <code>BLOCK</code>, a rectangular
+shape.
+Look further down in the source for the implementation of class
+<code>CIRCLE</code>; use it to help you with this.
+</p>
+
+<p>
+As usual, the <code>STUDENT CODE BLOCK</code> lines should not be removed
+or else the submission of your solution will fail.
+The only line you should change outside of these comments is the
+"<code>&lt;&lt;&lt;YOUR NAME HERE&gt;&gt;&gt;</code>"
+comment at the beginning of the file.
+</p>
+
+<p>
+Near the end of <code>figure.asm</code>
+are two pairs of code sections that you must implement.
+They all involve getting stuff from
+<code>FIGURE</code>
+instances when you don't know which child class you have.
+Since they all involve printing integers,
+you may want to refer to the documentation on how to use the MIPS
+syscalls in appendix A.
+</p>
+
+<p>
+The student implementation sections numbered 2 and 3 must read the
+values of the data members of the <code>FIGURE</code>
+objects and print them.
+</p>
+
+<p>
+The student implementation sections numbered 4 and 5 call the 
+polymorphic routines <code>area</code> and <code>perimiter</code>
+and print what they return.
+Remember that you must use the
+object pointer to find the v-table pointer, then use the v-table pointer
+to find the address of the routine to call, and finally perform the
+actual call (note that the <tt>jalr</tt> instruction will be useful
+here).
+</p>
+
+<p>
+The program is run very simply.
+It takes three lines of input.
+The first line contains a "B" or a "C" to indicate either a 
+<code>BLOCK</code> or a <code>CIRCLE</code>, respectively.
+The second line contains an integer for the width of the figure; the
+third contains an integer for the height of the figure.
+In the case of a circle, the height and width define the smallest
+<em><strong>bounding box</strong></em>
+that can contain the circle.
+This means that the smaller of the two dimensions becomes the circle's
+diameter.
+These semantics are all already
+implemented; you must deal with the simpler rectangle case.
+</p>
+
+<p>
+The program will then print out information about the figure.
+You will receive some sample input and answer files from the
+<code>get</code> command.
+</p>
+
+<h2>Submission</h2>
+
+<p>
+After you have made your additions, assembled your code, and
+tested it with your own test data,
+use the following command to submit your work:
+</p>
+
+<blockquote><pre>
+try grd-250 lab4-1 figure.asm
+</pre></blockquote>
+
+<p>
+As before, your code will be extracted from this file
+and inserted into a new copy of the original
+<code>figure.asm</code>
+file to ensure that you haven't modified anything you shouldn't.
+</p>
+
+<h2>Grading</h2>
+
+<!-- HIDDEN
+.(G
+.{submitted.activity} "Functionality" 10
+.{other.activity} "Style" 5
+.)G
+HIDDEN -->
+<table>
+<tr> <td>Functionality:</td> <td>10</td> </tr>
+<tr> <td>Style:</td> <td>5</td> </tr>
+</table>
+
+<hr>
+</body>
+</html>
