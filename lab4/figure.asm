@@ -2,7 +2,7 @@
 # Author:	J. Heliotis, (author's version 1.3)
 # Contributors:	K. Reek, 
 # 		P. White, 
-#		<<<YOUR NAME HERE>>>
+#		Jenny Zhen
 # Description:	This program reads a description of a geometric
 #		figure from standard input and displays some
 #		further information about it. Currently, the
@@ -262,6 +262,102 @@ figure_make:
 # creation routine, block_make, and its two virtual (polymorphic)
 # functions, block_area and block_perimeter.
 #
+
+	.data		# starting a data block
+	.align	2	# automatically pad data to be aligned by 2 byte multiples
+	
+block_vtbl:
+	.word	block_area			# define the function pointers
+	.word	block_perimeter
+	
+	.text
+	
+#************************************
+#
+# Name:		block_make
+#
+# Description:	Initialize the components of the block object
+#		All this subroutine does is set the virtual function
+#		table, then call figure_make.
+#
+# Arguments:	a0 contains the height of the figure's bounding box
+#		a1 contains the width of the figure's bounding box
+#		a2 contains the address of the figure object
+#
+	
+block_make:
+	addi 	$sp, $sp,-FRAMESIZE_8
+	sw 	$ra, -4+FRAMESIZE_8($sp)
+
+	la	$t1, block_vtbl	# get block's vtable pointer
+	sw	$t1, 0($a2)	# put block's vtable pointer into this fig
+				# object
+	jal	figure_make
+
+	lw 	$ra, -4+FRAMESIZE_8($sp)  # get ra off stack, and restore
+	addi 	$sp, $sp, FRAMESIZE_8
+	jr	$ra
+	
+#
+# Name:		block_area
+#
+# Description:	Compute the area of the block figure
+#
+# Arguments:	a0 contains the address of the figure object
+#
+# Returns:	v0 contains the area
+#
+block_area:
+	addi 	$sp, $sp,-FRAMESIZE_8
+	sw 	$ra, -4+FRAMESIZE_8($sp)
+
+	jal	block_dimensions			# get my width in v0, height in v1
+	
+	mul	$v0, $v0, $v1				# v0 = width * height
+
+	lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
+	addi 	$sp, $sp, FRAMESIZE_8
+	jr	$ra
+	
+#
+# Name:		block_perimeter
+#
+# Description:	Compute the perimeter of the block figure
+#
+# Arguments:	a0 contains the address of the figure object
+#
+# Returns:	v0 contains the perimeter
+#
+block_perimeter:
+	addi 	$sp, $sp,-FRAMESIZE_8
+	sw 	$ra, -4+FRAMESIZE_8($sp)
+
+	jal	block_dimensions			# get my width in v0, height in v1
+	
+	add	$v0, $v0, $v0				# v0 = v0 * 2
+	add $v0, $v0, $v1				# v0 = v0 + v1
+	add $v0, $v0, $v1				# v0 = v0 + v1 => v0 = (v0 * 2) + (v1 * 2)
+
+	lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
+	addi 	$sp, $sp, FRAMESIZE_8
+	jr	$ra
+	
+#
+# Name:		block_dimensions
+#
+# Description:	Compute the dimensions of the block figure
+#
+# Arguments:	a0 contains the address of the figure object
+#
+# Returns:	v0 contains the width
+#			v1 contains the height
+#
+block_dimensions:
+	lw	$v0, 4($a0)	# get fig's width
+	lw	$v1, 8($a0)	# get fig's height
+	jr	$ra
+
+
 #***** END STUDENT CODE BLOCK 1 **********************************
 
 # CODE FOR FIGURE SUBCLASS CIRCLE
@@ -524,6 +620,10 @@ print_rest:
 #
 # Note that this does not involve any polymorphic functions.
 #
+
+	li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
+	li	$a0, 4($s0)			# print the width
+
 #***** END STUDENT CODE BLOCK 2 **********************************
 
 	li 	$v0, PRINT_STRING	# print ','
@@ -537,6 +637,10 @@ print_rest:
 #
 # Note that this does not involve any polymorphic functions.
 #
+
+li 	$v0, PRINT_INT			# tell the OS to print an int (e.g. %d for printf)
+li	$a0, 8($s0)				# print the height
+
 #***** END STUDENT CODE BLOCK 3 **********************************
 	
 	li 	$v0, PRINT_STRING 	# print ') - area = '
@@ -548,6 +652,13 @@ print_rest:
 # Print the figure's area using PRINT_INT. At this point, s0 contains
 # the address of the figure object, and shouldn't be changed.
 #
+
+	la	$t0, 0($s0)			# load the address of the figure's v-table
+	la	$t0, 0($t0)			# load the address of the figure's area function
+	jal $t0					# get the area
+	move	$a0, $v0		# print the area
+	li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
+
 #***** END STUDENT CODE BLOCK 4 **********************************
 	
 	li 	$v0, PRINT_STRING	# print '; perimeter = '
@@ -559,6 +670,13 @@ print_rest:
 # Print the figure's perimeter using PRINT_INT. At this point, s0
 # contains the address of the figure object, and shouldn't be changed.
 #
+
+	la	$t0, 0($s0)			# load the address of the figure's v-table
+	la	$t0, 4($t0)			# load the address of the figure's perimeter func
+	jal $t0					# get the perimeter
+	move	$a0, $v0		# print the perimeter
+	li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
+	
 #***** END STUDENT CODE BLOCK 5 **********************************
 
 	
