@@ -172,7 +172,7 @@
  146 003c               	#
  147 003c 02002021		move	$a0, $s0
  148 0040 02202821		move	$a1, $s1
- 149 0044 0C000073		jal	output_figures
+ 149 0044 0C000079		jal	output_figures
  150 0048               
  151 0048               #
  152 0048               # All done -- exit the program!
@@ -342,7 +342,7 @@
  311 00dc 23BDFFF8		addi 	$sp, $sp,-FRAMESIZE_8
  312 00e0 AFBF0004		sw 	$ra, -4+FRAMESIZE_8($sp)
  313 00e4               
- 314 00e4 0C000048		jal	block_dimensions			# get my width in v0, height in v1
+ 314 00e4 0C00004E		jal	block_dimensions			# get my width in v0, height in v1
  315 00e8               	
  316 00e8 00430018		mul	$v0, $v0, $v1				# v0 = width * height
      00ec 00001012
@@ -364,395 +364,405 @@
  332 00fc 23BDFFF8		addi 	$sp, $sp,-FRAMESIZE_8
  333 0100 AFBF0004		sw 	$ra, -4+FRAMESIZE_8($sp)
  334 0104               
- 335 0104 0C000048		jal	block_dimensions			# get my width in v0, height in v1
+ 335 0104 0C00004E		jal	block_dimensions			# get my width in v0, height in v1
  336 0108               	
- 337 0108 00421020		add	$v0, $v0, $v0				# v0 = v0 * 2
- 338 010c 00431020		add $v0, $v0, $v1				# v0 = v0 + v1
- 339 0110 00431020		add $v0, $v0, $v1				# v0 = v0 + v1 => v0 = (v0 * 2) + (v1 * 2)
- 340 0114               
- 341 0114 8FBF0004		lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
- 342 0118 23BD0008		addi 	$sp, $sp, FRAMESIZE_8
- 343 011c 03E00008		jr	$ra
- 344 0120               	
- 345 0120               #
- 346 0120               # Name:		block_dimensions
- 347 0120               #
- 348 0120               # Description:	Compute the dimensions of the block figure
- 349 0120               #
- 350 0120               # Arguments:	a0 contains the address of the figure object
- 351 0120               #
- 352 0120               # Returns:	v0 contains the width
- 353 0120               #			v1 contains the height
- 354 0120               #
- 355 0120               block_dimensions:
- 356 0120 8C820004		lw	$v0, 4($a0)	# get fig's width
- 357 0124 8C830008		lw	$v1, 8($a0)	# get fig's height
- 358 0128 03E00008		jr	$ra
- 359 012c               
- 360 012c               
- 361 012c               #***** END STUDENT CODE BLOCK 1 **********************************
- 362 012c               
- 363 012c               # CODE FOR FIGURE SUBCLASS CIRCLE
- 364 012c               
- 365 012c               #************************************
- 366 0544               	.data
- 367 0544               	.align	2
- 368 0544               
- 369 0544               circle_vtbl:
- 370 0544 00000000		.word	circle_area
- 371 0548 00000000		.word	circle_perimeter
- 372 054c               
- 373 012c               	.text
- 374 012c               #************************************
- 375 012c               #
- 376 012c               # Name:		circle_make
- 377 012c               #
- 378 012c               # Description:	Initialize the components of the circle object
- 379 012c               #		All this subroutine does is set the virtual function
- 380 012c               #		table, then call figure_make.
- 381 012c               #
- 382 012c               # Arguments:	a0 contains the height of the figure's bounding box
- 383 012c               #		a1 contains the width of the figure's bounding box
- 384 012c               #		a2 contains the address of the figure object
- 385 012c               #
- 386 012c               
- 387 012c               circle_make:
- 388 012c 23BDFFF8		addi 	$sp, $sp,-FRAMESIZE_8
- 389 0130 AFBF0004		sw 	$ra, -4+FRAMESIZE_8($sp)
- 390 0134               
- 391 0134 3C090000		la	$t1, circle_vtbl	# get circle's vtable pointer
-     0138 35290000
- 392 013c ACC90000		sw	$t1, 0($a2)	# put circle's vtable pointer into this fig
- 393 0140               				# object
- 394 0140 0C00002B		jal	figure_make
- 395 0144               
- 396 0144 8FBF0004		lw 	$ra, -4+FRAMESIZE_8($sp)  # get ra off stack, and restore
- 397 0148 23BD0008		addi 	$sp, $sp, FRAMESIZE_8
- 398 014c 03E00008		jr	$ra
- 399 0150               
- 400 0150               #
- 401 0150               # Name:		circle_area
- 402 0150               #
- 403 0150               # Description:	Compute the area of the circle figure
- 404 0150               #
- 405 0150               # Arguments:	a0 contains the address of the figure object
- 406 0150               #
- 407 0150               # Returns:	v0 contains the area
- 408 0150               #
- 409 0150               circle_area:
- 410 0150 23BDFFF8		addi 	$sp, $sp,-FRAMESIZE_8
- 411 0154 AFBF0004		sw 	$ra, -4+FRAMESIZE_8($sp)
- 412 0158               
- 413 0158 34190003		li	$t9, PI		# get our int approx. for PI = 3
- 414 015c               
- 415 015c 0C00006B		jal	circle_diameter	# get my diameter in v0
- 416 0160               	
- 417 0160 34010002		div	$t0, $v0, 2	# t0 = radius
-     0164 0041001A
-     0168 00004012
- 418 016c 01080018		mul	$t1, $t0, $t0	# t1 = radius squared
-     0170 00004812
- 419 0174 01390018		mul	$v0, $t1, $t9	# v0 = PI * radius squared
-     0178 00001012
- 420 017c               
- 421 017c 8FBF0004		lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
- 422 0180 23BD0008		addi 	$sp, $sp, FRAMESIZE_8
- 423 0184 03E00008		jr	$ra
- 424 0188               
- 425 0188               #
- 426 0188               # Name:		circle_perimeter
- 427 0188               #
- 428 0188               # Description:	Compute the perimeter of the circle figure
- 429 0188               #
- 430 0188               # Arguments:	a0 contains the address of the figure object
- 431 0188               #
- 432 0188               # Returns:	v0 contains the perimeter
- 433 0188               #
- 434 0188               circle_perimeter:
- 435 0188 23BDFFF8		addi 	$sp, $sp,-FRAMESIZE_8
- 436 018c AFBF0004		sw 	$ra, -4+FRAMESIZE_8($sp)
- 437 0190               
- 438 0190 34190003		li	$t9, PI		# get our int approx. for PI = 3
- 439 0194               
- 440 0194 0C00006B		jal	circle_diameter	# get my diameter in v0
- 441 0198               	
- 442 0198 00590018		mul	$v0, $v0, $t9	# v0 = PI * diameter
-     019c 00001012
- 443 01a0               
- 444 01a0 8FBF0004		lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
- 445 01a4 23BD0008		addi 	$sp, $sp, FRAMESIZE_8
- 446 01a8 03E00008		jr	$ra
- 447 01ac               
- 448 01ac               #
- 449 01ac               # Name:		circle_diameter
- 450 01ac               #
- 451 01ac               # Description:	Compute the diameter of the circle figure
- 452 01ac               #
- 453 01ac               # Arguments:	a0 contains the address of the figure object
- 454 01ac               #
- 455 01ac               # Returns:	v0 contains the diameter
- 456 01ac               #
- 457 01ac               circle_diameter:
- 458 01ac 8C880004		lw	$t0, 4($a0)	# get fig's width
- 459 01b0 8C890008		lw	$t1, 8($a0)	# get fig's height
- 460 01b4               
- 461 01b4 0109502A		slt	$t2, $t0, $t1	# see if width < height
- 462 01b8 11400002		beq	$t2, $zero, cd_height_bigger
- 463 01bc               
- 464 01bc 01001021		move	$v0, $t0	# width is smaller
- 465 01c0 03E00008		jr	$ra
- 466 01c4               
- 467 01c4               cd_height_bigger:
- 468 01c4 01201021		move	$v0, $t1	# height is smaller
- 469 01c8 03E00008		jr	$ra
+ 337 0108 10400007		beq $v0, $zero, zero_perimeter	# if width is zero, skip calculations
+ 338 010c 10600006		beq $v1, $zero, zero_perimeter	# if height is zero, skip calculations
+ 339 0110               	
+ 340 0110 00421020		add	$v0, $v0, $v0				# v0 = v0 * 2
+ 341 0114 00431020		add $v0, $v0, $v1				# v0 = v0 + v1
+ 342 0118 00431020		add $v0, $v0, $v1				# v0 = v0 + v1 => v0 = (v0 * 2) + (v1 * 2)
+ 343 011c               
+ 344 011c 8FBF0004		lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
+ 345 0120 23BD0008		addi 	$sp, $sp, FRAMESIZE_8
+ 346 0124 03E00008		jr	$ra
+ 347 0128               
+ 348 0128               zero_perimeter:
+ 349 0128 34020000		li $v0, 0						# return 0 as perimeter
+ 350 012c               	
+ 351 012c 8FBF0004		lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
+ 352 0130 23BD0008		addi 	$sp, $sp, FRAMESIZE_8
+ 353 0134 03E00008		jr $ra
+ 354 0138               	
+ 355 0138               #
+ 356 0138               # Name:		block_dimensions
+ 357 0138               #
+ 358 0138               # Description:	Compute the dimensions of the block figure
+ 359 0138               #
+ 360 0138               # Arguments:	a0 contains the address of the figure object
+ 361 0138               #
+ 362 0138               # Returns:	v0 contains the width
+ 363 0138               #			v1 contains the height
+ 364 0138               #
+ 365 0138               block_dimensions:
+ 366 0138 8C820004		lw	$v0, 4($a0)	# get fig's width
+ 367 013c 8C830008		lw	$v1, 8($a0)	# get fig's height
+ 368 0140 03E00008		jr	$ra
+ 369 0144               
+ 370 0144               
+ 371 0144               #***** END STUDENT CODE BLOCK 1 **********************************
+ 372 0144               
+ 373 0144               # CODE FOR FIGURE SUBCLASS CIRCLE
+ 374 0144               
+ 375 0144               #************************************
+ 376 0544               	.data
+ 377 0544               	.align	2
+ 378 0544               
+ 379 0544               circle_vtbl:
+ 380 0544 00000000		.word	circle_area
+ 381 0548 00000000		.word	circle_perimeter
+ 382 054c               
+ 383 0144               	.text
+ 384 0144               #************************************
+ 385 0144               #
+ 386 0144               # Name:		circle_make
+ 387 0144               #
+ 388 0144               # Description:	Initialize the components of the circle object
+ 389 0144               #		All this subroutine does is set the virtual function
+ 390 0144               #		table, then call figure_make.
+ 391 0144               #
+ 392 0144               # Arguments:	a0 contains the height of the figure's bounding box
+ 393 0144               #		a1 contains the width of the figure's bounding box
+ 394 0144               #		a2 contains the address of the figure object
+ 395 0144               #
+ 396 0144               
+ 397 0144               circle_make:
+ 398 0144 23BDFFF8		addi 	$sp, $sp,-FRAMESIZE_8
+ 399 0148 AFBF0004		sw 	$ra, -4+FRAMESIZE_8($sp)
+ 400 014c               
+ 401 014c 3C090000		la	$t1, circle_vtbl	# get circle's vtable pointer
+     0150 35290000
+ 402 0154 ACC90000		sw	$t1, 0($a2)	# put circle's vtable pointer into this fig
+ 403 0158               				# object
+ 404 0158 0C00002B		jal	figure_make
+ 405 015c               
+ 406 015c 8FBF0004		lw 	$ra, -4+FRAMESIZE_8($sp)  # get ra off stack, and restore
+ 407 0160 23BD0008		addi 	$sp, $sp, FRAMESIZE_8
+ 408 0164 03E00008		jr	$ra
+ 409 0168               
+ 410 0168               #
+ 411 0168               # Name:		circle_area
+ 412 0168               #
+ 413 0168               # Description:	Compute the area of the circle figure
+ 414 0168               #
+ 415 0168               # Arguments:	a0 contains the address of the figure object
+ 416 0168               #
+ 417 0168               # Returns:	v0 contains the area
+ 418 0168               #
+ 419 0168               circle_area:
+ 420 0168 23BDFFF8		addi 	$sp, $sp,-FRAMESIZE_8
+ 421 016c AFBF0004		sw 	$ra, -4+FRAMESIZE_8($sp)
+ 422 0170               
+ 423 0170 34190003		li	$t9, PI		# get our int approx. for PI = 3
+ 424 0174               
+ 425 0174 0C000071		jal	circle_diameter	# get my diameter in v0
+ 426 0178               	
+ 427 0178 34010002		div	$t0, $v0, 2	# t0 = radius
+     017c 0041001A
+     0180 00004012
+ 428 0184 01080018		mul	$t1, $t0, $t0	# t1 = radius squared
+     0188 00004812
+ 429 018c 01390018		mul	$v0, $t1, $t9	# v0 = PI * radius squared
+     0190 00001012
+ 430 0194               
+ 431 0194 8FBF0004		lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
+ 432 0198 23BD0008		addi 	$sp, $sp, FRAMESIZE_8
+ 433 019c 03E00008		jr	$ra
+ 434 01a0               
+ 435 01a0               #
+ 436 01a0               # Name:		circle_perimeter
+ 437 01a0               #
+ 438 01a0               # Description:	Compute the perimeter of the circle figure
+ 439 01a0               #
+ 440 01a0               # Arguments:	a0 contains the address of the figure object
+ 441 01a0               #
+ 442 01a0               # Returns:	v0 contains the perimeter
+ 443 01a0               #
+ 444 01a0               circle_perimeter:
+ 445 01a0 23BDFFF8		addi 	$sp, $sp,-FRAMESIZE_8
+ 446 01a4 AFBF0004		sw 	$ra, -4+FRAMESIZE_8($sp)
+ 447 01a8               
+ 448 01a8 34190003		li	$t9, PI		# get our int approx. for PI = 3
+ 449 01ac               
+ 450 01ac 0C000071		jal	circle_diameter	# get my diameter in v0
+ 451 01b0               	
+ 452 01b0 00590018		mul	$v0, $v0, $t9	# v0 = PI * diameter
+     01b4 00001012
+ 453 01b8               
+ 454 01b8 8FBF0004		lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
+ 455 01bc 23BD0008		addi 	$sp, $sp, FRAMESIZE_8
+ 456 01c0 03E00008		jr	$ra
+ 457 01c4               
+ 458 01c4               #
+ 459 01c4               # Name:		circle_diameter
+ 460 01c4               #
+ 461 01c4               # Description:	Compute the diameter of the circle figure
+ 462 01c4               #
+ 463 01c4               # Arguments:	a0 contains the address of the figure object
+ 464 01c4               #
+ 465 01c4               # Returns:	v0 contains the diameter
+ 466 01c4               #
+ 467 01c4               circle_diameter:
+ 468 01c4 8C880004		lw	$t0, 4($a0)	# get fig's width
+ 469 01c8 8C890008		lw	$t1, 8($a0)	# get fig's height
  470 01cc               
- 471 01cc               #
- 472 01cc               # Name:		output_figures
- 473 01cc               #
- 474 01cc               # Description:	Given the paramters for a figure, make one and print out
- 475 01cc               #		its attributes.
- 476 01cc               #
- 477 01cc               # Arguments:	fig_char: Character representing figure type
- 478 01cc               #		a0: width
- 479 01cc               #		a1: height
- 480 01cc               #
- 481 01cc               #
- 482 01cc               output_figures:
- 483 01cc 23BDFFD0		addi	$sp, $sp,-FRAMESIZE_48
- 484 01d0 AFBF002C		sw	$ra, -4+FRAMESIZE_48($sp)
- 485 01d4 AFB70028		sw	$s7, -8+FRAMESIZE_48($sp)
- 486 01d8 AFB60024		sw	$s6, -12+FRAMESIZE_48($sp)
- 487 01dc AFB50020		sw	$s5, -16+FRAMESIZE_48($sp)
- 488 01e0 AFB4001C		sw	$s4, -20+FRAMESIZE_48($sp)
- 489 01e4 AFB30018		sw	$s3, -24+FRAMESIZE_48($sp)
- 490 01e8 AFB20014		sw	$s2, -28+FRAMESIZE_48($sp)
- 491 01ec AFB10010		sw	$s1, -32+FRAMESIZE_48($sp)
- 492 01f0 AFB0000C		sw	$s0, -36+FRAMESIZE_48($sp)
- 493 01f4               
- 494 01f4 00809821		move	$s3, $a0	# s3 will be the width
- 495 01f8 00A0A021		move	$s4, $a1	# s4 will be the height
- 496 01fc               
- 497 01fc 0C000017		jal	new_figure	# create a new figure
- 498 0200 00408821		move	$s1, $v0	# save the pointer to the fig object
- 499 0204               
- 500 0204               	#
- 501 0204               	# Now, see which one we should make
- 502 0204               	#
- 503 0204               
- 504 0204 3C010000		lbu	$s6, char_c	# get our characters for comparison
-     0208 90360000
- 505 020c 3C010000		lbu	$s7, char_b
-     0210 90370000
+ 471 01cc 0109502A		slt	$t2, $t0, $t1	# see if width < height
+ 472 01d0 11400002		beq	$t2, $zero, cd_height_bigger
+ 473 01d4               
+ 474 01d4 01001021		move	$v0, $t0	# width is smaller
+ 475 01d8 03E00008		jr	$ra
+ 476 01dc               
+ 477 01dc               cd_height_bigger:
+ 478 01dc 01201021		move	$v0, $t1	# height is smaller
+ 479 01e0 03E00008		jr	$ra
+ 480 01e4               
+ 481 01e4               #
+ 482 01e4               # Name:		output_figures
+ 483 01e4               #
+ 484 01e4               # Description:	Given the paramters for a figure, make one and print out
+ 485 01e4               #		its attributes.
+ 486 01e4               #
+ 487 01e4               # Arguments:	fig_char: Character representing figure type
+ 488 01e4               #		a0: width
+ 489 01e4               #		a1: height
+ 490 01e4               #
+ 491 01e4               #
+ 492 01e4               output_figures:
+ 493 01e4 23BDFFD0		addi	$sp, $sp,-FRAMESIZE_48
+ 494 01e8 AFBF002C		sw	$ra, -4+FRAMESIZE_48($sp)
+ 495 01ec AFB70028		sw	$s7, -8+FRAMESIZE_48($sp)
+ 496 01f0 AFB60024		sw	$s6, -12+FRAMESIZE_48($sp)
+ 497 01f4 AFB50020		sw	$s5, -16+FRAMESIZE_48($sp)
+ 498 01f8 AFB4001C		sw	$s4, -20+FRAMESIZE_48($sp)
+ 499 01fc AFB30018		sw	$s3, -24+FRAMESIZE_48($sp)
+ 500 0200 AFB20014		sw	$s2, -28+FRAMESIZE_48($sp)
+ 501 0204 AFB10010		sw	$s1, -32+FRAMESIZE_48($sp)
+ 502 0208 AFB0000C		sw	$s0, -36+FRAMESIZE_48($sp)
+ 503 020c               
+ 504 020c 00809821		move	$s3, $a0	# s3 will be the width
+ 505 0210 00A0A021		move	$s4, $a1	# s4 will be the height
  506 0214               
- 507 0214 3C010000		lbu	$s5, fig_char	# get the type of fig to create
-     0218 90350000
- 508 021c               
- 509 021c 16B6000B		bne	$s5, $s6, not_circle  # see if creating a circle
- 510 0220               	#
- 511 0220               	# Set up the arguments to the circle_make call
- 512 0220               	# 	a0 contains the height of the figure's bounding box
- 513 0220               	# 	a1 contains the width of the figure's bounding box
- 514 0220               	#	a2 contains the address of the figure object
- 515 0220               	#
- 516 0220 02802021		move	$a0, $s4		# s4 was the height
- 517 0224 02602821		move	$a1, $s3		# s3 was the width
- 518 0228 02203021		move	$a2, $s1		# s1 was the location of new fig object
- 519 022c 0C00004B		jal	circle_make
- 520 0230               
- 521 0230               
- 522 0230               	#
- 523 0230               	# Print "Circle ("
- 524 0230               	#
- 525 0230               
- 526 0230 34020004		li 	$v0, PRINT_STRING	# print a "Circle ("
- 527 0234 3C040000		la 	$a0, circle_string
-     0238 34840000
- 528 023c 0000000C		syscall	
- 529 0240               
- 530 0240 02202021		move	$a0, $s1		# send the pointer to the fig object
- 531 0244               				# as the arg. to print_rest
- 532 0244 0C0000AE		jal	print_rest	# print rest of info of the fig
- 533 0248 080000A3		j 	done_output
- 534 024c               
- 535 024c               
- 536 024c               not_circle:
- 537 024c 16B7000B		bne	$s5, $s7, not_anything  # see if creating a block
- 538 0250               	#
- 539 0250               	# Set up the arguments to the block_make call
- 540 0250               	# 	a0 contains the height of the figure's bounding box
- 541 0250               	# 	a1 contains the width of the figure's bounding box
- 542 0250               	#	a2 contains the address of the figure object
- 543 0250               	#
- 544 0250 02802021		move	$a0, $s4		# s4 was the height
- 545 0254 02602821		move	$a1, $s3		# s3 was the width
- 546 0258 02203021		move	$a2, $s1		# s1 was the location of new fig object
- 547 025c 0C00002E		jal	block_make
- 548 0260               
- 549 0260               
- 550 0260               	#
- 551 0260               	# Print "Block ("
- 552 0260               	#
- 553 0260               
- 554 0260 34020004		li 	$v0, PRINT_STRING	# print a "Block ("
- 555 0264 3C040000		la 	$a0, block_string
-     0268 34840000
- 556 026c 0000000C		syscall	
- 557 0270               
- 558 0270 02202021		move	$a0, $s1		# send the pointer to the fig object
- 559 0274               				# as the arg. to print_rest
- 560 0274 0C0000AE		jal	print_rest	# print rest of info of the fig
- 561 0278 080000A3		j 	done_output
- 562 027c               
- 563 027c               not_anything:
- 564 027c               	#
- 565 027c               	# Print error message
- 566 027c               	#
- 567 027c               
- 568 027c 34020004		li 	$v0, PRINT_STRING
- 569 0280 3C040000		la 	$a0, figure_type_error_string
-     0284 34840000
- 570 0288 0000000C		syscall	
- 571 028c               
- 572 028c               	#
- 573 028c               	# exit
- 574 028c               	#
- 575 028c               
- 576 028c               done_output:
- 577 028c 8FBF002C		lw	$ra, -4+FRAMESIZE_48($sp)
- 578 0290 8FB70028		lw	$s7, -8+FRAMESIZE_48($sp)
- 579 0294 8FB60024		lw	$s6, -12+FRAMESIZE_48($sp)
- 580 0298 8FB50020		lw	$s5, -16+FRAMESIZE_48($sp)
- 581 029c 8FB4001C		lw	$s4, -20+FRAMESIZE_48($sp)
- 582 02a0 8FB30018		lw	$s3, -24+FRAMESIZE_48($sp)
- 583 02a4 8FB20014		lw	$s2, -28+FRAMESIZE_48($sp)
- 584 02a8 8FB10010		lw	$s1, -32+FRAMESIZE_48($sp)
- 585 02ac 8FB0000C		lw	$s0, -36+FRAMESIZE_48($sp)
- 586 02b0 23BD0030		addi	$sp, $sp, FRAMESIZE_48
- 587 02b4               
- 588 02b4 03E00008		jr	$ra
- 589 02b8               
- 590 02b8               #
- 591 02b8               # Name:		print_rest
- 592 02b8               #
- 593 02b8               # Description:	prints out the information about a figure
- 594 02b8               #
- 595 02b8               # Arguments:	a0: contains the address of the figure object
- 596 02b8               #
- 597 02b8               
- 598 02b8               print_rest:
- 599 02b8               	#
- 600 02b8               	# Save all the S registers & ra
- 601 02b8               	#
- 602 02b8 23BDFFD8		addi	$sp, $sp,-FRAMESIZE_40
- 603 02bc AFBF0024		sw	$ra, -4+FRAMESIZE_40($sp)
- 604 02c0 AFB70020		sw	$s7, -8+FRAMESIZE_40($sp)
- 605 02c4 AFB6001C		sw	$s6, -12+FRAMESIZE_40($sp)
- 606 02c8 AFB50018		sw	$s5, -16+FRAMESIZE_40($sp)
- 607 02cc AFB40014		sw	$s4, -20+FRAMESIZE_40($sp)
- 608 02d0 AFB30010		sw	$s3, -24+FRAMESIZE_40($sp)
- 609 02d4 AFB2000C		sw	$s2, -28+FRAMESIZE_40($sp)
- 610 02d8 AFB10008		sw	$s1, -32+FRAMESIZE_40($sp)
- 611 02dc AFB00004		sw	$s0, -36+FRAMESIZE_40($sp)
- 612 02e0               
- 613 02e0 00808021		move	$s0, $a0	# s0 will be your pointer to figure
- 614 02e4               				# since a0 is needed by the syscalls
- 615 02e4               
- 616 02e4               #***** BEGIN STUDENT CODE BLOCK 2 ********************************
- 617 02e4               #
- 618 02e4               # Print the figure's width using PRINT_INT. At this point, s0 contains
- 619 02e4               # the address of the figure object, and shouldn't be changed.
- 620 02e4               #
- 621 02e4               # Note that this does not involve any polymorphic functions.
- 622 02e4               #
- 623 02e4               
- 624 02e4 34020001		li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
- 625 02e8 8E040004		lw	$a0, 4($s0)			# print the width
- 626 02ec 0000000C		syscall
- 627 02f0               
- 628 02f0               #***** END STUDENT CODE BLOCK 2 **********************************
- 629 02f0               
- 630 02f0 34020004		li 	$v0, PRINT_STRING	# print ','
- 631 02f4 3C040000		la 	$a0, comma_string
-     02f8 34840000
- 632 02fc 0000000C		syscall
- 633 0300               
- 634 0300               #***** BEGIN STUDENT CODE BLOCK 3 ********************************
- 635 0300               #
- 636 0300               # Print the figure's height using PRINT_INT. At this point, s0 contains
- 637 0300               # the address of the figure object, and shouldn't be changed.
- 638 0300               #
- 639 0300               # Note that this does not involve any polymorphic functions.
- 640 0300               #
- 641 0300               
- 642 0300 34020001		li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
- 643 0304 8E040008		lw	$a0, 8($s0)			# print the height
- 644 0308 0000000C		syscall
- 645 030c               
- 646 030c               #***** END STUDENT CODE BLOCK 3 **********************************
- 647 030c               	
- 648 030c 34020004		li 	$v0, PRINT_STRING 	# print ') - area = '
- 649 0310 3C040000		la 	$a0, area_string
-     0314 34840000
- 650 0318 0000000C		syscall
- 651 031c               
- 652 031c               #***** BEGIN STUDENT CODE BLOCK 4 ********************************
- 653 031c               #
- 654 031c               # Print the figure's area using PRINT_INT. At this point, s0 contains
- 655 031c               # the address of the figure object, and shouldn't be changed.
- 656 031c               #
- 657 031c               
- 658 031c 8E080000		lw	$t0, 0($s0)			# load the address of the figure's v-table
- 659 0320 8D080000		lw	$t0, 0($t0)			# load the address of the figure's area function
- 660 0324 02002021		move $a0, $s0			# load the address of the figure into argument
- 661 0328 0100F809		jalr $t0				# get the area
- 662 032c 00402021		move	$a0, $v0		# print the area
- 663 0330 34020001		li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
- 664 0334 0000000C		syscall
- 665 0338               
- 666 0338               #***** END STUDENT CODE BLOCK 4 **********************************
- 667 0338               	
- 668 0338 34020004		li 	$v0, PRINT_STRING	# print '; perimeter = '
- 669 033c 3C040000		la 	$a0, perimeter_string
-     0340 34840000
- 670 0344 0000000C		syscall
- 671 0348               
- 672 0348               #***** BEGIN STUDENT CODE BLOCK 5 ********************************
- 673 0348               #
- 674 0348               # Print the figure's perimeter using PRINT_INT. At this point, s0
- 675 0348               # contains the address of the figure object, and shouldn't be changed.
- 676 0348               #
- 677 0348               
- 678 0348 8E080000		lw	$t0, 0($s0)			# load the address of the figure's v-table
- 679 034c 8D080004		lw	$t0, 4($t0)			# load the address of the figure's perimeter func
- 680 0350 02002021		move $a0, $s0			# load the address of the figure into argument
- 681 0354 0100F809		jalr $t0				# get the perimeter
- 682 0358 00402021		move	$a0, $v0		# print the perimeter
- 683 035c 34020001		li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
- 684 0360 0000000C		syscall
- 685 0364               	
- 686 0364               #***** END STUDENT CODE BLOCK 5 **********************************
- 687 0364               
- 688 0364               	
- 689 0364 34020004		li 	$v0, PRINT_STRING	# print newline
- 690 0368 3C040000		la 	$a0, new_line
-     036c 34840000
- 691 0370 0000000C		syscall
- 692 0374               
- 693 0374               	#
- 694 0374               	# Restore all the S registers
- 695 0374               	#
- 696 0374 8FBF0024		lw	$ra, -4+FRAMESIZE_40($sp)
- 697 0378 8FB70020		lw	$s7, -8+FRAMESIZE_40($sp)
- 698 037c 8FB6001C		lw	$s6, -12+FRAMESIZE_40($sp)
- 699 0380 8FB50018		lw	$s5, -16+FRAMESIZE_40($sp)
- 700 0384 8FB40014		lw	$s4, -20+FRAMESIZE_40($sp)
- 701 0388 8FB30010		lw	$s3, -24+FRAMESIZE_40($sp)
- 702 038c 8FB2000C		lw	$s2, -28+FRAMESIZE_40($sp)
- 703 0390 8FB10008		lw	$s1, -32+FRAMESIZE_40($sp)
- 704 0394 8FB00004		lw	$s0, -36+FRAMESIZE_40($sp)
- 705 0398 23BD0028		addi	$sp, $sp, FRAMESIZE_40
- 706 039c               
- 707 039c 03E00008		jr	$ra
+ 507 0214 0C000017		jal	new_figure	# create a new figure
+ 508 0218 00408821		move	$s1, $v0	# save the pointer to the fig object
+ 509 021c               
+ 510 021c               	#
+ 511 021c               	# Now, see which one we should make
+ 512 021c               	#
+ 513 021c               
+ 514 021c 3C010000		lbu	$s6, char_c	# get our characters for comparison
+     0220 90360000
+ 515 0224 3C010000		lbu	$s7, char_b
+     0228 90370000
+ 516 022c               
+ 517 022c 3C010000		lbu	$s5, fig_char	# get the type of fig to create
+     0230 90350000
+ 518 0234               
+ 519 0234 16B6000B		bne	$s5, $s6, not_circle  # see if creating a circle
+ 520 0238               	#
+ 521 0238               	# Set up the arguments to the circle_make call
+ 522 0238               	# 	a0 contains the height of the figure's bounding box
+ 523 0238               	# 	a1 contains the width of the figure's bounding box
+ 524 0238               	#	a2 contains the address of the figure object
+ 525 0238               	#
+ 526 0238 02802021		move	$a0, $s4		# s4 was the height
+ 527 023c 02602821		move	$a1, $s3		# s3 was the width
+ 528 0240 02203021		move	$a2, $s1		# s1 was the location of new fig object
+ 529 0244 0C000051		jal	circle_make
+ 530 0248               
+ 531 0248               
+ 532 0248               	#
+ 533 0248               	# Print "Circle ("
+ 534 0248               	#
+ 535 0248               
+ 536 0248 34020004		li 	$v0, PRINT_STRING	# print a "Circle ("
+ 537 024c 3C040000		la 	$a0, circle_string
+     0250 34840000
+ 538 0254 0000000C		syscall	
+ 539 0258               
+ 540 0258 02202021		move	$a0, $s1		# send the pointer to the fig object
+ 541 025c               				# as the arg. to print_rest
+ 542 025c 0C0000B4		jal	print_rest	# print rest of info of the fig
+ 543 0260 080000A9		j 	done_output
+ 544 0264               
+ 545 0264               
+ 546 0264               not_circle:
+ 547 0264 16B7000B		bne	$s5, $s7, not_anything  # see if creating a block
+ 548 0268               	#
+ 549 0268               	# Set up the arguments to the block_make call
+ 550 0268               	# 	a0 contains the height of the figure's bounding box
+ 551 0268               	# 	a1 contains the width of the figure's bounding box
+ 552 0268               	#	a2 contains the address of the figure object
+ 553 0268               	#
+ 554 0268 02802021		move	$a0, $s4		# s4 was the height
+ 555 026c 02602821		move	$a1, $s3		# s3 was the width
+ 556 0270 02203021		move	$a2, $s1		# s1 was the location of new fig object
+ 557 0274 0C00002E		jal	block_make
+ 558 0278               
+ 559 0278               
+ 560 0278               	#
+ 561 0278               	# Print "Block ("
+ 562 0278               	#
+ 563 0278               
+ 564 0278 34020004		li 	$v0, PRINT_STRING	# print a "Block ("
+ 565 027c 3C040000		la 	$a0, block_string
+     0280 34840000
+ 566 0284 0000000C		syscall	
+ 567 0288               
+ 568 0288 02202021		move	$a0, $s1		# send the pointer to the fig object
+ 569 028c               				# as the arg. to print_rest
+ 570 028c 0C0000B4		jal	print_rest	# print rest of info of the fig
+ 571 0290 080000A9		j 	done_output
+ 572 0294               
+ 573 0294               not_anything:
+ 574 0294               	#
+ 575 0294               	# Print error message
+ 576 0294               	#
+ 577 0294               
+ 578 0294 34020004		li 	$v0, PRINT_STRING
+ 579 0298 3C040000		la 	$a0, figure_type_error_string
+     029c 34840000
+ 580 02a0 0000000C		syscall	
+ 581 02a4               
+ 582 02a4               	#
+ 583 02a4               	# exit
+ 584 02a4               	#
+ 585 02a4               
+ 586 02a4               done_output:
+ 587 02a4 8FBF002C		lw	$ra, -4+FRAMESIZE_48($sp)
+ 588 02a8 8FB70028		lw	$s7, -8+FRAMESIZE_48($sp)
+ 589 02ac 8FB60024		lw	$s6, -12+FRAMESIZE_48($sp)
+ 590 02b0 8FB50020		lw	$s5, -16+FRAMESIZE_48($sp)
+ 591 02b4 8FB4001C		lw	$s4, -20+FRAMESIZE_48($sp)
+ 592 02b8 8FB30018		lw	$s3, -24+FRAMESIZE_48($sp)
+ 593 02bc 8FB20014		lw	$s2, -28+FRAMESIZE_48($sp)
+ 594 02c0 8FB10010		lw	$s1, -32+FRAMESIZE_48($sp)
+ 595 02c4 8FB0000C		lw	$s0, -36+FRAMESIZE_48($sp)
+ 596 02c8 23BD0030		addi	$sp, $sp, FRAMESIZE_48
+ 597 02cc               
+ 598 02cc 03E00008		jr	$ra
+ 599 02d0               
+ 600 02d0               #
+ 601 02d0               # Name:		print_rest
+ 602 02d0               #
+ 603 02d0               # Description:	prints out the information about a figure
+ 604 02d0               #
+ 605 02d0               # Arguments:	a0: contains the address of the figure object
+ 606 02d0               #
+ 607 02d0               
+ 608 02d0               print_rest:
+ 609 02d0               	#
+ 610 02d0               	# Save all the S registers & ra
+ 611 02d0               	#
+ 612 02d0 23BDFFD8		addi	$sp, $sp,-FRAMESIZE_40
+ 613 02d4 AFBF0024		sw	$ra, -4+FRAMESIZE_40($sp)
+ 614 02d8 AFB70020		sw	$s7, -8+FRAMESIZE_40($sp)
+ 615 02dc AFB6001C		sw	$s6, -12+FRAMESIZE_40($sp)
+ 616 02e0 AFB50018		sw	$s5, -16+FRAMESIZE_40($sp)
+ 617 02e4 AFB40014		sw	$s4, -20+FRAMESIZE_40($sp)
+ 618 02e8 AFB30010		sw	$s3, -24+FRAMESIZE_40($sp)
+ 619 02ec AFB2000C		sw	$s2, -28+FRAMESIZE_40($sp)
+ 620 02f0 AFB10008		sw	$s1, -32+FRAMESIZE_40($sp)
+ 621 02f4 AFB00004		sw	$s0, -36+FRAMESIZE_40($sp)
+ 622 02f8               
+ 623 02f8 00808021		move	$s0, $a0	# s0 will be your pointer to figure
+ 624 02fc               				# since a0 is needed by the syscalls
+ 625 02fc               
+ 626 02fc               #***** BEGIN STUDENT CODE BLOCK 2 ********************************
+ 627 02fc               #
+ 628 02fc               # Print the figure's width using PRINT_INT. At this point, s0 contains
+ 629 02fc               # the address of the figure object, and shouldn't be changed.
+ 630 02fc               #
+ 631 02fc               # Note that this does not involve any polymorphic functions.
+ 632 02fc               #
+ 633 02fc               
+ 634 02fc 34020001		li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
+ 635 0300 8E040004		lw	$a0, 4($s0)			# print the width
+ 636 0304 0000000C		syscall
+ 637 0308               
+ 638 0308               #***** END STUDENT CODE BLOCK 2 **********************************
+ 639 0308               
+ 640 0308 34020004		li 	$v0, PRINT_STRING	# print ','
+ 641 030c 3C040000		la 	$a0, comma_string
+     0310 34840000
+ 642 0314 0000000C		syscall
+ 643 0318               
+ 644 0318               #***** BEGIN STUDENT CODE BLOCK 3 ********************************
+ 645 0318               #
+ 646 0318               # Print the figure's height using PRINT_INT. At this point, s0 contains
+ 647 0318               # the address of the figure object, and shouldn't be changed.
+ 648 0318               #
+ 649 0318               # Note that this does not involve any polymorphic functions.
+ 650 0318               #
+ 651 0318               
+ 652 0318 34020001		li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
+ 653 031c 8E040008		lw	$a0, 8($s0)			# print the height
+ 654 0320 0000000C		syscall
+ 655 0324               
+ 656 0324               #***** END STUDENT CODE BLOCK 3 **********************************
+ 657 0324               	
+ 658 0324 34020004		li 	$v0, PRINT_STRING 	# print ') - area = '
+ 659 0328 3C040000		la 	$a0, area_string
+     032c 34840000
+ 660 0330 0000000C		syscall
+ 661 0334               
+ 662 0334               #***** BEGIN STUDENT CODE BLOCK 4 ********************************
+ 663 0334               #
+ 664 0334               # Print the figure's area using PRINT_INT. At this point, s0 contains
+ 665 0334               # the address of the figure object, and shouldn't be changed.
+ 666 0334               #
+ 667 0334               
+ 668 0334 8E080000		lw	$t0, 0($s0)			# load the address of the figure's v-table
+ 669 0338 8D080000		lw	$t0, 0($t0)			# load the address of the figure's area function
+ 670 033c 02002021		move $a0, $s0			# load the address of the figure into argument
+ 671 0340 0100F809		jalr $t0				# get the area
+ 672 0344 00402021		move	$a0, $v0		# print the area
+ 673 0348 34020001		li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
+ 674 034c 0000000C		syscall
+ 675 0350               
+ 676 0350               #***** END STUDENT CODE BLOCK 4 **********************************
+ 677 0350               	
+ 678 0350 34020004		li 	$v0, PRINT_STRING	# print '; perimeter = '
+ 679 0354 3C040000		la 	$a0, perimeter_string
+     0358 34840000
+ 680 035c 0000000C		syscall
+ 681 0360               
+ 682 0360               #***** BEGIN STUDENT CODE BLOCK 5 ********************************
+ 683 0360               #
+ 684 0360               # Print the figure's perimeter using PRINT_INT. At this point, s0
+ 685 0360               # contains the address of the figure object, and shouldn't be changed.
+ 686 0360               #
+ 687 0360               
+ 688 0360 8E080000		lw	$t0, 0($s0)			# load the address of the figure's v-table
+ 689 0364 8D080004		lw	$t0, 4($t0)			# load the address of the figure's perimeter func
+ 690 0368 02002021		move $a0, $s0			# load the address of the figure into argument
+ 691 036c 0100F809		jalr $t0				# get the perimeter
+ 692 0370 00402021		move	$a0, $v0		# print the perimeter
+ 693 0374 34020001		li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
+ 694 0378 0000000C		syscall
+ 695 037c               	
+ 696 037c               #***** END STUDENT CODE BLOCK 5 **********************************
+ 697 037c               
+ 698 037c               	
+ 699 037c 34020004		li 	$v0, PRINT_STRING	# print newline
+ 700 0380 3C040000		la 	$a0, new_line
+     0384 34840000
+ 701 0388 0000000C		syscall
+ 702 038c               
+ 703 038c               	#
+ 704 038c               	# Restore all the S registers
+ 705 038c               	#
+ 706 038c 8FBF0024		lw	$ra, -4+FRAMESIZE_40($sp)
+ 707 0390 8FB70020		lw	$s7, -8+FRAMESIZE_40($sp)
+ 708 0394 8FB6001C		lw	$s6, -12+FRAMESIZE_40($sp)
+ 709 0398 8FB50018		lw	$s5, -16+FRAMESIZE_40($sp)
+ 710 039c 8FB40014		lw	$s4, -20+FRAMESIZE_40($sp)
+ 711 03a0 8FB30010		lw	$s3, -24+FRAMESIZE_40($sp)
+ 712 03a4 8FB2000C		lw	$s2, -28+FRAMESIZE_40($sp)
+ 713 03a8 8FB10008		lw	$s1, -32+FRAMESIZE_40($sp)
+ 714 03ac 8FB00004		lw	$s0, -36+FRAMESIZE_40($sp)
+ 715 03b0 23BD0028		addi	$sp, $sp, FRAMESIZE_40
+ 716 03b4               
+ 717 03b4 03E00008		jr	$ra
 
 
 FRAMESIZE_24              = 00000018   
@@ -766,22 +776,22 @@ READ_INT                  = 00000005
 READ_STRING               = 00000008   
 area_string                 0000051C R  data 
 block_area                  000000DC R  text 
-block_dimensions            00000120 R  text 
+block_dimensions            00000138 R  text 
 block_make                  000000B8 R  text 
 block_perimeter             000000FC R  text 
 block_string                00000512 R  data 
 block_vtbl                  0000053C R  data 
-cd_height_bigger            000001C4 R  text 
+cd_height_bigger            000001DC R  text 
 char_b                      000004CC R  data 
 char_c                      000004CB R  data 
-circle_area                 00000150 R  text 
-circle_diameter             000001AC R  text 
-circle_make                 0000012C R  text 
-circle_perimeter            00000188 R  text 
+circle_area                 00000168 R  text 
+circle_diameter             000001C4 R  text 
+circle_make                 00000144 R  text 
+circle_perimeter            000001A0 R  text 
 circle_string               00000509 R  data 
 circle_vtbl                 00000544 R  data 
 comma_string                0000051A R  data 
-done_output                 0000028C R  text 
+done_output                 000002A4 R  text 
 fig_char                    000004C0 R  data 
 fig_height                  000004BC R  data 
 fig_width                   000004B8 R  data 
@@ -793,10 +803,11 @@ new_figure                  0000005C R  text
 new_figure_ok               0000008C R  text 
 new_line                    00000537 R  data 
 next                        00000000 R  data 
-not_anything                0000027C R  text 
-not_circle                  0000024C R  text 
-output_figures              000001CC R  text 
+not_anything                00000294 R  text 
+not_circle                  00000264 R  text 
+output_figures              000001E4 R  text 
 perimeter_string            00000528 R  data 
 pool                        00000004 R  data 
 pool_end                    000004B4 R  data 
-print_rest                  000002B8 R  text 
+print_rest                  000002D0 R  text 
+zero_perimeter              00000128 R  text 

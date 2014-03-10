@@ -334,6 +334,9 @@ block_perimeter:
 
 	jal	block_dimensions			# get my width in v0, height in v1
 	
+	beq $v0, $zero, zero_perimeter	# if width is zero, skip calculations
+	beq $v1, $zero, zero_perimeter	# if height is zero, skip calculations
+	
 	add	$v0, $v0, $v0				# v0 = v0 * 2
 	add $v0, $v0, $v1				# v0 = v0 + v1
 	add $v0, $v0, $v1				# v0 = v0 + v1 => v0 = (v0 * 2) + (v1 * 2)
@@ -341,6 +344,13 @@ block_perimeter:
 	lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
 	addi 	$sp, $sp, FRAMESIZE_8
 	jr	$ra
+
+zero_perimeter:
+	li $v0, 0						# return 0 as perimeter
+	
+	lw 	$ra, -4+FRAMESIZE_8($sp)	# restore ra from stack
+	addi 	$sp, $sp, FRAMESIZE_8
+	jr $ra
 	
 #
 # Name:		block_dimensions
