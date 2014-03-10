@@ -622,7 +622,8 @@ print_rest:
 #
 
 	li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
-	li	$a0, 4($s0)			# print the width
+	lw	$a0, 4($s0)			# print the width
+	syscall
 
 #***** END STUDENT CODE BLOCK 2 **********************************
 
@@ -638,8 +639,9 @@ print_rest:
 # Note that this does not involve any polymorphic functions.
 #
 
-li 	$v0, PRINT_INT			# tell the OS to print an int (e.g. %d for printf)
-li	$a0, 8($s0)				# print the height
+	li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
+	lw	$a0, 8($s0)			# print the height
+	syscall
 
 #***** END STUDENT CODE BLOCK 3 **********************************
 	
@@ -653,11 +655,13 @@ li	$a0, 8($s0)				# print the height
 # the address of the figure object, and shouldn't be changed.
 #
 
-	la	$t0, 0($s0)			# load the address of the figure's v-table
-	la	$t0, 0($t0)			# load the address of the figure's area function
-	jal $t0					# get the area
+	lw	$t0, 0($s0)			# load the address of the figure's v-table
+	lw	$t0, 0($t0)			# load the address of the figure's area function
+	move $a0, $s0			# load the address of the figure into argument
+	jalr $t0				# get the area
 	move	$a0, $v0		# print the area
 	li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
+	syscall
 
 #***** END STUDENT CODE BLOCK 4 **********************************
 	
@@ -671,11 +675,13 @@ li	$a0, 8($s0)				# print the height
 # contains the address of the figure object, and shouldn't be changed.
 #
 
-	la	$t0, 0($s0)			# load the address of the figure's v-table
-	la	$t0, 4($t0)			# load the address of the figure's perimeter func
-	jal $t0					# get the perimeter
+	lw	$t0, 0($s0)			# load the address of the figure's v-table
+	lw	$t0, 4($t0)			# load the address of the figure's perimeter func
+	move $a0, $s0			# load the address of the figure into argument
+	jalr $t0				# get the perimeter
 	move	$a0, $v0		# print the perimeter
 	li 	$v0, PRINT_INT		# tell the OS to print an int (e.g. %d for printf)
+	syscall
 	
 #***** END STUDENT CODE BLOCK 5 **********************************
 
