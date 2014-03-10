@@ -1,4 +1,4 @@
-# File:		$Id$
+# File:		figure.asm
 # Author:	J. Heliotis, (author's version 1.3)
 # Contributors:	K. Reek, 
 # 		P. White, 
