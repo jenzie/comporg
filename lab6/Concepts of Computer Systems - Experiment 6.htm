@@ -1,0 +1,546 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Concepts of Computer Systems - Experiment 6</title>
+  <link rel="stylesheet" type="text/css" href="/~csci250/css/de.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+
+<div align="center">
+
+<h1>Concepts of Computer Systems</h1>
+<h1>Experiment 6</h1>
+<h1>Binary Search Trees</h1>
+
+</div>
+
+<h2>Goals and Objectives</h2>
+
+<p>
+The main goal of this experiment is to give you experience in
+how recursion is implemented at the assembly language level.
+An additional goal is to show you how indirect addressing and indexing
+can be used in the implementation of programs that manipulate binary
+search trees.
+</p>
+
+<h2>Overview</h2>
+
+<p>
+When this program is executed, it will read in integer values till
+either the value <code>9999</code>
+is read, or the program has read in 20 values, whichever comes first.
+The values from this list will then be
+inserted into a binary search tree in the
+order that they were entered.  Finally,
+the tree will be traversed with preorder, inorder,
+and postorder traversals.
+</p>
+
+<p>
+In this experiment, a tree node is a simple structure that contains three
+word length fields:
+</p>
+
+<table>
+
+<tr><th>Field</th><th>Offset</th><th>Meaning</th></tr>
+
+<tr>
+  <td>value</td>
+  <td align="center">0</td>
+  <td>The number being stored at this node</td>
+</tr>
+
+<tr>
+  <td>left</td>
+  <td align="center">4</td>
+  <td>Pointer to the left child of the node</td>
+</tr>
+
+<tr>
+  <td>right</td>
+  <td align="center">8</td>
+  <td>Pointer to the right child of the node</td>
+</tr>
+
+</table>
+
+<p>
+This gives us a tree node that looks something like this:
+</p>
+
+<img src="exp3-node.png" alt="tree node structure">
+
+<p>
+To assist you in the implementing of this program we have implemented
+the main program, and a number of support functions for you.
+You will write two subprograms:
+one that inserts a new node into a binary search tree,
+and one that traverses these trees using any of three traversal types.
+</p>
+
+<p>
+One of the functions we give you is <code>allocate_mem</code>
+which will allocate memory for you from a pool of available memory.
+The <code>allocate_mem</code> function takes a single argument
+<code>a0</code> which contains the number of words (4 byte areas)
+that you want to allocate.
+The function will return in <code>v0</code> a pointer to the
+beginning of the allocated space.
+So to use this function to allocate 3 words of memory
+you would have code like:
+</p>
+
+<blockquote><pre>
+li   $a0, 3            # we need 3 words for a new node
+jal  allocate_mem      # allocate space for a node
+
+# at this point $v0 contains a pointer to the new node
+</pre></blockquote>
+
+<h2>Background</h2>
+
+<p>
+The major problem in implementing recursive functions in assembly
+language is that the variables and other values associated with one
+call to the function must be kept separate from those associated with
+other calls to the same function.
+For example, different calls to a function may have different
+return addresses, and if these were interchanged with one another
+the program would fail.
+</p>
+
+<p>
+This was difficult to achieve on older computers, but all modern
+architectures include support for stacks, which makes recursion
+easier to implement.
+The basic idea is relatively simple:
+every value that is local to each invocation
+of a function is stored on the stack, as opposed to using fixed
+locations in memory, or in registers.
+When recursive calls are made, new sets of these values are pushed
+on the stack, and then are removed when the recursive calls return.
+At that point, the original set of values is uncovered
+and execution can continue in the original call to the function.
+</p>
+
+<p>
+The only values that may be stored in static locations
+(i.e. not on the stack)
+are constants that the routine will not change at any time through the
+recursion, or variables which must be shared among all of the
+recursive invocations.
+An example of the later case would be a variable that counted the
+number of recursive calls that were made to the function.
+</p>
+
+<p>
+As we discussed in class, it is the standard procedure calling
+practice to store the return address of the function on the stack when
+the function is entered, and to retrieve the return address just
+prior to executing the return from the function.
+This was done to support functions calling functions, and to allow for
+recursion.
+With the return address already saved,
+all that is left is for you to write the routine in such a way
+that none of its variables are stored in static memory.
+</p>
+
+<p>
+This is simple: create some space on the top of the stack when the
+function
+begins, and use it to hold the variables needed by the function.
+If a function doesn't need very many variables, they can be held
+in the registers instead.
+However, you must save the contents of the registers before you change
+them and restore them before you return.
+This must also be done on the stack so that the values saved by
+recursive calls to the function don't overwrite each other;
+logically, this is equivalent to putting the variables on the
+stack in the first place.
+</p>
+
+<h2>Activities</h2>
+
+<p>
+In your account on the DCS systems, run the following command:
+</p>
+
+<blockquote><pre>
+get csci250 lab6
+</pre></blockquote>
+
+<p>
+This will retrieve the following files:
+</p>
+
+<table>
+<tr><th>Name</th><th>Contents</th>
+<tr>
+  <td><code>Makefile</code></td>
+  <td>For assembling and linking the program</td>
+</tr>
+<tr>
+  <td><code>tree.asm</code></td>
+  <td>Main routine and supporting functions</td>
+</tr>
+<tr>
+  <td><code>allocate.asm</code></td>
+  <td>Memory allocator function and data areas</td>
+</tr>
+<tr>
+  <td><code>build.asm</code></td>
+  <td>Partially complete tree build routines</td>
+</tr>
+<tr>
+  <td><code>traverse.asm</code></td>
+  <td>Partially complete tree traversal routines</td>
+</tr>
+</table>
+
+<h3>Program Specifications</h3>
+
+<p>
+You must add code to the <code>build.asm</code> and
+<code>traverse.asm</code> files to complete the implementation
+of this program.
+</p>
+
+<h4>The <code>add_elements</code> Routine</h4>
+
+<p>
+The first code you must add is in the body of the function
+<code>add_elements</code>, found in the <code>build.asm</code> file.
+This function is given three parameters: the address of an array of
+values to insert; an integer which is the number of elements in the
+array; and the address of a word in memory which will contain the pointer
+to the root of the tree.
+The function iterates across the array of values, and calls the
+<code>build_tree</code> routine once for each number.
+You must add the code which iterates through the array and passes each
+value to the <code>build_tree</code> routine.
+</p>
+
+<p>
+The following comment block marks the place where you should put
+this code:
+</p>
+
+<blockquote><pre>
+#***** BEGIN STUDENT CODE BLOCK 1 ***************************
+#
+# Insert your code to iterate through the array, calling build_tree
+# for each value in the array.  Remember that build_tree requires
+# two parameters:  the address of the variable which contains the
+# root pointer for the tree, and the number to be inserted.
+#
+#***** END STUDENT CODE BLOCK 1 *****************************
+</pre></blockquote>
+
+<p>
+Insert your code <em>just before</em> the last line of this comment block.
+</p>
+
+<h4>The <code>build_tree</code> Routine</h4>
+
+<p>
+Next, also in <code>build.asm</code>, you must write the entire
+<code>build_tree</code> function.
+Your <code>build_tree</code> must take two arguments:
+</p>
+
+<ol>
+
+<li>
+<p>
+the address of the variable that contains the pointer to the root node 
+of the tree (i.e., a pointer to a pointer to the root node),
+</p>
+
+<li>
+<p>
+the number to be inserted into the tree.
+</p>
+
+</ol>
+
+<p>
+The routine should create a new node with the provided number, and then
+insert this new node in the proper position in the
+binary search tree, updating whatever pointer is necessary.
+</p>
+
+<p>
+Keep in mind that a binary search trees cannot contain duplicate keys,
+so if the new number matches a value that is already in the tree,
+<em>do not</em> insert it.
+(For the sake of simplicity, ignore the memory leak that results from this.)
+</p>
+
+<p>
+To keep track of a binary search tree, you must have a variable, say
+<code>ptr_root</code>, that contains the address of the root node in
+the tree (i.e., a pointer to the root node).
+When the tree is empty, the contents of <code>ptr_root</code>
+will be zero (meaning that there is no root to the tree).
+Inserting the first node into the tree requires that the address of the
+node be stored in <code>ptr_root</code>;
+this is the reason why the first argument is the address of
+<em>the</em>
+<code>ptr_root</code>
+<em>variable</em>
+rather than just the address of the root node itself.
+With this in mind, the initial tree would look like:
+</p>
+
+<img src="exp3-root.gif" alt="initial tree">
+
+<p>
+Here the initial node (called new_node in the figure) has been
+added to the tree as the root.
+Note that the argument <code>a0</code> which is passed into
+<code>build_tree</code> contains the address of the pointer to the root.
+</p>
+
+<p>
+The following comment block marks the place where you should put
+this code:
+</p>
+
+<blockquote><pre>
+#***** BEGIN STUDENT CODE BLOCK 2 ***************************
+#
+# Put your build_tree subroutine here.
+#
+#***** END STUDENT CODE BLOCK 2 *****************************
+</pre></blockquote>
+
+<p>
+Insert your code <em>just before</em> the last line of this comment block.
+</p>
+
+<p>
+Note that you are writing the <strong>entire subroutine</strong> -
+none of the code for <code>build_tree</code> has been provided for
+you.
+</p>
+
+<h4>The <code>traverse_tree</code> Routine</h4>
+
+<p>
+The last subroutine you must implement is named
+<code>traverse_tree</code>; it takes three arguments.
+</p>
+
+<ol>
+
+<li>
+<p>
+The address of a tree node (note that this is a 
+pointer to the node itself, not a pointer to a 
+pointer to the node); the traversal will begin at this node.
+</p>
+
+<li>
+<p>
+The address of the function that will process each of 
+the nodes in the tree.
+</p>
+
+<li>
+<p>
+A constant that specifies which type of traversal to perform.
+The values in this field translate to the following traversal order:
+</p>
+
+<table>
+<tr><th>Constant</th><th>Traversal Type</th></tr>
+<tr><td align="center">0</td><td>Pre-order</td></tr>
+<tr><td align="center">1</td><td>In-order</td></tr>
+<tr><td align="center">2</td><td>Post-order</td></tr>
+</table>
+
+</ol>
+
+<p>
+Your <code>traverse_tree</code> routine must implement a recursive tree
+traversal; the type of traversal is indicated by the third parameter.
+(Note that an iterative traversal is possible, but is not an acceptable
+solution to this assignment.
+</p>
+
+<p>
+Your <code>traverse_tree</code> routine will be called several times;
+each time, it may be called with a different node processing function.
+Node processing functions expect to receive as their only parameter
+(in <code>a0</code>) the address of a node to be processed.
+These functions do not return a value.
+(The node processing functions are in <code>tree.asm</code> if you want
+to examine them.
+Note, however, that they are not globally-available functions, so you
+cannot call them directly - you must use the pointer given to
+<code>traverse_tree</code> as its second parameter.)
+</p>
+
+<p>
+The following comment block marks the place where you should put
+this code:
+</p>
+
+<blockquote><pre>
+#***** BEGIN STUDENT CODE BLOCK 3 ***************************
+#
+# Put your traverse_tree subroutine here.
+#
+#***** END STUDENT CODE BLOCK 3 *****************************
+</pre></blockquote>
+
+<p>
+Insert your code <em>just before</em> the last line of this comment block.
+</p>
+
+<p>
+As with <code>build_tree</code>, you are writing the
+<strong>entire subroutine</strong> - none of the code for
+<code>traverse_tree</code> has been provided for you.
+</p>
+
+<h3>Argument Passing</h3>
+
+<p>
+Both of these routines take arguments.
+The arguments to <code>traverse_tree</code> have been defined for you,
+as described above;
+however, you must decide how to pass the necessary arguments to your
+<code>build_tree</code> routine.
+</p>
+
+<h3>Helpful Hints</h3>
+
+<p>
+Debugging these routines can be difficult because its hard to tell if
+<code>build_tree</code>
+works without having the traverse tree routines working.
+Similarly, it's hard to test the <code>traverse_tree</code>
+routine without having a correct tree to try and traverse.
+</p>
+
+<p>
+To help you solve this problem we have hard-coded a correct tree in
+the <code>tree.asm</code> file.
+The root is at location <code>tree1</code>, with a pointer to the root
+in location <code>ptr_tree1</code>.
+The provided tree looks like this:
+</p>
+
+<img src="exp3-sample.png" alt="sample binary tree provided in the code">
+
+<p>
+What we suggest is that you start coding the
+<code>traverse_tree</code>
+function first, using the sample tree for testing.
+Once your
+<code>traverse_tree</code>
+function works, then move on and write the
+<code>build_tree</code>
+routine.
+</p>
+
+<p>
+To use the sample tree, you'll need to modify the <code>tree.asm</code>
+file.
+At about line 170 in that file, you'll find a statement that looks like
+this:
+</p>
+
+<blockquote><pre>
+la   $a0, ptr_root   # change to ptr_tree1 for testing
+</pre></blockquote>
+
+<p>
+Change the <code>ptr_root</code> symbol to <code>ptr_tree1</code>:
+</p>
+
+<blockquote><pre>
+la   $a0, ptr_tree1   # change to ptr_tree1 for testing
+</pre></blockquote>
+
+<p>
+This will cause your <code>traverse_tree()</code> routine when doing the
+traversals.
+<em>
+Don't forget to change this back when you are ready to test your own
+tree-building code!
+</em>
+</p>
+
+<h3>Other Requirements</h3>
+
+<p>
+There are three other requirements.
+First, do not delete the
+<code>STUDENT CODE BLOCK</code>
+comment lines or modify them in any way.
+You may delete the comments that appear between these lines in each block
+if you wish, but these lines must not be altered or moved.
+</p>
+
+<p>
+Second, other than the 
+<code>Contributors</code>
+line at the beginning, you should not change any other lines in the
+files in any way.
+If you do, your solution will not work when it is submitted!
+</p>
+
+<p>
+Finally, other than for testing purposes,
+do note make any changes to either the
+<code>tree.asm</code> or <code>allocate.asm</code>
+files.
+When you submit your work, you will not be submitting these files, so any
+changes you make to them will disappear.
+</p>
+
+<h2>Submission</h2>
+
+<p>
+Use the command below to submit your program:
+</p>
+
+<blockquote><pre>
+try grd-250 lab6-1 build.asm traverse.asm
+</pre></blockquote>
+
+<p>
+As in past experiments, the code you have added to these files
+file will be extracted and inserted into fresh copies of the files
+to ensure that you haven't changed anything outside the
+<code>STUDENT CODE BLOCK</code> comments (except for your name at the
+beginning of the file).
+</p>
+
+<h2>Grading</h2>
+
+<p>
+This experiment is worth a total of 25 points, distributed as follows:
+</p>
+
+<!-- HIDDEN
+.(G
+.{submitted.activity} "Functionality" 20
+.{other.activity} "Style" 5
+.)G
+HIDDEN -->
+
+<table>
+<tr> <td>Functionality:</td> <td>20</td> </tr>
+<tr> <td>Style:</td> <td>5</td> </tr>
+</table>
+
+<hr>
+</body>
+</html>
