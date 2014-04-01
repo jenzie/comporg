@@ -2,7 +2,7 @@
 # Author:	K. Reek
 # Contributors:	P. White,
 #		W. Carithers,
-#		<<<YOUR NAME HERE>>>
+#		Jenny Zhen
 #
 # Description:	Binary tree building functions.
 #
