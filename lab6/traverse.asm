@@ -42,14 +42,15 @@ traverse_tree:
 	lw	$s1, 8($a0)					# a0's right node
 	
 	move $s2, $a0					# save the a0 node
+	move $s3, $a1					# save the type of traversal
 	
 	li	$t0, PRE_ORDER				# save the flag for pre_order
 	li	$t1, IN_ORDER				# save the flag for in_order
 	li	$t2, POST_ORDER				# save the flag for post_order
 	
-	beq	$t0, $a2, pre_order			# go to pre_order
-	beq $t1, $a2, in_order			# go to in_order
-	beq $t2, $a2, post_order		# go to post_order
+	beq	$t0, $a2, pre_order			# go to pre_order traversal
+	beq $t1, $a2, in_order			# go to in_order traversal
+	beq $t2, $a2, post_order		# go to post_order traversal
 	
 # root, left, right
 pre_order:
