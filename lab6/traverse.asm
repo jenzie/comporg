@@ -54,6 +54,7 @@ traverse_tree:
 	
 # root, left, right
 pre_order:
+	move	$a0, $s2				# process root
 	
 
 # left, root, right
