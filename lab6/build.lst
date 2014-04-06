@@ -1,0 +1,62 @@
+   1 0000               # File:		build.asm
+   2 0000               # Author:	K. Reek
+   3 0000               # Contributors:	P. White,
+   4 0000               #		W. Carithers,
+   5 0000               #		Jenny Zhen
+   6 0000               #
+   7 0000               # Description:	Binary tree building functions.
+   8 0000               #
+   9 0000               # Revisions:	$Log$
+  10 0000               
+  11 0000               
+  12 0000               	.text			# this is program code
+  13 0000               	.align 2		# instructions must be on word boundaries
+  14 0000               
+  15 0000               # 
+  16 0000               # Name:		add_elements
+  17 0000               #
+  18 0000               # Description:	loops through array of numbers, adding each (in order)
+  19 0000               #		to the tree
+  20 0000               #
+  21 0000               # Arguments:	a0 the address of the array
+  22 0000               #   		a1 the number of elements in the array
+  23 0000               #		a2 the address of the root pointer
+  24 0000               # Returns:	none
+  25 0000               #
+  26 0000               
+  27 0000               	.globl	add_elements
+  28 0000               	
+  29 0000               add_elements:
+  30 0000 23BDFFF0		addi 	$sp, $sp, -16
+  31 0004 AFBF000C		sw 	$ra, 12($sp)
+  32 0008 AFB20008		sw 	$s2, 8($sp)
+  33 000c AFB10004		sw 	$s1, 4($sp)
+  34 0010 AFB00000		sw 	$s0, 0($sp)
+  35 0014               
+  36 0014               #***** BEGIN STUDENT CODE BLOCK 1 ***************************
+  37 0014               #
+  38 0014               # Insert your code to iterate through the array, calling build_tree
+  39 0014               # for each value in the array.  Remember that build_tree requires
+  40 0014               # two parameters:  the address of the variable which contains the
+  41 0014               # root pointer for the tree, and the number to be inserted.
+  42 0014               #
+  43 0014               #***** END STUDENT CODE BLOCK 1 *****************************
+  44 0014               
+  45 0014               add_done:
+  46 0014               
+  47 0014 8FBF000C		lw 	$ra, 12($sp)
+  48 0018 8FB20008		lw 	$s2, 8($sp)
+  49 001c 8FB10004		lw 	$s1, 4($sp)
+  50 0020 8FB00000		lw 	$s0, 0($sp)
+  51 0024 23BD0010		addi 	$sp, $sp, 16
+  52 0028 03E00008		jr 	$ra
+  53 002c               
+  54 002c               #***** BEGIN STUDENT CODE BLOCK 2 ***************************
+  55 002c               #
+  56 002c               # Put your build_tree subroutine here.
+  57 002c               #
+  58 002c               #***** END STUDENT CODE BLOCK 2 *****************************
+
+
+add_done        00000014 R  text 
+add_elements    00000000 RG text 

@@ -1,0 +1,110 @@
+   1 0000               # File:		traverse_tree.asm
+   2 0000               # Author:	K. Reek
+   3 0000               # Contributors:	P. White,
+   4 0000               #		W. Carithers,
+   5 0000               #		Jenny Zhen
+   6 0000               #
+   7 0000               # Description:	Binary tree traversal functions.
+   8 0000               #
+   9 0000               # Revisions:	$Log$
+  10 0000               
+  11 0000               
+  12 0000               # CONSTANTS
+  13 0000               #
+  14 0000               
+  15 0000               # traversal codes
+  16 0000               PRE_ORDER  = 0
+  17 0000               IN_ORDER   = 1
+  18 0000               POST_ORDER = 2
+  19 0000               
+  20 0000               	.text			# this is program code
+  21 0000               	.align 2		# instructions must be on word boundaries
+  22 0000               
+  23 0000               #***** BEGIN STUDENT CODE BLOCK 3 *****************************
+  24 0000               #
+  25 0000               # Put your traverse_tree subroutine here.
+  26 0000               #
+  27 0000               
+  28 0000               traverse_tree:
+  29 0000               
+  30 0000               	# Saving the previous function caller's s-registers (the stack).
+  31 0000               	# So that the upcoming function's modifications does not lose old data.
+  32 0000               
+  33 0000 23BDFFEC		addi	$sp, $sp, -20
+  34 0004 AFB00000		sw	$s0, 0($sp)			# saving the top of stack
+  35 0008 AFB10004		sw	$s1, 4($sp)
+  36 000c AFB20008		sw	$s2, 8($sp)
+  37 0010 AFB3000C		sw	$s3, 12($sp)		# saving the bottom of stack
+  38 0014 AFBF0010		sw	$ra, 16($sp)		# saving the return address of previous function
+  39 0018               	
+  40 0018 1080001E		beq	$a0, $zero, traverse_done	# a0 node is null
+  41 001c 8C900004		lw	$s0, 4($a0)					# a0's left node
+  42 0020 8C910008		lw	$s1, 8($a0)					# a0's right node
+  43 0024               	
+  44 0024 00809021		move $s2, $a0					# save the a0 node
+  45 0028 00A09821		move $s3, $a1					# save the print function
+  46 002c               	
+  47 002c 34080000		li	$t0, PRE_ORDER				# save the flag for pre_order
+  48 0030 34090001		li	$t1, IN_ORDER				# save the flag for in_order
+  49 0034 340A0002		li	$t2, POST_ORDER				# save the flag for post_order
+  50 0038               	
+  51 0038 11060002		beq	$t0, $a2, pre_order			# go to pre_order traversal
+  52 003c 11260007		beq $t1, $a2, in_order			# go to in_order traversal
+  53 0040 1146000D		beq $t2, $a2, post_order		# go to post_order traversal
+  54 0044               	
+  55 0044               pre_order:
+  56 0044               	# root, left, right
+  57 0044               	
+  58 0044 02402021		move	$a0, $s2				# process root
+  59 0048 0260F809		jalr	$s3						# go to function to print the node
+  60 004c 02002021		move	$a0, $s0				# traverse left
+  61 0050 0C000000		jal	traverse_tree
+  62 0054 02202021		move	$a0, $s1				# traverse right
+  63 0058 08000025		j	traverse_done				# processed all nodes
+  64 005c               
+  65 005c               in_order:
+  66 005c               	# left, root, right
+  67 005c               	
+  68 005c 02002021		move	$a0, $s0				# traverse left
+  69 0060 0C000000		jal	traverse_tree
+  70 0064 02402021		move	$a0, $s2				# process root
+  71 0068 0260F809		jalr	$s3						# go to function to print the node
+  72 006c 02202021		move	$a0, $s1				# traverse right
+  73 0070 0C000000		jal	traverse_tree
+  74 0074 08000025		j	traverse_done				# processed all nodes
+  75 0078               
+  76 0078               post_order:
+  77 0078               	# left, right, root
+  78 0078               	
+  79 0078 02002021		move	$a0, $s0				# traverse left
+  80 007c 0C000000		jal traverse_tree
+  81 0080 02202021		move	$a0, $s1				# traverse right
+  82 0084 0C000000		jal	traverse_tree
+  83 0088 02402021		move	$a0, $s2				# process root
+  84 008c 0260F809		jalr	$s3						# go to function to print the node
+  85 0090 08000025		j	traverse_done				# processed all nodes
+  86 0094               	
+  87 0094               traverse_done:
+  88 0094               	
+  89 0094               	# Restore the previous function caller's s-registers.
+  90 0094               	# So that the modifications made from the traversals do not lose old data.
+  91 0094               	
+  92 0094 AFB00000		sw	$s0, 0($sp)			# saving the top of stack
+  93 0098 AFB10004		sw	$s1, 4($sp)
+  94 009c AFB20008		sw	$s2, 8($sp)
+  95 00a0 AFB3000C		sw	$s3, 12($sp)		# saving the bottom of stack
+  96 00a4 AFBF0010		sw	$ra, 16($sp)		# saving the return address of previous function
+  97 00a8 23BD0014		addi	$sp, $sp, 20	# undo the addi -20 from the beginning
+  98 00ac 03E00008		jr	$ra					# return to the function caller
+  99 00b0                
+ 100 00b0               #***** END STUDENT CODE BLOCK 3 *****************************
+
+
+IN_ORDER       = 00000001   
+POST_ORDER     = 00000002   
+PRE_ORDER      = 00000000   
+in_order         0000005C R  text 
+post_order       00000078 R  text 
+pre_order        00000044 R  text 
+traverse_done    00000094 R  text 
+traverse_tree    00000000 R  text 

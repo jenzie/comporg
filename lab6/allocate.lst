@@ -1,0 +1,109 @@
+   1 0000               # File:		allocate_mem.asm
+   2 0000               # Author:	K. Reek
+   3 0000               # Contributors:	P. White, W. Carithers
+   4 0000               #
+   5 0000               # Description:	Dynamic memory allocator.
+   6 0000               #
+   7 0000               # Revisions:	$Log$
+   8 0000               
+   9 0000               
+  10 0000               # CONSTANTS
+  11 0000               #
+  12 0000               # syscall codes
+  13 0000               PRINT_STRING = 	4
+  14 0000               EXIT = 		10
+  15 0000               
+  16 0000               	.data
+  17 0000               	.align 2
+  18 0000               
+  19 0000               #
+  20 0000               # Memory for allocating up to 200 words.
+  21 0000               #
+  22 0000               next:	
+  23 0000 00000004		.word	pool
+  24 0004               pool:	
+  25 0004 00000000		.space	800	# room for the "dynamic" memory allocation
+          00000000
+          00000000
+          00000000
+          00000000
+          00000000
+  26 0324               pool_end:		# a marker for the end of the free space
+  27 0324 00000000		.word	0	
+  28 0328               
+  29 0328               new_error:
+  30 0328 4F757420		.asciiz	"Out of memory during memory allocating.\n"
+          6F66206D
+          656D6F72
+          79206475
+          72696E67
+          206D656D
+  31 0351               
+  32 0000               	.text			# this is program code
+  33 0000               	.align 2		# instructions must be on word boundaries
+  34 0000               
+  35 0000               #
+  36 0000               # Name:		allocate_mem:
+  37 0000               #
+  38 0000               # Description:	Allocate space from the pool of free memory.
+  39 0000               #
+  40 0000               # Arguments:	a0: the number of words to allocate
+  41 0000               # Returns:	v0: the address of the newly allocated memory.
+  42 0000               #
+  43 0000               
+  44 0000               	.globl allocate_mem
+  45 0000               
+  46 0000               allocate_mem:
+  47 0000               	#
+  48 0000               	# See if there is any space left in the pool.
+  49 0000               	#
+  50 0000               
+  51 0000 3C010000		lw	$t0, next	# pointer to next available byte
+     0004 8C280000
+  52 0008 34190004		li	$t9, 4		# calculate number of bytes to allocate
+  53 000c 00990018		mult	$a0, $t9
+  54 0010 0000C812		mflo	$t9
+  55 0014 0119C020		add	$t8, $t0, $t9	# figure out where next would be if we
+  56 0018               				# allocate the space
+  57 0018 3C090000		la	$t1, pool_end
+     001c 35290000
+  58 0020               
+  59 0020 0309502A		slt	$t2, $t8, $t1	# Compare next addr to end of pool
+  60 0024 15400006		bne	$t2, $zero, new_mem_ok	#  if less then still have space
+  61 0028               
+  62 0028               	#
+  63 0028               	# No space left; write error message and exit.
+  64 0028               	#
+  65 0028               
+  66 0028 34020004		li 	$v0, PRINT_STRING	# print error message
+  67 002c 3C040000		la 	$a0, new_error
+     0030 34840000
+  68 0034 0000000C		syscall	
+  69 0038               
+  70 0038 3402000A		li 	$v0, EXIT		# terminate program
+  71 003c 0000000C		syscall	
+  72 0040               
+  73 0040               new_mem_ok:
+  74 0040               	#
+  75 0040               	# There is space available.  Allocate the next chunk of mem
+  76 0040               	#
+  77 0040               
+  78 0040 01001021		move	$v0, $t0	# set up to return spot for new mem block
+  79 0044 34190004		li	$t9, 4		# calculate number of bytes to allocate
+  80 0048 00990018		mult	$a0, $t9
+  81 004c 0000C812		mflo	$t9
+  82 0050 01194020		add	$t0, $t0, $t9	# Adjust pointer for the allocated space
+  83 0054 3C010000		sw	$t0, next
+     0058 AC280000
+  84 005c               
+  85 005c 03E00008		jr	$ra
+
+
+EXIT          = 0000000A   
+PRINT_STRING  = 00000004   
+allocate_mem    00000000 RG text 
+new_error       00000328 R  data 
+new_mem_ok      00000040 R  text 
+next            00000000 R  data 
+pool            00000004 R  data 
+pool_end        00000324 R  data 

@@ -1,0 +1,497 @@
+   1 0000               # File:		$Id$
+   2 0000               # Author:	K. Reek
+   3 0000               # Contributors:	P. White, W. Carithers
+   4 0000               #
+   5 0000               # Description:	This program reads a list of numbers from the
+   6 0000               #               standard input, and inserts them into a binary
+   7 0000               #               search tree.  It then traverses the 
+   8 0000               #               tree using preorder, inorder and postorder
+   9 0000               #               traversals.
+  10 0000               #
+  11 0000               # Revisions:	$Log$
+  12 0000               
+  13 0000               
+  14 0000               # CONSTANTS
+  15 0000               #
+  16 0000               # syscall codes
+  17 0000               PRINT_INT = 	1
+  18 0000               PRINT_STRING = 	4
+  19 0000               READ_INT = 	5
+  20 0000               EXIT = 		10
+  21 0000               
+  22 0000               # traversal codes
+  23 0000               PRE_ORDER  = 0
+  24 0000               IN_ORDER   = 1
+  25 0000               POST_ORDER = 2
+  26 0000               
+  27 0000               	.data
+  28 0000               	.align 2
+  29 0000               
+  30 0000               input_array:		# room for input values, size for 20 words
+  31 0000 00000000		.space	20*4
+          00000000
+          00000000
+          00000000
+          00000000
+          00000000
+  32 0050               
+  33 0050               running_total:		# running total for fourth traversal
+  34 0050 00000000		.word	0
+  35 0054               	
+  36 0054               
+  37 0054               	#
+  38 0054               	# the print constants for the code
+  39 0054               	#
+  40 0054               	.align 0
+  41 0054               
+  42 0054               data_msg:	
+  43 0054 4F726967		.asciiz	"Original values\n"
+          696E616C
+          2076616C
+          7565730A
+          00      
+  44 0065               
+  45 0065               build:	
+  46 0065 4275696C		.asciiz	"Building tree\n"
+          64696E67
+          20747265
+          650A00  
+  47 0074               
+  48 0074               traverse:	
+  49 0074 54726176		.asciiz	"Traversing tree\n"
+          65727369
+          6E672074
+          7265650A
+          00      
+  50 0085               
+  51 0085               msg1:	
+  52 0085 20207072		.asciiz	"  preorder :"
+          656F7264
+          6572203A
+          00      
+  53 0092               
+  54 0092               msg2:	
+  55 0092 0A202069		.asciiz	"\n  inorder  :"
+          6E6F7264
+          65722020
+          3A00    
+  56 00a0               
+  57 00a0               msg3:
+  58 00a0 0A202070		.asciiz	"\n  postorder:"
+          6F73746F
+          72646572
+          3A00    
+  59 00ae               
+  60 00ae               msg4:
+  61 00ae 0A202074		.asciiz	"\n  tree sum : "
+          72656520
+          73756D20
+          3A2000  
+  62 00bd               
+  63 00bd               new_line:
+  64 00bd 0A00    		.asciiz	"\n"
+  65 00bf               
+  66 00bf               space:
+  67 00bf 2000    		.asciiz	" "
+  68 00c1               
+  69 00c1               quote:
+  70 00c1 2700    		.asciiz	"'"
+  71 00c3               
+  72 00c3               	#
+  73 00c3               	# a sample tree:
+  74 00c3               	#         6
+  75 00c3               	#    3         9
+  76 00c3               	#      4     7   12
+  77 00c3               	#                   16
+  78 00c3               	#
+  79 00c3 00      		.align 2
+  80 00c4               ptr_tree1:
+  81 00c4 000000C8		.word	tree1
+  82 00c8 00000006	tree1:	.word	6, n3, n9
+     00cc 000000D4
+     00d0 000000EC
+  83 00d4 00000003	n3:	.word	3, 0, n4
+     00d8 00000000
+     00dc 000000E0
+  84 00e0 00000004	n4:	.word	4, 0, 0
+     00e4 00000000
+     00e8 00000000
+  85 00ec 00000009	n9:	.word	9, n7, n12
+     00f0 000000F8
+     00f4 00000104
+  86 00f8 00000007	n7:	.word	7, 0, 0
+     00fc 00000000
+     0100 00000000
+  87 0104 0000000C	n12:	.word	12, 0, n16
+     0108 00000000
+     010c 00000110
+  88 0110 00000010	n16:	.word	16, 0, 0
+     0114 00000000
+     0118 00000000
+  89 011c               
+  90 011c               ptr_root:
+  91 011c 00000000		.word 	0
+  92 0120               
+  93 0000               	.text			# this is program code
+  94 0000               	.align	2		# instructions must be on word boundaries
+  95 0000               	.globl	main		# main is a global label
+  96 0000               	.globl	add_elements
+  97 0000               	.globl	traverse_tree
+  98 0000               
+  99 0000               #
+ 100 0000               # Name:		MAIN PROGRAM
+ 101 0000               #
+ 102 0000               # Description:	Main logic for the program.
+ 103 0000               #
+ 104 0000               #	This program reads in numbers and places them in an array stopping
+ 105 0000               #	when the number 9999 is read in.  Once the reading is done, the array
+ 106 0000               #	of numbers are entered into a binary-search tree in the order that
+ 107 0000               #	they were read in.  Finally the tree is traversed in pre-order
+ 108 0000               #	in-order and post-order
+ 109 0000               #
+ 110 0000               
+ 111 0000               main:
+ 112 0000 23BDFFF4		addi 	$sp, $sp, -12  	# allocate space for the return address
+ 113 0004 AFBF0008		sw 	$ra, 8($sp)	# store the ra on the stack
+ 114 0008 AFB10004		sw 	$s1, 4($sp)
+ 115 000c AFB00000		sw 	$s0, 0($sp)
+ 116 0010               
+ 117 0010               	#
+ 118 0010               	# read in the numbers till a 9999 is read in or we have filled
+ 119 0010               	# the array (20 elements)
+ 120 0010               	#
+ 121 0010               
+ 122 0010 34080000		li 	$t0, 0			# i=0;
+ 123 0014 340A0014		li	$t2, 20			# the max size of the array
+ 124 0018 3C090000		la	$t1, input_array	# t1 is pointer to array
+     001c 35290000
+ 125 0020 340B270F		li	$t3, 9999		# the terminating value
+ 126 0024               ra_loop:	
+ 127 0024 110A0007		beq 	$t0, $t2, ra_done	# done if i==20
+ 128 0028               
+ 129 0028 34020005		li 	$v0, READ_INT 		# read one int
+ 130 002c 0000000C		syscall
+ 131 0030               
+ 132 0030 104B0004		beq	$v0, $t3, ra_done	# stop if the value 9999 is read in
+ 133 0034               
+ 134 0034 AD220000		sw 	$v0, 0($t1)		# if not 9999, save value in the array
+ 135 0038               
+ 136 0038 21290004		addi 	$t1, $t1, 4		# update pointer
+ 137 003c 21080001		addi 	$t0, $t0, 1		# and count
+ 138 0040 08000009		j ra_loop
+ 139 0044               ra_done:
+ 140 0044               
+ 141 0044               	#
+ 142 0044               	# Echo the values to be insert into the tree
+ 143 0044               	#
+ 144 0044               
+ 145 0044 34020004		li 	$v0, PRINT_STRING	# print original value msg
+ 146 0048 3C040000		la 	$a0, data_msg
+     004c 34840000
+ 147 0050 0000000C		syscall	
+ 148 0054               	
+ 149 0054 3C040000		la 	$a0, input_array	# print out the original array
+     0058 34840000
+ 150 005c 01002821		move 	$a1, $t0
+ 151 0060 0C00006B		jal 	print_array
+ 152 0064               
+ 153 0064 34020004		li 	$v0, PRINT_STRING
+ 154 0068 3C040000		la 	$a0, new_line
+     006c 34840000
+ 155 0070 0000000C		syscall	
+ 156 0074               	
+ 157 0074               	#
+ 158 0074               	# build the tree
+ 159 0074               	#
+ 160 0074               
+ 161 0074 3C040000		la	$a0, input_array
+     0078 34840000
+ 162 007c 01002821		move	$a1, $t0
+ 163 0080 3C060000		la	$a2, ptr_root
+     0084 34C60000
+ 164 0088 0C000000		jal	add_elements
+ 165 008c               
+ 166 008c               	#
+ 167 008c               	# traverse the tree
+ 168 008c               	#
+ 169 008c               
+ 170 008c 3C040000		la	$a0, ptr_tree1	# change to ptr_tree1 for testing
+     0090 34840000
+ 171 0094 0C00002B		jal	perform_traversals
+ 172 0098               
+ 173 0098               #
+ 174 0098               # All done -- exit the program!
+ 175 0098               #
+ 176 0098               main_done:
+ 177 0098 8FBF0008		lw 	$ra, 8($sp)
+ 178 009c 8FB10004		lw 	$s1, 4($sp)
+ 179 00a0 8FB00000		lw 	$s0, 0($sp)
+ 180 00a4 23BD000C		addi 	$sp, $sp, 12   	# deallocate space for the return address
+ 181 00a8 03E00008		jr 	$ra		# return from main and exit
+ 182 00ac               
+ 183 00ac               #
+ 184 00ac               # Name:		perform_traversals
+ 185 00ac               #
+ 186 00ac               # Description:	performs a series of traversals on a tree
+ 187 00ac               #
+ 188 00ac               # Arguments:	a0 the address of the location which contains the
+ 189 00ac               #		   root pointer
+ 190 00ac               #
+ 191 00ac               # Returns:	none
+ 192 00ac               #
+ 193 00ac               
+ 194 00ac               perform_traversals:
+ 195 00ac               
+ 196 00ac 23BDFFF8		addi 	$sp, $sp, -8  	# allocate space for the return address
+ 197 00b0 AFBF0004		sw 	$ra, 4($sp)	# store the ra on the stack
+ 198 00b4 AFB00000		sw 	$s0, 0($sp)
+ 199 00b8               	
+ 200 00b8 20900000		addi	$s0, $a0, 0	# save the root pointer's address
+ 201 00bc               
+ 202 00bc               # Perform a pre-order traversal
+ 203 00bc               
+ 204 00bc 34020004		li 	$v0, PRINT_STRING
+ 205 00c0 3C040000		la 	$a0, msg1
+     00c4 34840000
+ 206 00c8 0000000C		syscall				# print a pre-order msg
+ 207 00cc               
+ 208 00cc 8E040000		lw	$a0, 0($s0)
+ 209 00d0 3C050000		la	$a1, print_func1
+     00d4 34A501F4
+ 210 00d8 34060000		li	$a2, PRE_ORDER	# doing pre-order traversal
+ 211 00dc 0C000000		jal	traverse_tree
+ 212 00e0               
+ 213 00e0               
+ 214 00e0               # Perform an in-order traversal
+ 215 00e0               
+ 216 00e0 34020004		li 	$v0, PRINT_STRING
+ 217 00e4 3C040000		la 	$a0, new_line
+     00e8 34840000
+ 218 00ec 0000000C		syscall			# print a new_line
+ 219 00f0               
+ 220 00f0 34020004		li 	$v0, PRINT_STRING
+ 221 00f4 3C040000		la 	$a0, msg2
+     00f8 34840000
+ 222 00fc 0000000C		syscall			# print a in-order msg
+ 223 0100               
+ 224 0100 8E040000		lw	$a0, 0($s0)
+ 225 0104 3C050000		la	$a1, print_func2
+     0108 34A50218
+ 226 010c 34060001		li	$a2, IN_ORDER	# doing in-order traversal
+ 227 0110 0C000000		jal	traverse_tree
+ 228 0114               
+ 229 0114 34020004		li 	$v0, PRINT_STRING
+ 230 0118 3C040000		la 	$a0, new_line
+     011c 34840000
+ 231 0120 0000000C		syscall			# print a new_line
+ 232 0124               
+ 233 0124               # Perform a post-order traversal
+ 234 0124               
+ 235 0124 34020004		li 	$v0, PRINT_STRING
+ 236 0128 3C040000		la 	$a0, msg3
+     012c 34840000
+ 237 0130 0000000C		syscall			# print a post-order msg
+ 238 0134               
+ 239 0134 8E040000		lw	$a0, 0($s0)
+ 240 0138 3C050000		la	$a1, print_func1
+     013c 34A501F4
+ 241 0140 34060002		li	$a2, POST_ORDER	# doing post-order traversal
+ 242 0144 0C000000		jal	traverse_tree
+ 243 0148               
+ 244 0148 34020004		li 	$v0, PRINT_STRING
+ 245 014c 3C040000		la 	$a0, new_line
+     0150 34840000
+ 246 0154 0000000C		syscall			# print a new_line
+ 247 0158               
+ 248 0158               # Finally, do a traversal to sum up the contents of the tree
+ 249 0158               
+ 250 0158 34020004		li 	$v0, PRINT_STRING
+ 251 015c 3C040000		la 	$a0, msg4
+     0160 34840000
+ 252 0164 0000000C		syscall
+ 253 0168               
+ 254 0168 8E040000		lw	$a0, 0($s0)
+ 255 016c 3C050000		la	$a1, print_func3
+     0170 34A5025C
+ 256 0174 34060001		li	$a2, IN_ORDER
+ 257 0178 0C000000		jal	traverse_tree
+ 258 017c               
+ 259 017c 34020001		li	$v0, PRINT_INT
+ 260 0180 3C010000		lw	$a0, running_total
+     0184 8C240000
+ 261 0188 0000000C		syscall
+ 262 018c               
+ 263 018c 34020004		li 	$v0, PRINT_STRING
+ 264 0190 3C040000		la 	$a0, new_line
+     0194 34840000
+ 265 0198 0000000C		syscall			# print a new_line
+ 266 019c               
+ 267 019c               #
+ 268 019c               # All done
+ 269 019c               #
+ 270 019c               
+ 271 019c 8FBF0004		lw 	$ra, 4($sp)
+ 272 01a0 8FB00000		lw 	$s0, 0($sp)
+ 273 01a4 23BD0008		addi 	$sp, $sp, 8   	# deallocate space for the return address
+ 274 01a8 03E00008		jr 	$ra		# return to the caller
+ 275 01ac               
+ 276 01ac               # 
+ 277 01ac               # Name:		print_array
+ 278 01ac               #
+ 279 01ac               # Description:	prints an array of integers
+ 280 01ac               #
+ 281 01ac               # Arguments:	a0 the address of the array
+ 282 01ac               #   		a1 the number of elements in the array
+ 283 01ac               # Returns:	none
+ 284 01ac               #
+ 285 01ac               	
+ 286 01ac               print_array:
+ 287 01ac               
+ 288 01ac 34080000		li 	$t0, 0			# i=0;
+ 289 01b0 00804821		move 	$t1, $a0		# t1 is pointer to array
+ 290 01b4               
+ 291 01b4               pa_loop:	
+ 292 01b4               
+ 293 01b4 1105000A		beq 	$t0, $a1, pa_done	# done if i==n
+ 294 01b8               
+ 295 01b8 8D240000		lw 	$a0, 0($t1)		# get a[i]
+ 296 01bc 34020001		li 	$v0, PRINT_INT
+ 297 01c0 0000000C		syscall				# print one int
+ 298 01c4               
+ 299 01c4 34020004		li 	$v0, PRINT_STRING
+ 300 01c8 3C040000		la 	$a0, space
+     01cc 34840000
+ 301 01d0 0000000C		syscall				# print a space
+ 302 01d4               
+ 303 01d4 21290004		addi 	$t1, $t1, 4		# update pointer
+ 304 01d8 21080001		addi 	$t0, $t0, 1		# and count
+ 305 01dc 0800006D		j pa_loop
+ 306 01e0               pa_done:
+ 307 01e0 34020004		li 	$v0, PRINT_STRING
+ 308 01e4 3C040000		la 	$a0, new_line
+     01e8 34840000
+ 309 01ec 0000000C		syscall				# print a new_line
+ 310 01f0               
+ 311 01f0 03E00008		jr 	$ra
+ 312 01f4               
+ 313 01f4               # 
+ 314 01f4               # Name:		print_func1
+ 315 01f4               #
+ 316 01f4               # Description:	just prints an integers out of a tree node
+ 317 01f4               #
+ 318 01f4               # Arguments:	a0 the address of the number to print
+ 319 01f4               # Returns:	none
+ 320 01f4               #
+ 321 01f4               	
+ 322 01f4               print_func1:
+ 323 01f4               
+ 324 01f4 00804021		move	$t0, $a0
+ 325 01f8               
+ 326 01f8 34020004		li 	$v0, PRINT_STRING
+ 327 01fc 3C040000		la 	$a0, space
+     0200 34840000
+ 328 0204 0000000C		syscall			# print a space
+ 329 0208               
+ 330 0208 8D040000		lw 	$a0, 0($t0)	# get 0(t0)
+ 331 020c 34020001		li 	$v0, PRINT_INT
+ 332 0210 0000000C		syscall			# print one int
+ 333 0214               
+ 334 0214 03E00008		jr 	$ra
+ 335 0218               
+ 336 0218               # 
+ 337 0218               # Name:		print_func2
+ 338 0218               #
+ 339 0218               # Description:	prints an integers out of a tree node in single
+ 340 0218               #		quotes, like '#'
+ 341 0218               #
+ 342 0218               # Arguments:	a0 the address of the number to print
+ 343 0218               # Returns:	none
+ 344 0218               #
+ 345 0218               	
+ 346 0218               print_func2:
+ 347 0218               
+ 348 0218 00804021		move	$t0, $a0
+ 349 021c               
+ 350 021c 34020004		li 	$v0, PRINT_STRING
+ 351 0220 3C040000		la 	$a0, space
+     0224 34840000
+ 352 0228 0000000C		syscall			# print a space
+ 353 022c               
+ 354 022c 34020004		li 	$v0, PRINT_STRING
+ 355 0230 3C040000		la 	$a0, quote
+     0234 34840000
+ 356 0238 0000000C		syscall			# print a quote
+ 357 023c               
+ 358 023c 8D040000		lw 	$a0, 0($t0)	# get 0(t0)
+ 359 0240 34020001		li 	$v0, PRINT_INT
+ 360 0244 0000000C		syscall			# print one int
+ 361 0248               
+ 362 0248 34020004		li 	$v0, PRINT_STRING
+ 363 024c 3C040000		la 	$a0, quote
+     0250 34840000
+ 364 0254 0000000C		syscall			# print a quote
+ 365 0258               
+ 366 0258 03E00008		jr 	$ra
+ 367 025c               
+ 368 025c               # 
+ 369 025c               # Name:		print_func3
+ 370 025c               #
+ 371 025c               # Description:	adds the value from the current node to a running
+ 372 025c               #		total
+ 373 025c               #
+ 374 025c               # Arguments:	a0 the address of the number to print
+ 375 025c               # Returns:	none
+ 376 025c               #
+ 377 025c               print_func3:
+ 378 025c               
+ 379 025c 3C010000		lw	$t0, running_total
+     0260 8C280000
+ 380 0264 8C890000		lw 	$t1, 0($a0)		# get the current number
+ 381 0268 01094020		add	$t0, $t0, $t1
+ 382 026c 3C010000		sw	$t0, running_total	# update the total
+     0270 AC280000
+ 383 0274               
+ 384 0274 03E00008		jr 	$ra
+
+
+EXIT                = 0000000A   
+IN_ORDER            = 00000001   
+POST_ORDER          = 00000002   
+PRE_ORDER           = 00000000   
+PRINT_INT           = 00000001   
+PRINT_STRING        = 00000004   
+READ_INT            = 00000005   
+add_elements          ******** XG
+build                 00000065 R  data 
+data_msg              00000054 R  data 
+input_array           00000000 R  data 
+main                  00000000 RG text 
+main_done             00000098 R  text 
+msg1                  00000085 R  data 
+msg2                  00000092 R  data 
+msg3                  000000A0 R  data 
+msg4                  000000AE R  data 
+n12                   00000104 R  data 
+n16                   00000110 R  data 
+n3                    000000D4 R  data 
+n4                    000000E0 R  data 
+n7                    000000F8 R  data 
+n9                    000000EC R  data 
+new_line              000000BD R  data 
+pa_done               000001E0 R  text 
+pa_loop               000001B4 R  text 
+perform_traversals    000000AC R  text 
+print_array           000001AC R  text 
+print_func1           000001F4 R  text 
+print_func2           00000218 R  text 
+print_func3           0000025C R  text 
+ptr_root              0000011C R  data 
+ptr_tree1             000000C4 R  data 
+quote                 000000C1 R  data 
+ra_done               00000044 R  text 
+ra_loop               00000024 R  text 
+running_total         00000050 R  data 
+space                 000000BF R  data 
+traverse              00000074 R  data 
+traverse_tree         ******** XG
+tree1                 000000C8 R  data 

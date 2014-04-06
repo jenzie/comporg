@@ -1,0 +1,88 @@
+Load map
+========
+
+Module:  tree.obj
+ Text segment:  632 bytes, load point 0x00400000
+ Data segment:  288 bytes, load point 0x10000000
+ Symbols:
+                Name Section Mode    Value
+            IN_ORDER          A   0x00000001
+                 n12   Data   R   0x10000104
+                 n16   Data   R   0x10000110
+          POST_ORDER          A   0x00000002
+               build   Data   R   0x10000065
+             ra_loop   Text   R   0x00400024
+         input_array   Data   R   0x10000000
+  perform_traversals   Text   R   0x004000ac
+                  n3   Data   R   0x100000d4
+                  n4   Data   R   0x100000e0
+            READ_INT          A   0x00000005
+                  n7   Data   R   0x100000f8
+                  n9   Data   R   0x100000ec
+            new_line   Data   R   0x100000bd
+               tree1   Data   R   0x100000c8
+               quote   Data   R   0x100000c1
+             pa_loop   Text   R   0x004001b4
+            traverse   Data   R   0x10000074
+         print_array   Text   R   0x004001ac
+         print_func1   Text   R   0x004001f4
+         print_func2   Text   R   0x00400218
+         print_func3   Text   R   0x0040025c
+        PRINT_STRING          A   0x00000004
+                msg1   Data   R   0x10000085
+             ra_done   Text   R   0x00400044
+                msg2   Data   R   0x10000092
+                msg3   Data   R   0x100000a0
+                msg4   Data   R   0x100000ae
+                main   Text   RG  0x00400000
+           ptr_tree1   Data   R   0x100000c4
+               space   Data   R   0x100000bf
+            data_msg   Data   R   0x10000054
+           main_done   Text   R   0x00400098
+           PRE_ORDER          A   0x00000000
+       running_total   Data   R   0x10000050
+                EXIT          A   0x0000000a
+            ptr_root   Data   R   0x1000011c
+           PRINT_INT          A   0x00000001
+             pa_done   Text   R   0x004001e0
+
+Module:  allocate.obj
+ Text segment:  96 bytes, load point 0x00400278
+ Data segment:  856 bytes, load point 0x10000120
+ Symbols:
+                Name Section Mode    Value
+        allocate_mem   Text   RG  0x00400278
+          new_mem_ok   Text   R   0x004002b8
+            pool_end   Data   R   0x10000444
+        PRINT_STRING          A   0x00000004
+           new_error   Data   R   0x10000448
+                pool   Data   R   0x10000124
+                next   Data   R   0x10000120
+                EXIT          A   0x0000000a
+
+Module:  build.obj
+ Text segment:  44 bytes, load point 0x004002d8
+ Symbols:
+                Name Section Mode    Value
+        add_elements   Text   RG  0x004002d8
+            add_done   Text   R   0x004002ec
+
+Module:  traverse.obj
+ Text segment:  176 bytes, load point 0x00400304
+ Symbols:
+                Name Section Mode    Value
+            IN_ORDER          A   0x00000001
+            in_order   Text   R   0x00400360
+          POST_ORDER          A   0x00000002
+           pre_order   Text   R   0x00400348
+       traverse_done   Text   R   0x00400398
+          post_order   Text   R   0x0040037c
+           PRE_ORDER          A   0x00000000
+       traverse_tree   Text   R   0x00400304
+
+Module:  r2k_startup.obj
+ Text segment:  36 bytes, load point 0x004003b4
+ Symbols:
+                Name Section Mode    Value
+           SYS_EXIT2          A   0x00000011
+      __r2k__entry__   Text   RG  0x004003b8
