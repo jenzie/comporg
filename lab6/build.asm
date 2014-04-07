@@ -96,14 +96,44 @@ build_tree:
 	beq	$t0, $zero, create_root_node
 	
 check_if_node_exists:
-	lw	$s0, 0($s0)			# get the pointer to the root node
-	lw	$t0, 0($s0)			# get the value of the root node
+	lw	$s0, 0($s0)			# get the pointer to the current node
+	lw	$t0, 0($s0)			# get the value of the current node
 	beq	$t0, $s1, build_tree_done	# value of node exists in tree already
-	slt	$t1, t0, $s1		# if root < new node, add to the right of root
-	bne	$t1, $zero, add_left	# otherwise, add to the left
+	slt	$t1, t0, $s1		# if current < new node, add to the right of current
+	bne	$t1, $zero, add_left		# otherwise, add to the left
 	addi	$s0, 4			# proceed to insert to the right
 	j	add_node
 	
-
+create_node:
+	sw	$v0, 0($s0)			# save the pointer of the node (v0) into the 
+							# p2p of the node of the tree (s0)
+	sw	$s1, 0($v0)			# save the value of the node (s1) into the 
+							# pointer of the node (v0)
+	j	build_tree_done
+							
+add_left:
+	addi	$s0, 8			# move the p2p of the current node of the tree (s0) 
+							# over by 8 to get to the left node
+							
+add_node:
+	lw	$t0, 0($s0)			# check if p2p of the node given is empty
+	bne	$t0, $zero, retry_add		# try to add as a child of the node
+	j create_node
+	
+retry_add:
+	move	$s0, $t0		# move the p2p of the current node of the tree
+	j	check_if_node_exists
+	
+build_tree_done:
+	
+	# Restore the previous function caller's s-registers.
+	# So that the modifications made from the traversals do not lose old data.
+	
+	lw	$s0, 0($sp)			# restoring the top of stack
+	lw	$s1, 4($sp)
+	lw	$s2, 8($sp)			# restoring the bottom of stack
+	lw	$ra, 12($sp)		# restoring the return address of previous function
+	addi	$sp, $sp, 16	# undo the addi -16 from the beginning
+	jr	$ra					# return to the function caller
 
 #***** END STUDENT CODE BLOCK 2 *****************************

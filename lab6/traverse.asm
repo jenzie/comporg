@@ -89,11 +89,11 @@ traverse_done:
 	# Restore the previous function caller's s-registers.
 	# So that the modifications made from the traversals do not lose old data.
 	
-	sw	$s0, 0($sp)			# saving the top of stack
-	sw	$s1, 4($sp)
-	sw	$s2, 8($sp)
-	sw	$s3, 12($sp)		# saving the bottom of stack
-	sw	$ra, 16($sp)		# saving the return address of previous function
+	lw	$s0, 0($sp)			# restoring the top of stack
+	lw	$s1, 4($sp)
+	lw	$s2, 8($sp)
+	lw	$s3, 12($sp)		# restoring the bottom of stack
+	lw	$ra, 16($sp)		# restoring the return address of previous function
 	addi	$sp, $sp, 20	# undo the addi -20 from the beginning
 	jr	$ra					# return to the function caller
  
