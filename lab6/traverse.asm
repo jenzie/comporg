@@ -22,8 +22,14 @@ POST_ORDER = 2
 
 #***** BEGIN STUDENT CODE BLOCK 3 *****************************
 #
-# Put your traverse_tree subroutine here.
+# Name:		traverse_tree
 #
+# Description: Traverse the nodes of the tree using pre-order, in-order, and 
+# 				post-order traversals.
+# Arguments:	a0: node to traverse
+#				a1: pointer to the print function
+#				a2: code indicating the type of traversal to perform
+# Returns:	none
 
 traverse_tree:
 

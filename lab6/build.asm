@@ -35,10 +35,9 @@ add_elements:
 
 #***** BEGIN STUDENT CODE BLOCK 1 ***************************
 #
-# Insert your code to iterate through the array, calling build_tree
-# for each value in the array.  Remember that build_tree requires
-# two parameters:  the address of the variable which contains the
-# root pointer for the tree, and the number to be inserted.
+# Iterate through the array, calling build_tree for each value in the array. 
+# Remember that build_tree requires two parameters: the address of the variable 
+# which contains the root pointer for the tree, and the number to be inserted.
 
 	STOP_VAL = 9999		# stop reading node values when 9999 is read in
 	STOP_NUM = 20		# stop reading node values when 20 values were read
@@ -75,9 +74,14 @@ add_done:
 
 #***** BEGIN STUDENT CODE BLOCK 2 ***************************
 #
-# Put your build_tree subroutine here.
+# Name: build_tree
+#
+# Description: Build the tree, node by node, ignoring duplicate node values.
+#
+# Arguments:	a0:	double pointer to the pointer of the root of the tree
+#				a1: value of the node to add to the tree
+# Returns:	none
 
-# a0	double pointer to the pointer of the root of the tree
 build_tree:
 	.globl allocate_mem	# create space for the node, possible left/right nodes
 	
@@ -93,7 +97,7 @@ build_tree:
 	move	$s0, $a0		# save the p2p to the root node of the tree
 	move	$s1, $a1		# save the value of the node to add to the tree
 	li	$a0, 3				# create 3 spaces: new node, new nodes's left/right
-	jal	allocate_mem
+	jal	allocate_mem		# returns a pointer to the node (v0)
 	lw	$t0, 0($s0)			# check if p2p of the root node given is empty
 	beq	$t0, $zero, create_node
 	lw	$s0, 0($s0)			# get the pointer to the current node
