@@ -74,5 +74,36 @@ add_done:
 #***** BEGIN STUDENT CODE BLOCK 2 ***************************
 #
 # Put your build_tree subroutine here.
-#
+
+# a0	double pointer to the pointer of the root of the tree
+build_tree:
+	.globl allocate_mem	# create space for the node, possible left/right nodes
+	
+	# Saving the previous function caller's s-registers (the stack).
+	# So that the upcoming function's modifications does not lose old data.
+
+	addi	$sp, $sp, -16
+	sw	$s0, 0($sp)			# saving the top of stack
+	sw	$s1, 4($sp)
+	sw	$s2, 8($sp)			# saving the bottom of stack
+	sw	$ra, 12($sp)		# saving the return address of previous function
+	
+	move	$s0, $a0		# save the p2p to the root node of the tree
+	move	$s1, $a1		# save the value of the node to add to the tree
+	li	$a0, 3				# create 3 spaces: new node, new nodes's left/right
+	jal	allocate_mem
+	lw	$t0, 0($s0)			# check if p2p of the root node given is empty
+	beq	$t0, $zero, create_root_node
+	
+check_if_node_exists:
+	lw	$s0, 0($s0)			# get the pointer to the root node
+	lw	$t0, 0($s0)			# get the value of the root node
+	beq	$t0, $s1, build_tree_done	# value of node exists in tree already
+	slt	$t1, t0, $s1		# if root < new node, add to the right of root
+	bne	$t1, $zero, add_left	# otherwise, add to the left
+	addi	$s0, 4			# proceed to insert to the right
+	j	add_node
+	
+
+
 #***** END STUDENT CODE BLOCK 2 *****************************
