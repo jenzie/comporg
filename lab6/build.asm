@@ -96,9 +96,9 @@ build_tree:
 	jal	allocate_mem
 	lw	$t0, 0($s0)			# check if p2p of the root node given is empty
 	beq	$t0, $zero, create_node
+	lw	$s0, 0($s0)			# get the pointer to the current node
 	
 check_if_node_exists:
-	lw	$s0, 0($s0)			# get the pointer to the current node
 	lw	$t0, 0($s0)			# get the value of the current node
 	beq	$t0, $s1, build_tree_done	# value of node exists in tree already
 	slt	$t1, $t0, $s1		# if current < new node, add to the right of current
