@@ -49,13 +49,15 @@ add_elements:
 	
 read_array_of_values:
 	lw	$t1, 0($s0)		# store the next value of a node to be added to the tree
-	beq	$t1, STOP_VAL, add_done		# stop if the value read in was 9999
+	li	$t5, STOP_VAL	# cannot use the value of STOP_VAL on beq w/o loading
+	beq	$t1, $t5, add_done			# stop if the value read in was 9999
 	addi	$s1, -1		# decrement the number of elements left to be read
 	addi	$t0, 1		# increment the number of nodes added to the tree
 	move	$a0, $a2	# set the pointer to the root node of the tree
 	move	$a1, $t1	# set the value of the node to be added to the tree
 	jal	build_tree
-	beq	$t0, STOP_NUM, add_done		# stop if 20 values were read
+	li	$t5, STOP_NUM	# cannot use the value of STOP_NUM on beq w/o loading
+	beq	$t0, $t5, add_done			# stop if 20 values were read
 	beq	$s1, $zero, add_done		# stop if 0 values left to be read
 	addi	$s0, 4		# move the pointer to the array of node values to add
 	j	read_array_of_values
@@ -93,13 +95,13 @@ build_tree:
 	li	$a0, 3				# create 3 spaces: new node, new nodes's left/right
 	jal	allocate_mem
 	lw	$t0, 0($s0)			# check if p2p of the root node given is empty
-	beq	$t0, $zero, create_root_node
+	beq	$t0, $zero, create_node
 	
 check_if_node_exists:
 	lw	$s0, 0($s0)			# get the pointer to the current node
 	lw	$t0, 0($s0)			# get the value of the current node
 	beq	$t0, $s1, build_tree_done	# value of node exists in tree already
-	slt	$t1, t0, $s1		# if current < new node, add to the right of current
+	slt	$t1, $t0, $s1		# if current < new node, add to the right of current
 	bne	$t1, $zero, add_left		# otherwise, add to the left
 	addi	$s0, 4			# proceed to insert to the right
 	j	add_node
