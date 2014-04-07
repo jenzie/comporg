@@ -60,6 +60,7 @@ pre_order:
 	move	$a0, $s0				# traverse left
 	jal	traverse_tree
 	move	$a0, $s1				# traverse right
+	jal	traverse_tree
 	j	traverse_done				# processed all nodes
 
 in_order:
