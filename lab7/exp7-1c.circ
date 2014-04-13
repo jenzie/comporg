@@ -19,7 +19,7 @@
     </tool>
     <tool name="Pin">
       <a name="facing" val="east" />
-      <a name="output" val="false" />
+      <a name="output" val="true" />
       <a name="width" val="1" />
       <a name="tristate" val="true" />
       <a name="pull" val="none" />
@@ -53,7 +53,7 @@
     <tool name="Constant">
       <a name="facing" val="east" />
       <a name="width" val="1" />
-      <a name="value" val="0x1" />
+      <a name="value" val="0x0" />
     </tool>
     <tool name="NOT Gate">
       <a name="facing" val="east" />
@@ -126,7 +126,7 @@
   <lib name="2" desc="#Plexers">
     <tool name="Multiplexer">
       <a name="facing" val="east" />
-      <a name="select" val="1" />
+      <a name="select" val="3" />
       <a name="width" val="1" />
     </tool>
     <tool name="Demultiplexer">
@@ -137,7 +137,7 @@
     </tool>
     <tool name="Decoder">
       <a name="facing" val="east" />
-      <a name="select" val="3" />
+      <a name="select" val="1" />
       <a name="tristate" val="false" />
     </tool>
     <tool name="Priority Encoder">
@@ -297,8 +297,8 @@
   </options>
   <mappings>
     <tool lib="0" name="Menu Tool" map="Button2" />
-    <tool lib="0" name="Menu Tool" map="Button3" />
     <tool lib="0" name="Menu Tool" map="Ctrl Button1" />
+    <tool lib="0" name="Menu Tool" map="Button3" />
   </mappings>
   <toolbar>
     <tool lib="0" name="Poke Tool" />
@@ -349,46 +349,38 @@
     </tool>
   </toolbar>
   <circuit name="main">
-    <wire from="(260,170)" to="(260,190)" />
-    <wire from="(390,190)" to="(430,190)" />
-    <wire from="(270,170)" to="(340,170)" />
-    <wire from="(250,170)" to="(260,170)" />
-    <wire from="(90,170)" to="(90,250)" />
-    <wire from="(260,190)" to="(340,190)" />
-    <wire from="(90,250)" to="(230,250)" />
-    <wire from="(270,160)" to="(270,170)" />
-    <wire from="(250,160)" to="(270,160)" />
-    <wire from="(250,210)" to="(340,210)" />
-    <wire from="(230,230)" to="(230,250)" />
+    <wire from="(110,160)" to="(140,160)" />
+    <wire from="(110,210)" to="(110,300)" />
+    <wire from="(110,160)" to="(110,170)" />
+    <wire from="(80,190)" to="(140,190)" />
+    <wire from="(110,170)" to="(140,170)" />
+    <wire from="(80,180)" to="(140,180)" />
+    <wire from="(80,220)" to="(140,220)" />
+    <wire from="(50,200)" to="(50,270)" />
+    <wire from="(110,210)" to="(140,210)" />
+    <wire from="(80,200)" to="(80,220)" />
+    <wire from="(80,180)" to="(80,190)" />
+    <wire from="(80,150)" to="(140,150)" />
+    <wire from="(50,270)" to="(160,270)" />
+    <wire from="(110,170)" to="(110,210)" />
+    <wire from="(80,150)" to="(80,180)" />
+    <wire from="(80,190)" to="(80,200)" />
+    <wire from="(80,200)" to="(140,200)" />
+    <wire from="(180,190)" to="(220,190)" />
+    <wire from="(80,220)" to="(80,300)" />
+    <wire from="(160,230)" to="(160,270)" />
     <comp lib="0" name="Text" loc="(71,81)">
-      <a name="text" val="Experiment 7-1B" />
+      <a name="text" val="Experiment 7-1C" />
       <a name="font" val="SansSerif plain 12" />
       <a name="halign" val="center" />
       <a name="valign" val="base" />
     </comp>
-    <comp lib="1" name="OR Gate" loc="(390,190)">
+    <comp lib="2" name="Multiplexer" loc="(180,190)">
       <a name="facing" val="east" />
+      <a name="select" val="3" />
       <a name="width" val="1" />
-      <a name="size" val="50" />
-      <a name="inputs" val="3" />
     </comp>
-    <comp lib="0" name="Pin" loc="(430,190)">
-      <a name="facing" val="west" />
-      <a name="output" val="true" />
-      <a name="width" val="1" />
-      <a name="tristate" val="true" />
-      <a name="pull" val="none" />
-      <a name="label" val="F" />
-      <a name="labelloc" val="east" />
-      <a name="labelfont" val="SansSerif plain 12" />
-    </comp>
-    <comp lib="0" name="Text" loc="(56,38)">
-      <a name="text" val="Jenny Zhen" />
-      <a name="font" val="SansSerif plain 12" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
-    </comp>
-    <comp lib="0" name="Pin" loc="(90,170)">
+    <comp lib="0" name="Pin" loc="(50,200)">
       <a name="facing" val="south" />
       <a name="output" val="false" />
       <a name="width" val="3" />
@@ -398,16 +390,37 @@
       <a name="labelloc" val="north" />
       <a name="labelfont" val="SansSerif plain 12" />
     </comp>
+    <comp lib="1" name="Constant" loc="(80,300)">
+      <a name="facing" val="north" />
+      <a name="width" val="1" />
+      <a name="value" val="0x0" />
+    </comp>
+    <comp lib="0" name="Pin" loc="(220,190)">
+      <a name="facing" val="west" />
+      <a name="output" val="true" />
+      <a name="width" val="1" />
+      <a name="tristate" val="true" />
+      <a name="pull" val="none" />
+      <a name="label" val="F" />
+      <a name="labelloc" val="east" />
+      <a name="labelfont" val="SansSerif plain 12" />
+    </comp>
+    <comp lib="1" name="Constant" loc="(110,300)">
+      <a name="facing" val="north" />
+      <a name="width" val="1" />
+      <a name="value" val="0x1" />
+    </comp>
+    <comp lib="0" name="Text" loc="(56,38)">
+      <a name="text" val="Jenny Zhen" />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </comp>
     <comp lib="0" name="Text" loc="(61,60)">
       <a name="text" val="CSCI-251-01" />
       <a name="font" val="SansSerif plain 12" />
       <a name="halign" val="center" />
       <a name="valign" val="base" />
-    </comp>
-    <comp lib="2" name="Decoder" loc="(230,230)">
-      <a name="facing" val="east" />
-      <a name="select" val="3" />
-      <a name="tristate" val="false" />
     </comp>
   </circuit>
 </project>
