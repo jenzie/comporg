@@ -1,0 +1,16 @@
+@media screen {
+	img	{
+		border-style: none
+	}
+	body	{
+		background-color: #FFFFFF;
+	}
+}
+@media screen, print {
+	.center	{
+		text-align: center;
+	}
+	body	{
+		background-image: none;
+	}
+}

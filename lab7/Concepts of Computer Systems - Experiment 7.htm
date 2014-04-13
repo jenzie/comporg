@@ -1,0 +1,892 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+  <title>Concepts of Computer Systems - Experiment 7</title>
+  <link rel="stylesheet" type="text/css" href="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/de.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+</head>
+<body>
+
+<div align="center">
+
+<h1>Concepts of Computer Systems</h1>
+<h1>Experiment 7</h1>
+<h1>Combinational and Sequential Circuits</h1>
+
+</div>
+
+<hr>
+
+<h2>Goals and Objectives</h2>
+
+<p>
+In this experiment you will examine various methods of implementing
+Boolean expressions in digital systems, using the
+<!-- HIDDEN not sure where this was meant to go
+<a href="#ftn">Logisim</a> 
+-->
+Logisim digital circuit simulator.
+</p>
+<p>
+You will also examine the operation of JK flip-flops
+in building counters and shifter.
+</p>
+
+
+<hr>
+
+<h2>Using Logisim</h2>
+
+<p>
+Before starting your experiment, review the document
+<a href="http://www.cs.rit.edu/%7Ecsci250/documents/logisim/">
+Logisim - digital Circuit Design and Simulation Tool</a>
+and the
+<a href="http://ozark.hendrix.edu/%7Eburch/logisim/docs/2.1.0/guide/tutorial/index.html">
+Logisim Beginner's Tutorial</a>
+(also available from the Logisim help menu).
+These documents will introduce you to the Logisim simulator and help you
+learn how to use it to complete this experiment.
+While Logisim is not difficult to use, like everything else there is a
+learning curve associated with using a new tool; don't wait until the
+last minute to get started!
+</p>
+
+<p>
+Currently, we are using 
+<font color="darkred" size="+1"><b>version 2.3.1 of Logisim</b></font>.
+<!-- HIDDEN I doubt they are using older version since 2.7.1 is out
+If you're using an older version of Logisim, you may need to
+load the multiplexer library into the simulator.
+To do this, select the
+Project&rarr;Load&nbsp;Library&rarr;Built-in&nbsp;Library
+menu entry to bring up the <em>Load Built-in Library</em> popup window;
+highlight the Plexers entry and click the OK button.
+This will add a new entry to the Explorer pane called Plexers.
+-->
+If you download Logisim to your own computer, make sure to get version
+2.3.1, the newest version saves its circuits in a format that is not
+compatable to 2.3.1, which will impact grading.
+</p>
+
+<!-- HIDDEN not using old version
+<p>
+Also, note that some of the names of component attributes have changed in
+Logisim 2.3.1 from what they were in earlier versions; be aware of this
+as you read the instructions below, as some attribute names may be
+different if you're using an older version of the simulator.
+</p>
+-->
+
+<h3>Style Guidelines</h3>
+
+<p>
+Remember that you are expected to put the following information on each
+circuit diagram you create for this experiment:
+</p>
+
+<ul>
+<li>Your name
+</li><li>Your section number
+</li><li>The experiment number
+</li><li>The activity number within the experiment
+</li></ul>
+
+<p>
+Build your circuit so that the logic runs left-to-right, top-to-bottom.
+This simplifies the structure of the circuit, and is consistent with 
+circuit design conventions.
+</p>
+
+<p>
+Always label all input and output pins in your circuit with labels
+described in the experiment's activities.
+This allows for the unambiguous testing and grading of your circuit.
+<!--
+This simplifies testing and grading of your circuit.
+-->
+</p>
+
+<hr>
+
+<h2>Activity 1</h2>
+
+<p>
+For this experiment, you should print out this 
+<!-- PAW change report sheet name -->
+<a href="http://www.cs.rit.edu/%7Ecsci250/experiments/NEW/,report7-135.pdf">Experiment 7 Report Sheet</a> 
+that you can use as you go through the activities.
+The report sheet is for your work, and you will not be submitting it.
+</p>
+
+<h3>Activity 1a</h3>
+
+<p>
+On the report sheet, record the truth table for this function:
+</p>
+
+<blockquote>
+<img src="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/exp4-fcn1.gif" alt="function 1">
+</blockquote>
+
+<!-- HIDDEN no kmap
+<p>
+Next, using the K-map provided in the lab report sheet, simplify
+the above
+equation.
+You might want to write out the truth table for your
+simplified function to make sure that it matches the truth table for the
+original function.
+</p>
+-->
+
+<p>
+Now implement the function in Logisim
+using input pins for all the inputs and an output pin for the output.
+Using the poke tool, enter the data shown in the
+table on the report sheet and record the values appearing in the output
+pin in that same table.
+</p>
+
+<p>
+Once you are satisfied that your circuit is complete and correct, save
+the circuit in a file named <code>exp7-1a.circ</code>.
+<!-- HIDDEN don't turn in report sheet
+<em><strong>In addition</strong></em>,
+print out a copy of your circuit, attach this to your report sheet, and
+turn it in as part of your report.
+-->
+</p>
+
+<h3>Activity 1b</h3>
+
+<p>
+For this activity, you will be implementing the same function from
+activity 1a, but this time you will be using a decoder.
+The decoder is found in the multiplexer library (called "Plexers") in the
+Explorer pane.
+Cick on the plus sign next to it, and you'll see several new circuit
+components, including a decoder.
+</p>
+
+<h4>Implementing Circuits With Decoders</h4>
+
+<p>
+In class we talked about how each output line of a decoder corresponds
+to one of the possible 
+<!-- HIDDEN I didn't call them minterms
+minterms 
+-->
+product terms 
+formed from the select inputs to the
+decoder.  These are special product terms because they 
+contain every variable in the problem, in either
+complemented or non-complimented form.  Product terms in this form are
+refered to as <i>minterm</i>s.
+We can use this fact to allow us to implement a
+function with just the use of a decoder and an <em>OR</em> gate.
+</p>
+
+<p>
+Consider the following truth table for the <em>XOR</em> function:
+</p>
+
+<table rules="groups" cellpadding="2">
+<colgroup span="2">
+</colgroup><thead>
+<tr>
+  <th colspan="2"><em>Inputs</em></th>
+  <th><em>Output</em></th>
+</tr>
+<tr>
+  <th>A</th>
+  <th>B</th>
+  <th>F</th>
+</tr>
+</thead><tbody>
+<tr>
+  <th>0</th>
+  <th>0</th>
+  <th>0</th>
+</tr>
+<tr>
+  <th>0</th>
+  <th>1</th>
+  <th>1</th>
+</tr>
+<tr>
+  <th>1</th>
+  <th>0</th>
+  <th>1</th>
+</tr>
+<tr>
+  <th>1</th>
+  <th>1</th>
+  <th>0</th>
+</tr>
+</tbody></table>
+
+<p>
+Note that the function <em>F</em> is true for minterms 1 and 2 (minterms
+are numbered based on the value of the input variables, so for the row in
+the truth table where the value
+of literals <em>AB</em> are <em>10</em>, that line is said to be minterm 2).
+If we use the variables <em>A</em> and <em>B</em> as data inputs to the
+decoder, the output line corresponding to the two-digit value <em>AB</em>
+will be a 1; for instance, for the input <em>01</em> output line 1 will
+have a 1 on it, and all other output lines will have 0 on them.
+Thus, we can <em>OR</em> together the value on output lines 1 and 2 to
+implement the <em>XOR</em> function:
+</p>
+
+<center>
+<img src="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/exp4-xor-decoder.png" alt="xor implemented with a decoder">
+</center>
+
+<h4>Decoders in Logisim</h4>
+
+<p>
+The decoder implemented in Logisim allows you to choose the number of
+select bits.
+Because we are implementing a three-variable expression, we need to use a
+decoder that has three select inputs and eight outputs.
+</p>
+
+<p>
+To create a 3x8 decoder, select the Decoder in the Explorer pane.
+Note that a number of attributes appear in the Attribute pane below the
+Explorer pane.
+These can be modified before you place the component on the canvas.
+To do this, left-click on the "Select Bits" attribute value; you should
+see a drop-down menu appear.
+Click on the "3" entry to indicate that you want a 3x8 decoder.
+When you place the decoder on the canvas, it will have eight output pins.
+</p>
+
+<p>
+Although the decoder has the correct number of output pins, it will
+appear to have only one select pin; this is actually a multi-bit pin -
+that is, it's really three input pins rolled into one.
+To connect a three-bit input to it, when you select the input pin from
+the toolbar, note that it has attributes, too.
+You can change the "Data Bits" attribute to "3"; this creates a three-bit
+input value.
+Connect the single output pin of this component to the single select pin
+of the 3x8 decoder to complete the connection.
+</p>
+
+<p>
+You can also change the orientation of the component by changing the
+"Facing" attribute.
+This attribute says which side the connecting pin will be on.
+For the three-bit input pin, you can change this to "North" to put the
+connecting pin on top of the component.
+Similarly, you can change the position of the label by changing the
+"Label Location" attribute.
+Give this device a label which lists all the input variables it
+represents.
+</p>
+
+<h4>Performing This Activity</h4>
+
+<p>
+Implement the circuit for the function in activity 1 using
+a decoder and as few other gates as you can (you should be able to do it
+with only a single OR gate).
+Then run the simulation and fill in the truth table for activity 2.
+</p>
+
+<p>
+Once you are satisfied that your circuit for this activity
+is complete and correct, save the circuit in a file named
+<code>exp7-1b.circ</code>. 
+<!-- HIDDEN no report sheet
+and print out a copy of the circuit to attach
+are your report sheet (as in activity 1).
+-->
+</p>
+
+<h3>Activity 1c</h3>
+
+<p>
+For this activity, you will implement the following function using a
+multiplexer (found in the Plexers library in Logisim):
+</p>
+
+<blockquote>
+<img src="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/exp4-fcn2.gif" alt="function 2">
+</blockquote>
+
+<h4>Implementing Circuits With Multiplexers</h4>
+
+<p>
+Recall that we discussed the operation of a MUX in class; the MUX decodes
+its select inputs, and based on their value passes one of its data inputs
+to its output, as in this diagram:
+</p>
+
+<center>
+<img src="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/exp4-mux-internals.png" alt="multiplexor internals">
+</center>
+
+<p>
+Recall the <em>XOR</em> example from activity 2.
+To implement this using a MUX, we must supply the desired outputs for
+each of the input combinations.
+Remember that each input combination corresponds to a row in the truth
+table; simple connect a 0 or 1 input to the MUX data input that
+corresponds to that row, and that value will be propogated to the output
+when that input combination is given as the select input.
+This gives use the following MUX implementation of the <em>XOR</em>
+function:
+</p>
+
+<center>
+<img src="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/exp4-mux-xor-block.png" alt="multiplexor internals">
+</center>
+
+<h4>Multiplexers in Logisim</h4>
+
+<p>
+As with the decoder, the multiplexer
+implemented in Logisim allows you to choose the number of
+select bits.
+Because we are implementing a three-variable expression, we
+need to use a MUX that has three select inputs and eight data inputs.
+</p>
+
+<p>
+Select the Multiplexer in the Explorer pane.
+Modify the "Select Bits" to "3" to get eight data inputs.
+(Note:  <em><strong>do not</strong></em> modify the "Data Bits"
+attribute.
+That attribute controls the bit width of each data input and the output
+from the MUX, and should remain at 1.)
+</p>
+
+<p>
+As with the decoder, the select input will have only one pin.
+You can connect a three-bit-wide input pin to this to provide the
+three-bit select input.
+Note, however, that the data inputs should be one-bit-wide input pins for
+correct operation.
+</p>
+
+<p>
+You could use an input pin to provide the 0 and 1 data inputs for the
+multiplexer, and use the Poke tool to set each one to 0 or 1; however,
+the value you put into the pin with the Poke
+tool disappears when you save the circuit.
+A better method is to use a special component that always outputs a
+specific value.
+Click on the plus sign next to the Gates collection in the Explorer pane
+and select the Constant.
+The value produced by the constant is selectable; see the "Value"
+attribute in the Attribute pane.
+You will need two Constants:  one for the value 0, and one for the value 1.
+</p>
+
+<h4>Performing This Activity</h4>
+
+<p>
+Implement the circuit for this activity's function using a MUX.
+(You should not need any additional gates to do this.)
+Then run the simulation and fill in the truth table for activity 3 on
+your report sheet.
+</p>
+
+<p>
+Once you are satisfied that your circuit for this activity is complete
+and correct, save the circuit in a file named 
+<code>exp7-1c.circ</code>. 
+<!-- HIDDEN no report sheet
+, and print out
+a copy of the circuit to attach to your report sheet (as in the previous
+activities).
+-->
+</p>
+
+
+
+<h4>Submission</h4>
+
+<!-- HIDDEN no report sheet
+<p>
+This experiment requires that you <b>turn in your hardcopy report sheet
+(including the printouts of the three circuit diagrams) at the beginning
+of class on the due date.</b>
+</p>
+-->
+
+<p>
+Once you are confident that your circuits are complete, includeing the
+labeling, 
+submit your three circuits using
+this command:
+
+</p><center><pre>try grd-250 lab7-1 exp7-1a.circ exp7-1b.circ exp7-1c.circ
+</pre></center>
+
+<hr>
+<h2>Activity 2</h2>
+<h3>Notes: The Seven-Segment Display</h3>
+
+<p>
+To better display the output of your circuit, you will be using a
+seven-segment digital display.
+This device has seven separately-controlled segments labelled A-G; with
+it, any of the hex digits can be displayed.
+</p>
+
+<p>
+Logisim has a built-in seven-segment display device.
+It has eight pins (four on top, four on the bottom) which are connected
+to the seven segments of the display and to a decimal point (which we
+will not be using).
+The lefthand image shows the arrangement of segments; the righthand image
+shows the association of input pins to segments in the Logisim
+component (this is the same layout as that used by a real seven-segment
+device, the Texas Instruments TIL321).
+</p>
+
+<center>
+<table width="50%">
+<tbody><tr>
+<td width="20%">
+  <img src="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/exp5-seven-segment.png" alt="basic seven-segment display">
+</td>
+<td width="10%">&nbsp;</td>
+<td width="20%">
+  <img src="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/exp5-seven-segment-logisim.png" alt="Logisim seven-segment component">
+</td>
+</tr></tbody></table>
+</center>
+
+<p>
+Driving this display is more complicated than driving a single output
+pin; here is a truth table showing the inputs to each segment for
+representing the values 0 through 15:
+</p>
+
+<div align="center">
+<table rules="groups" cellpadding="2">
+<colgroup span="1">
+</colgroup><colgroup span="4">
+</colgroup><thead>
+<tr>
+  <th><em>Value</em></th>
+  <th colspan="4"><em>Inputs</em></th>
+  <th colspan="7"><em>Outputs</em></th>
+</tr>
+<tr>
+  <th>&nbsp;</th>
+  <th>W</th><th>X</th><th>Y</th><th>Z</th>
+  <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th>
+</tr>
+</thead><tbody>
+<tr>
+  <th>0</th>
+  <th>0</th><th>0</th><th>0</th><th>0</th>
+  <th>1</th><th>1</th><th>1</th><th>1</th><th>1</th><th>1</th><th>0</th>
+</tr>
+<tr>
+  <th>1</th>
+  <th>0</th><th>0</th><th>0</th><th>1</th>
+  <th>0</th><th>1</th><th>1</th><th>0</th><th>0</th><th>0</th><th>0</th>
+</tr>
+<tr>
+  <th>2</th>
+  <th>0</th><th>0</th><th>1</th><th>0</th>
+  <th>1</th><th>1</th><th>0</th><th>1</th><th>1</th><th>0</th><th>1</th>
+</tr>
+<tr>
+  <th>3</th>
+  <th>0</th><th>0</th><th>1</th><th>1</th>
+  <th>1</th><th>1</th><th>1</th><th>1</th><th>0</th><th>0</th><th>1</th>
+</tr>
+</tbody><tbody>
+<tr>
+  <th>4</th>
+  <th>0</th><th>1</th><th>0</th><th>0</th>
+  <th>0</th><th>1</th><th>1</th><th>0</th><th>0</th><th>1</th><th>1</th>
+</tr>
+<tr>
+  <th>5</th>
+  <th>0</th><th>1</th><th>0</th><th>1</th>
+  <th>1</th><th>0</th><th>1</th><th>1</th><th>0</th><th>1</th><th>1</th>
+</tr>
+<tr>
+  <th>6</th>
+  <th>0</th><th>1</th><th>1</th><th>0</th>
+  <th>1</th><th>0</th><th>1</th><th>1</th><th>1</th><th>1</th><th>1</th>
+</tr>
+<tr>
+  <th>7</th>
+  <th>0</th><th>1</th><th>1</th><th>1</th>
+  <th>1</th><th>1</th><th>1</th><th>0</th><th>0</th><th>0</th><th>0</th>
+</tr>
+</tbody><tbody>
+<tr>
+  <th>8</th>
+  <th>1</th><th>0</th><th>0</th><th>0</th>
+  <th>1</th><th>1</th><th>1</th><th>1</th><th>1</th><th>1</th><th>1</th>
+</tr>
+<tr>
+  <th>9</th>
+  <th>1</th><th>0</th><th>0</th><th>1</th>
+  <th>1</th><th>1</th><th>1</th><th>1</th><th>0</th><th>1</th><th>1</th>
+</tr>
+<tr>
+  <th>10</th>
+  <th>1</th><th>0</th><th>1</th><th>0</th>
+  <th>1</th><th>1</th><th>1</th><th>0</th><th>1</th><th>1</th><th>1</th>
+</tr>
+<tr>
+  <th>11</th>
+  <th>1</th><th>0</th><th>1</th><th>1</th>
+  <th>0</th><th>0</th><th>1</th><th>1</th><th>1</th><th>1</th><th>1</th>
+</tr>
+</tbody><tbody>
+<tr>
+  <th>12</th>
+  <th>1</th><th>1</th><th>0</th><th>0</th>
+  <th>1</th><th>0</th><th>0</th><th>1</th><th>1</th><th>1</th><th>0</th>
+</tr>
+<tr>
+  <th>13</th>
+  <th>1</th><th>1</th><th>0</th><th>1</th>
+  <th>0</th><th>1</th><th>1</th><th>1</th><th>1</th><th>0</th><th>1</th>
+</tr>
+<tr>
+  <th>14</th>
+  <th>1</th><th>1</th><th>1</th><th>0</th>
+  <th>1</th><th>0</th><th>0</th><th>1</th><th>1</th><th>1</th><th>1</th>
+</tr>
+<tr>
+  <th>15</th>
+  <th>1</th><th>1</th><th>1</th><th>1</th>
+  <th>1</th><th>0</th><th>0</th><th>0</th><th>1</th><th>1</th><th>1</th>
+</tr>
+</tbody></table>
+</div>
+
+<p>
+To make it easier to use the display device, we have created a special
+decoder (called a <em>BCD to seven-segment decoder</em>) which will take
+a four-bit input value and decode it to seven outputs which can be used
+to drive the seven segments of the display.
+</p>
+
+<h3>Setting Up Logisim</h3>
+
+<p>
+For this experiment, you will be using components from the Memory and
+Input/Output libraries; as before, if you are using an older version of
+Logisim, you may need to load them using the "Project" &#8594; "Load
+Library" &#8594; "Built-in Library" menu.
+</p>
+
+<p>
+Regardless of which Logisim version you are using, you will need to load
+the BCD decoder which we are providing to you.
+To load it, click on the "Project" menu, select "Load Library", then
+select "Logisim Library".
+This will bring up a filesystem selection popup window.
+In the topmost box (labeled "Enter path or folder name") enter the path
+<code>/home/course/vcss345/lib/logisim</code> and press the Enter key.
+Then, in the "Files" subwindow, select the
+<code>bcd-7-segment-decoder.circ</code>
+file and click the OK button.
+(Obviously, these instructions assume you are running Logisim on a CS
+system which has access to the course account's home directory; this will
+work even if you're logged in remotely, as long as the Logisim program is
+actually running on a CS system.
+If you're running the Logisim program on another computer, you'll need to
+copy the BCD decoder file to that computer before you can use it.)
+</p>
+
+<p>
+You will need to set up a circuit connecting the BCD decoder to the
+seven-segment display.
+In the Explorer pane, open the Input/Output and bcd-7-segment-decoder
+items; select the BCD to 7-segment decoder and place it on the canvas,
+and do the same with the 7-Segment Display.
+</p>
+
+<p>
+If you choose the Select tool in Logisim and hover the cursor over an
+input or output pin on the BCD decoder, the label associated with that
+pin will be displayed.
+The four input pins on the left side of the BCD decoder are numbered from
+low-order (bit 0) at the top to high-order (bit 3) at the bottom.
+The seven output pins on the right side of the decoder are labeled from A
+at the top to G at the bottom.
+Connect these two components as shown in this diagram:
+</p>
+
+<center>
+<img src="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/exp5-decoder-to-display.gif" alt="connecting the BCD decoder to the seven-segment display">
+</center>
+
+<p>
+This subcircuit will be used in all three activities to display the
+values generated by your circuits.
+</p>
+
+<hr>
+
+<h3>Activity 2 Logisim Notes</h3>
+
+<p>
+Remember that you will need to clear the flip-flops in your circuits
+between test runs; do this by using the asynchronous reset input 
+to the flip-flops
+(CLR button specified in the diagrams). 
+</p>
+
+<p>
+Also, be careful to note the ordering of the result bits in the
+activities; for instance, in parts 2a and 2b the low-order bit is the
+leftmost output bit and the high-order bit is the rightmost output bit.
+This is "backwards" from what may seem normal.
+In part 2c, the high-order bit is shown on the left.
+Remember that the low-order input bit to the BCD decoder is the topmost
+connection, and the high-order input bit is the bottommost connection.
+</p>
+
+<p>
+Finally, to help you determine the values being generated by your
+circuit, you may want to attach an output pin to each of the wires you
+run from the flip-flop outputs to the BCD decoder inputs.
+(You can determine this from the color of the wire during testing, but a
+more obvious visual indicator may make life easier.)
+</p>
+
+<h3>Activity 2a:  Modulo-16 Binary Up Counter</h3>
+
+<p>
+The circuit shown below is the implementation of a modulo-16 counter
+using JK flip-flops.
+This is a circuit that counts from 0 to 15, then starts again back at 0.
+</p>
+
+<center>
+<img src="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/exp5-up-counter.gif" alt="mod 16 up counter">
+</center>
+
+<p>
+Use a Constant set to 1 for the inputs to the leftmost JK flip-flop.
+For the CLK and CLR inputs, use a Button (located in the
+Input/Output section of the Explorer pane).
+The button is what is called a <em>momentary contact</em> input.
+Normally, it outputs a zero; when it is pushed (via the Poke tool) it
+outputs a value of 1, which it maintains until it is no longer pushed.
+(Think of this as a spring-loaded pushbutton that returns to the "off"
+state when you are no longer pushing on it.)
+</p>
+
+<p>
+For the output of the circuit, you will need to use the BCD decoder and
+seven-segment display subcircuit described earlier in this document.
+</p>
+
+<p>
+You can test your circuit using the 
+truth table on the report sheet for this activity.
+Be sure to follow the instructions on the report sheet regarding when to
+push each of the pushbuttons as you fill in the truth table.
+</p>
+
+<p>
+Once you are satisfied that your circuit is complete and correct, save
+the circuit in a file named <code>exp7-2a.circ</code>.
+<!-- HIDDEN no report sheet
+<em><strong>In addition</strong></em>,
+print out a copy of your circuit, attach it to your report sheet, and
+turn it in as part of your report.
+-->
+</p>
+
+<h3>Activity 2b:  Modulo-16 Binary Down Counter</h3>
+
+<p>
+For this activity you will be building another counter, but unlike
+the previous counter which counts upwards, you will be building one
+that counts downwards.
+(We will refer to this as a down counter.)
+You will need to modify the circuit from Activity 2a
+to make it count downwards instead of upwards.
+</p>
+
+<p>
+To help you with this activity, you should take some observations of the
+up counter provided in Activity 2a.
+Note that in Activity 2a the JK flip-flops had both their inputs tied
+together.
+This means that if the input was 0, then each
+flip-flop just remembered its state, and if the input was 1, then the
+flip-flop toggled its state; in other word the JK flip-flips are
+working like T flip-flops here.
+</p>
+
+<p>
+Look at the sequence of numbers for an up counter:
+</p>
+
+<table>
+<tbody><tr><th>Binary</th><td>&nbsp;</td><th>Decimal</th><th>Note</th></tr>
+<tr><td align="center">0000</td><td>&nbsp;</td><td align="center">0</td>
+    <td>Up counter starts at 0000</td></tr>
+<tr><td align="center">0001</td><td>&nbsp;</td><td align="center">1</td></tr>
+<tr><td align="center">0010</td><td>&nbsp;</td><td align="center">2</td></tr>
+<tr><td align="center">0011</td><td>&nbsp;</td><td align="center">3</td></tr>
+<tr><td align="center">0100</td><td>&nbsp;</td><td align="center">4</td></tr>
+<tr><td align="center">0101</td><td>&nbsp;</td><td align="center">5</td></tr>
+<tr><td align="center">0110</td><td>&nbsp;</td><td align="center">6</td></tr>
+<tr><td align="center">0111</td><td>&nbsp;</td><td align="center">7</td></tr>
+<tr><td align="center">1000</td><td>&nbsp;</td><td align="center">8</td></tr>
+<tr><td colspan="3">... and so on</td></tr>
+</tbody></table>
+
+<p>
+Note that the low-order bit toggles every time.
+For each of the other bits, see that the bit flips only when all the
+bits that are lower-order than it are 1.
+In the circuit you can see how we do this by using an AND gate to
+look at all the lower order bits; if they are all 1, we toggle the bit.
+</p>
+
+<p>
+Now look at the sequence for a down counter:
+</p>
+
+<table>
+<tbody><tr><th>Binary</th><td>&nbsp;</td><th>Decimal</th><th>Note</th></tr>
+<tr><td align="center">0000</td><td>&nbsp;</td><td align="center">0</td>
+    <td>Down counter also starts at 0000</td></tr>
+<tr><td align="center">1111</td><td>&nbsp;</td><td align="center">15</td></tr>
+<tr><td align="center">1110</td><td>&nbsp;</td><td align="center">14</td></tr>
+<tr><td align="center">1101</td><td>&nbsp;</td><td align="center">13</td></tr>
+<tr><td align="center">1100</td><td>&nbsp;</td><td align="center">12</td></tr>
+<tr><td align="center">1011</td><td>&nbsp;</td><td align="center">11</td></tr>
+<tr><td align="center">1010</td><td>&nbsp;</td><td align="center">10</td></tr>
+<tr><td align="center">1001</td><td>&nbsp;</td><td align="center">9</td></tr>
+<tr><td align="center">1000</td><td>&nbsp;</td><td align="center">8</td></tr>
+<tr><td colspan="3">... and so on</td></tr>
+</tbody></table>
+
+<p>
+You should see a similar (but different) pattern here; that will tell 
+you when each digit in the counter must change.
+Also, don't forget that JK flip-flops produce output <em>Q</em>
+in both complemented and uncomplemented forms (the upper output is
+the current state of the flip-flop, and the lower output is the
+complement of that state); that may help you simplify your redesign.
+</p>
+
+<p>
+You can test your circuit using the 
+truth table on the report sheet for this activity.
+Be sure to follow the instructions on the report sheet regarding when to
+push each of the pushbuttons as you fill in the truth table.
+</p>
+
+<p>
+Once you are satisfied that your circuit is complete and correct, save
+the circuit in a file named <code>exp7-2b.circ</code>.
+<!-- HIDDEN no report
+<em><strong>In addition</strong></em>,
+print out a copy of your circuit, attach it to your report sheet, and
+turn it in as part of your report.
+-->
+</p>
+
+<h3>Activity 2c:  Shift Register Using JK Flip-Flops</h3>
+
+<p>
+Construct the right-shift register circuit shown below using JK
+flip-flops.
+<em>Data</em> is a switch that provides a data bit to be shifted into the
+leftmost position of the register; because this must be changed
+as you do your testing, use an input pin for this.
+Use a pushbutton for the CLK and CLR inputs (as before).
+</p>
+
+<center>
+<img src="Concepts%20of%20Computer%20Systems%20-%20Experiment%207_files/exp5-shifter.gif" alt="right-shift register">
+</center>
+
+<p>
+<em>
+<strong>Important note</strong>: the ordering of the output bits
+here is <strong>reversed</strong> from that shown in the diagram for
+Activity 1!
+</em>
+Be sure to connect these to the seven-segment decoder correctly, or
+you'll get strange results.
+</p>
+
+<p>
+You can test your circuit using the truth table on the report sheet for
+this activity.
+Be sure to follow the instructions on the report sheet regarding when to
+push each of the pushbuttons as you fill in the truth table.
+</p>
+
+<p>
+Once you are satisfied that your circuit is complete and correct, save
+the circuit in a file named <code>exp7-2c.circ</code>.
+<!-- HIDDEN no report
+<em><strong>In addition</strong></em>,
+print out a copy of your circuit, attach it to your report sheet, and
+turn it in as part of your report.
+-->
+</p>
+
+<h3>Submission</h3>
+
+<!-- HIDDEN no report
+<p>
+This experiment requires that you turn in your hardcopy report sheet
+(including the printouts of the three circuit diagrams) at the beginning
+of class on the due date.
+</p>
+-->
+
+<p>
+Once you are confident that your circuits are complete, includeing the
+labeling, submit your three circuits using this command: 
+
+</p><center><pre>try grd-250 lab7-2 exp7-2a.circ exp7-2b.circ exp7-2c.circ
+</pre></center>
+
+<hr>
+
+<h2>Grading</h2>
+
+<p>
+This experiment is worth a total of 30 points.
+each activity is worth 15 points, and each circuit within the activity is
+worth 5.
+</p>
+
+<!-- HIDDEN
+.(G
+.{submitted.activity} "Correct Circuits" 30
+.)G
+HIDDEN -->
+
+<hr>
+<a name="ftn"></a>
+<em>
+<a href="http://ozark.hendrix.edu/%7Eburch/logisim/">
+Logisim</a>
+was created by
+<a href="http://ozark.hendrix.edu/%7Eburch/">
+Dr. Carl Burch</a>
+at
+<a href="http://www.hendrix.edu//">
+Hendrix College</a>.
+</em>
+
+
+</body></html>
