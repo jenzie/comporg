@@ -2,8 +2,18 @@
 <project version="1.0" source="2.3.1">
   This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
   <lib name="0" desc="#Base">
-    <tool name="Edit Tool" />
-    <tool name="Select Tool" />
+    <tool name="Edit Tool">
+      <a name="text" val="Experiment 7-2A" />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </tool>
+    <tool name="Select Tool">
+      <a name="text" val="Experiment 7-2A" />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </tool>
     <tool name="Text Tool">
       <a name="text" val="" />
       <a name="font" val="SansSerif plain 12" />
@@ -310,7 +320,12 @@
   </mappings>
   <toolbar>
     <tool lib="0" name="Poke Tool" />
-    <tool lib="0" name="Edit Tool" />
+    <tool lib="0" name="Edit Tool">
+      <a name="text" val="Experiment 7-2A" />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </tool>
     <tool lib="0" name="Text Tool">
       <a name="text" val="" />
       <a name="font" val="SansSerif plain 12" />
@@ -512,7 +527,7 @@
       <a name="inputs" val="2" />
     </comp>
     <comp lib="0" name="Text" loc="(71,81)">
-      <a name="text" val="Experiment 7-2B" />
+      <a name="text" val="Experiment 7-2A" />
       <a name="font" val="SansSerif plain 12" />
       <a name="halign" val="center" />
       <a name="valign" val="base" />
