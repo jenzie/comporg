@@ -305,8 +305,8 @@
   </options>
   <mappings>
     <tool lib="0" name="Menu Tool" map="Button2" />
-    <tool lib="0" name="Menu Tool" map="Ctrl Button1" />
     <tool lib="0" name="Menu Tool" map="Button3" />
+    <tool lib="0" name="Menu Tool" map="Ctrl Button1" />
   </mappings>
   <toolbar>
     <tool lib="0" name="Poke Tool" />
@@ -357,119 +357,111 @@
     </tool>
   </toolbar>
   <circuit name="main">
-    <wire from="(660,190)" to="(660,210)" />
-    <wire from="(110,250)" to="(110,270)" />
+    <wire from="(560,110)" to="(680,110)" />
+    <wire from="(530,170)" to="(600,170)" />
+    <wire from="(100,270)" to="(120,270)" />
     <wire from="(50,260)" to="(50,300)" />
     <wire from="(90,320)" to="(90,340)" />
     <wire from="(50,260)" to="(60,260)" />
-    <wire from="(110,270)" to="(130,270)" />
-    <wire from="(380,190)" to="(390,190)" />
-    <wire from="(300,320)" to="(440,320)" />
-    <wire from="(510,140)" to="(530,140)" />
-    <wire from="(180,150)" to="(180,210)" />
+    <wire from="(410,190)" to="(410,250)" />
+    <wire from="(530,140)" to="(550,140)" />
+    <wire from="(110,140)" to="(110,250)" />
     <wire from="(40,250)" to="(40,270)" />
-    <wire from="(110,140)" to="(110,170)" />
-    <wire from="(670,190)" to="(670,220)" />
-    <wire from="(50,300)" to="(120,300)" />
-    <wire from="(240,190)" to="(250,190)" />
+    <wire from="(680,190)" to="(680,210)" />
+    <wire from="(570,120)" to="(670,120)" />
+    <wire from="(280,170)" to="(280,190)" />
     <wire from="(40,250)" to="(60,250)" />
     <wire from="(100,250)" to="(110,250)" />
-    <wire from="(390,250)" to="(410,250)" />
-    <wire from="(390,250)" to="(390,270)" />
-    <wire from="(440,280)" to="(440,320)" />
-    <wire from="(510,180)" to="(540,180)" />
-    <wire from="(320,160)" to="(480,160)" />
-    <wire from="(250,250)" to="(270,250)" />
-    <wire from="(580,200)" to="(650,200)" />
-    <wire from="(670,90)" to="(670,130)" />
-    <wire from="(460,170)" to="(480,170)" />
-    <wire from="(260,300)" to="(400,300)" />
-    <wire from="(650,190)" to="(650,200)" />
-    <wire from="(390,270)" to="(410,270)" />
+    <wire from="(560,110)" to="(560,180)" />
+    <wire from="(550,100)" to="(700,100)" />
+    <wire from="(670,190)" to="(670,200)" />
+    <wire from="(120,250)" to="(130,250)" />
+    <wire from="(410,250)" to="(410,270)" />
+    <wire from="(110,140)" to="(500,140)" />
+    <wire from="(580,150)" to="(580,220)" />
+    <wire from="(270,260)" to="(280,260)" />
+    <wire from="(700,100)" to="(700,130)" />
+    <wire from="(550,100)" to="(550,140)" />
+    <wire from="(340,210)" to="(350,210)" />
+    <wire from="(340,210)" to="(340,270)" />
+    <wire from="(530,180)" to="(560,180)" />
+    <wire from="(120,170)" to="(120,250)" />
     <wire from="(40,270)" to="(60,270)" />
-    <wire from="(520,90)" to="(670,90)" />
-    <wire from="(110,170)" to="(190,170)" />
-    <wire from="(580,170)" to="(580,200)" />
-    <wire from="(120,300)" to="(260,300)" />
-    <wire from="(570,210)" to="(660,210)" />
-    <wire from="(560,220)" to="(670,220)" />
-    <wire from="(250,190)" to="(270,190)" />
-    <wire from="(450,250)" to="(460,250)" />
-    <wire from="(270,170)" to="(270,190)" />
-    <wire from="(460,170)" to="(460,250)" />
-    <wire from="(180,210)" to="(190,210)" />
-    <wire from="(260,260)" to="(270,260)" />
-    <wire from="(510,130)" to="(520,130)" />
-    <wire from="(250,270)" to="(270,270)" />
-    <wire from="(510,150)" to="(560,150)" />
-    <wire from="(510,190)" to="(550,190)" />
-    <wire from="(310,250)" to="(320,250)" />
-    <wire from="(110,140)" to="(480,140)" />
-    <wire from="(110,170)" to="(110,250)" />
-    <wire from="(270,170)" to="(330,170)" />
+    <wire from="(690,90)" to="(690,130)" />
+    <wire from="(160,320)" to="(310,320)" />
+    <wire from="(270,260)" to="(270,300)" />
+    <wire from="(120,250)" to="(120,270)" />
+    <wire from="(410,270)" to="(430,270)" />
+    <wire from="(400,190)" to="(410,190)" />
+    <wire from="(670,120)" to="(670,130)" />
+    <wire from="(120,270)" to="(130,270)" />
+    <wire from="(580,220)" to="(690,220)" />
+    <wire from="(530,190)" to="(570,190)" />
+    <wire from="(600,170)" to="(600,200)" />
+    <wire from="(690,190)" to="(690,220)" />
+    <wire from="(330,160)" to="(500,160)" />
+    <wire from="(50,300)" to="(110,300)" />
+    <wire from="(310,320)" to="(460,320)" />
+    <wire from="(260,190)" to="(260,250)" />
+    <wire from="(410,250)" to="(430,250)" />
+    <wire from="(680,110)" to="(680,130)" />
+    <wire from="(170,270)" to="(190,270)" />
+    <wire from="(480,170)" to="(480,250)" />
+    <wire from="(590,160)" to="(590,210)" />
+    <wire from="(320,250)" to="(330,250)" />
     <wire from="(170,250)" to="(180,250)" />
-    <wire from="(650,120)" to="(650,130)" />
-    <wire from="(250,190)" to="(250,250)" />
-    <wire from="(560,150)" to="(560,220)" />
-    <wire from="(260,260)" to="(260,300)" />
-    <wire from="(120,260)" to="(120,300)" />
-    <wire from="(540,110)" to="(540,180)" />
-    <wire from="(180,150)" to="(480,150)" />
-    <wire from="(570,160)" to="(570,210)" />
-    <wire from="(110,250)" to="(130,250)" />
-    <wire from="(540,110)" to="(660,110)" />
-    <wire from="(160,320)" to="(300,320)" />
-    <wire from="(660,110)" to="(660,130)" />
+    <wire from="(110,300)" to="(270,300)" />
+    <wire from="(110,260)" to="(110,300)" />
+    <wire from="(190,210)" to="(190,270)" />
+    <wire from="(120,170)" to="(200,170)" />
+    <wire from="(310,280)" to="(310,320)" />
+    <wire from="(530,150)" to="(580,150)" />
+    <wire from="(480,170)" to="(500,170)" />
+    <wire from="(250,190)" to="(260,190)" />
+    <wire from="(190,210)" to="(200,210)" />
+    <wire from="(330,160)" to="(330,250)" />
+    <wire from="(260,250)" to="(280,250)" />
+    <wire from="(180,150)" to="(180,250)" />
+    <wire from="(320,270)" to="(340,270)" />
+    <wire from="(530,160)" to="(590,160)" />
     <wire from="(30,250)" to="(40,250)" />
-    <wire from="(180,210)" to="(180,250)" />
-    <wire from="(320,210)" to="(320,250)" />
-    <wire from="(510,160)" to="(570,160)" />
-    <wire from="(530,100)" to="(530,140)" />
-    <wire from="(520,90)" to="(520,130)" />
-    <wire from="(320,160)" to="(320,210)" />
-    <wire from="(550,120)" to="(550,190)" />
-    <wire from="(680,100)" to="(680,130)" />
-    <wire from="(120,260)" to="(130,260)" />
-    <wire from="(300,280)" to="(300,320)" />
-    <wire from="(550,120)" to="(650,120)" />
+    <wire from="(260,250)" to="(260,270)" />
+    <wire from="(260,190)" to="(280,190)" />
+    <wire from="(470,250)" to="(480,250)" />
+    <wire from="(530,130)" to="(540,130)" />
+    <wire from="(570,120)" to="(570,190)" />
+    <wire from="(280,170)" to="(350,170)" />
+    <wire from="(600,200)" to="(670,200)" />
+    <wire from="(540,90)" to="(690,90)" />
     <wire from="(90,320)" to="(160,320)" />
-    <wire from="(390,190)" to="(390,250)" />
-    <wire from="(320,210)" to="(330,210)" />
     <wire from="(160,280)" to="(160,320)" />
-    <wire from="(530,100)" to="(680,100)" />
-    <wire from="(510,170)" to="(580,170)" />
-    <wire from="(400,260)" to="(410,260)" />
-    <wire from="(250,250)" to="(250,270)" />
-    <wire from="(400,260)" to="(400,300)" />
+    <wire from="(270,300)" to="(420,300)" />
+    <wire from="(590,210)" to="(680,210)" />
+    <wire from="(540,90)" to="(540,130)" />
+    <wire from="(420,260)" to="(420,300)" />
+    <wire from="(260,270)" to="(280,270)" />
+    <wire from="(460,280)" to="(460,320)" />
+    <wire from="(110,260)" to="(130,260)" />
+    <wire from="(180,150)" to="(500,150)" />
+    <wire from="(420,260)" to="(430,260)" />
     <wire from="(50,300)" to="(50,310)" />
     <wire from="(90,280)" to="(90,320)" />
-    <comp lib="0" name="Text" loc="(56,38)">
-      <a name="text" val="Jenny Zhen" />
-      <a name="font" val="SansSerif plain 12" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
-    </comp>
-    <comp lib="4" name="J-K Flip-Flop" loc="(310,250)">
-      <a name="trigger" val="rising" />
-      <a name="label" val="" />
-      <a name="labelfont" val="SansSerif plain 12" />
-    </comp>
-    <comp lib="1" name="AND Gate" loc="(240,190)">
+    <comp lib="1" name="AND Gate" loc="(250,190)">
       <a name="facing" val="east" />
       <a name="width" val="1" />
       <a name="size" val="50" />
       <a name="inputs" val="2" />
     </comp>
-    <comp lib="4" name="J-K Flip-Flop" loc="(170,250)">
+    <comp lib="4" name="J-K Flip-Flop" loc="(320,250)">
       <a name="trigger" val="rising" />
       <a name="label" val="" />
       <a name="labelfont" val="SansSerif plain 12" />
     </comp>
-    <comp lib="0" name="Text" loc="(181,417)">
-      <a name="text" val="J-K FlipFlops (left to right; lowest to highest order bit)" />
-      <a name="font" val="SansSerif plain 12" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
+    <comp lib="1" name="AND Gate" loc="(400,190)">
+      <a name="facing" val="east" />
+      <a name="width" val="1" />
+      <a name="size" val="50" />
+      <a name="inputs" val="2" />
     </comp>
     <comp lib="5" name="Button" loc="(90,340)">
       <a name="facing" val="north" />
@@ -479,24 +471,6 @@
       <a name="labelfont" val="SansSerif plain 12" />
       <a name="labelcolor" val="#000000" />
     </comp>
-    <comp lib="0" name="Text" loc="(403,527)">
-      <a name="text" val="Fourth: Always flip the value every 8 clock ticks (period of 8), since the outputs of the first three J-K are ANDed to be given to both inputs." />
-      <a name="font" val="SansSerif plain 12" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
-    </comp>
-    <comp lib="0" name="Text" loc="(395,499)">
-      <a name="text" val="Third: Always flip the value every 4 clock ticks (period of 4), since the outputs of the first two J-K are ANDed to be given to both inputs." />
-      <a name="font" val="SansSerif plain 12" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
-    </comp>
-    <comp lib="0" name="Text" loc="(264,442)">
-      <a name="text" val="First: Always flip the value every clock tick (period of 1), since a constant 11 is given." />
-      <a name="font" val="SansSerif plain 12" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
-    </comp>
     <comp lib="5" name="Button" loc="(50,310)">
       <a name="facing" val="north" />
       <a name="color" val="#ffffff" />
@@ -505,24 +479,59 @@
       <a name="labelfont" val="SansSerif plain 12" />
       <a name="labelcolor" val="#000000" />
     </comp>
-    <comp lib="1" name="AND Gate" loc="(380,190)">
+    <comp lib="0" name="Text" loc="(395,499)">
+      <a name="text" val="Third: Always flip the value every 4 clock ticks (period of 4), since the outputs of the first two J-K are ANDed to be given to both inputs." />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </comp>
+    <comp lib="1" name="Constant" loc="(30,250)">
       <a name="facing" val="east" />
       <a name="width" val="1" />
-      <a name="size" val="50" />
-      <a name="inputs" val="2" />
+      <a name="value" val="0x1" />
     </comp>
-    <comp lib="0" name="Text" loc="(71,81)">
-      <a name="text" val="Experiment 7-2B" />
+    <comp lib="0" name="Text" loc="(264,442)">
+      <a name="text" val="First: Always flip the value every clock tick (period of 1), since a constant 11 is given." />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </comp>
+    <comp lib="6" name="BCD to 7-segment decoder" loc="(530,130)">
+      <a name="facing" val="east" />
+      <a name="circuit" val="BCD to 7-segment decoder" />
+    </comp>
+    <comp lib="0" name="Text" loc="(403,527)">
+      <a name="text" val="Fourth: Always flip the value every 8 clock ticks (period of 8), since the outputs of the first three J-K are ANDed to be given to both inputs." />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </comp>
+    <comp lib="4" name="J-K Flip-Flop" loc="(170,250)">
+      <a name="trigger" val="rising" />
+      <a name="label" val="" />
+      <a name="labelfont" val="SansSerif plain 12" />
+    </comp>
+    <comp lib="4" name="J-K Flip-Flop" loc="(470,250)">
+      <a name="trigger" val="rising" />
+      <a name="label" val="" />
+      <a name="labelfont" val="SansSerif plain 12" />
+    </comp>
+    <comp lib="0" name="Text" loc="(56,38)">
+      <a name="text" val="Jenny Zhen" />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </comp>
+    <comp lib="5" name="7-Segment Display" loc="(670,130)">
+      <a name="color" val="#f00000" />
+    </comp>
+    <comp lib="0" name="Text" loc="(356,469)">
+      <a name="text" val="Second: Always flip the value every other clock tick (period of 2), since the output of the first J-K is given to both inputs. " />
       <a name="font" val="SansSerif plain 12" />
       <a name="halign" val="center" />
       <a name="valign" val="base" />
     </comp>
     <comp lib="4" name="J-K Flip-Flop" loc="(100,250)">
-      <a name="trigger" val="rising" />
-      <a name="label" val="" />
-      <a name="labelfont" val="SansSerif plain 12" />
-    </comp>
-    <comp lib="4" name="J-K Flip-Flop" loc="(450,250)">
       <a name="trigger" val="rising" />
       <a name="label" val="" />
       <a name="labelfont" val="SansSerif plain 12" />
@@ -533,23 +542,17 @@
       <a name="halign" val="center" />
       <a name="valign" val="base" />
     </comp>
-    <comp lib="6" name="BCD to 7-segment decoder" loc="(510,130)">
-      <a name="facing" val="east" />
-      <a name="circuit" val="BCD to 7-segment decoder" />
-    </comp>
-    <comp lib="0" name="Text" loc="(356,469)">
-      <a name="text" val="Second: Always flip the value every other clock tick (period of 2), since the output of the first J-K is given to both inputs. " />
+    <comp lib="0" name="Text" loc="(181,417)">
+      <a name="text" val="J-K FlipFlops (left to right; lowest to highest order bit)" />
       <a name="font" val="SansSerif plain 12" />
       <a name="halign" val="center" />
       <a name="valign" val="base" />
     </comp>
-    <comp lib="5" name="7-Segment Display" loc="(650,130)">
-      <a name="color" val="#f00000" />
-    </comp>
-    <comp lib="1" name="Constant" loc="(30,250)">
-      <a name="facing" val="east" />
-      <a name="width" val="1" />
-      <a name="value" val="0x1" />
+    <comp lib="0" name="Text" loc="(71,81)">
+      <a name="text" val="Experiment 7-2B" />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
     </comp>
   </circuit>
 </project>
