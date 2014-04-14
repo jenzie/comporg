@@ -446,6 +446,12 @@
     <wire from="(420,260)" to="(430,260)" />
     <wire from="(50,300)" to="(50,310)" />
     <wire from="(90,280)" to="(90,320)" />
+    <comp lib="0" name="Text" loc="(466,498)">
+      <a name="text" val="Third: Always flip the value every 4 clock ticks (period of 4), since the negated outputs (to go in reverse) of the first two J-K are ANDed to be given to both inputs." />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </comp>
     <comp lib="1" name="AND Gate" loc="(250,190)">
       <a name="facing" val="east" />
       <a name="width" val="1" />
@@ -456,6 +462,12 @@
       <a name="trigger" val="rising" />
       <a name="label" val="" />
       <a name="labelfont" val="SansSerif plain 12" />
+    </comp>
+    <comp lib="0" name="Text" loc="(427,469)">
+      <a name="text" val="Second: Always flip the value every other clock tick (period of 2), since the negated output (to go in reverse) of the first J-K is given to both inputs. " />
+      <a name="font" val="SansSerif plain 12" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
     </comp>
     <comp lib="1" name="AND Gate" loc="(400,190)">
       <a name="facing" val="east" />
@@ -479,12 +491,6 @@
       <a name="labelfont" val="SansSerif plain 12" />
       <a name="labelcolor" val="#000000" />
     </comp>
-    <comp lib="0" name="Text" loc="(395,499)">
-      <a name="text" val="Third: Always flip the value every 4 clock ticks (period of 4), since the outputs of the first two J-K are ANDed to be given to both inputs." />
-      <a name="font" val="SansSerif plain 12" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
-    </comp>
     <comp lib="1" name="Constant" loc="(30,250)">
       <a name="facing" val="east" />
       <a name="width" val="1" />
@@ -499,12 +505,6 @@
     <comp lib="6" name="BCD to 7-segment decoder" loc="(530,130)">
       <a name="facing" val="east" />
       <a name="circuit" val="BCD to 7-segment decoder" />
-    </comp>
-    <comp lib="0" name="Text" loc="(403,527)">
-      <a name="text" val="Fourth: Always flip the value every 8 clock ticks (period of 8), since the outputs of the first three J-K are ANDed to be given to both inputs." />
-      <a name="font" val="SansSerif plain 12" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
     </comp>
     <comp lib="4" name="J-K Flip-Flop" loc="(170,250)">
       <a name="trigger" val="rising" />
@@ -525,8 +525,8 @@
     <comp lib="5" name="7-Segment Display" loc="(670,130)">
       <a name="color" val="#f00000" />
     </comp>
-    <comp lib="0" name="Text" loc="(356,469)">
-      <a name="text" val="Second: Always flip the value every other clock tick (period of 2), since the output of the first J-K is given to both inputs. " />
+    <comp lib="0" name="Text" loc="(474,529)">
+      <a name="text" val="Fourth: Always flip the value every 8 clock ticks (period of 8), since the negated outputs (to go in reverse) of the first three J-K are ANDed to be given to both inputs." />
       <a name="font" val="SansSerif plain 12" />
       <a name="halign" val="center" />
       <a name="valign" val="base" />
