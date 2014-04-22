@@ -1,0 +1,415 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Concepts of Computer Systems - Experiment 8</title>
+  <link rel="stylesheet" type="text/css" href="/~csci250/css/de.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+
+<div align="center">
+
+<h1>Concepts of Computer Systems</h1>
+<h1>Experiment 8</h1>
+<h1>Arithmetic and Logic Circuit (The ALU)</h1>
+
+</div>
+
+<hr>
+
+<h2>Goals and Objectives</h2>
+
+<p>
+In this experiment you will implement a simple 4-bit ALU capable of
+computing various arithmetic and logical operations using the 
+Logisim digital circuit simulator.
+</p>
+
+<hr>
+
+<h2>Using Logisim</h2>
+
+<p>
+</p>
+
+<h3>Style Guidelines</h3>
+
+<p>
+Remember that you are expected to put the following information on each
+circuit diagram you create for this experiment:
+</p>
+
+<ul>
+<li>Your name
+<li>Your section number
+<li>The experiment number
+<li>The activity number within the experiment
+</ul>
+
+<p>
+Build your circuit so that the logic runs left-to-right, top-to-bottom.
+This simplifies the structure of the circuit, and is consistent with 
+circuit design conventions.
+</p>
+
+<!--
+<p>
+Always label all input and output pins in your circuit with labels
+described in the experiment's activities.
+This allows for the unambiguous testing and grading of your circuit.
+-->
+<h3>Pre-Activity</h3>
+<p>For this lab we are providing an initial circuit template 
+<!-- PAW using GET instead
+<a href="exp8-1.circ">exp8-1.circ</a>
+-->
+so you 
+have a starting point for implementation.  
+To get the template, 
+in your account on the DCS systems, run the following command:
+</p>
+
+<blockquote><pre>
+get csci250 lab8
+</pre></blockquote>
+
+<p>
+This will retrieve the following file:
+<table>
+<tr><th>Name</th><th></th><th>Contents</th></tr>
+<tr>
+  <td><code>exp8-1.circ</code></td>
+  <td></td>
+  <td>The initial Logisim circuit template for this experiment</td>
+</tr>
+</table>
+
+</p>
+
+For this lab you will be required to use this template.  
+When you open the template in Logisim you will see something like:
+<center>
+<p>
+<!-- EXP 5 version
+<img src="logisim_win1_e5.png" alt="Logisim Window with multiple circuits">
+-->
+<!-- EXP 8 version
+-->
+<img src="logisim_win1_e8.png" alt="Logisim Window with multiple circuits">
+<p>
+</center>
+This template uses some features of Logisim that you might have noticed
+in the previous lab.  The first is that the template file has 2 circuits,
+you can see this by looking in the top of the component list on the
+left.  You will see under the first folder icon "<tt>exp8-1</tt>" the two
+circuits "<tt>1-bit ALU</tt>" and "<tt>4-bit ALU</tt>".  These are the
+circuits you will be implementing for this lab.  You will also notice
+that the "<tt>1-bit ALU</tt>" has a magnify glass icon over the little
+box diagram icon, this means that you are currently viewing that
+circuit.  You can change what circuit you are working on by double
+clicking on the desired circuit.
+
+<p>
+As far as using
+the template goes, feel free to move the input/output pin around as long
+as you don't change the relative positions of the pins 
+(input pin <tt>A</tt> must be
+above input pin <tt>B</tt>) or the facing of the pin (input pin 
+<tt>A</tt> must have an <tt>east</tt> <i>Facing</i>).
+</p>
+
+<hr>
+
+<h2>Activity 1</h2>
+
+<p>
+For the following parts, implement the specified circuits using the
+corresponding circuit within the <tt>exp8-1.circ</tt> template.
+You will be submitting your completed <tt>exp8-1.circ</tt> file into
+<tt>try</tt>.
+</p>
+
+<h3>Activity 1a</h3>
+
+<p>
+For this activity you will be implementing the 1-bit ALU that we
+designed in class, and shown below:
+<a name="ALU_pins">
+<center>
+<p>
+<img src="alu_1bit.gif" alt="1-bit ALU", width="400">
+<p>
+</center>
+<p>
+In the above circuit diagram, the inputs/outputs are defined as:
+<ul>
+<table border="1" cellpadding="4" cellspacing="1">
+<tr style="font-weight: bold; background-color: rgb(255, 200, 200);">
+  <th>Top: Input pins
+  <th>Pin
+  <th>Description
+<tr>
+  <td>
+  <td>add/sub
+  <td>Control input for the FA
+</tr>
+<tr>
+  <td>
+  <td>C-in
+  <td>Carry in for FA
+</tr>
+<tr>
+  <td>
+  <td>Selects 
+  <td>2-bit Select for MUX
+</tr>
+<tr style="font-weight: bold; background-color: rgb(255, 200, 200);">
+  <th>Left: Input pins
+  <th>Pin
+  <th>Description
+<tr>
+  <td>
+  <td>A
+  <td>1-bit Input Source 1
+<tr>
+  <td>
+  <td>B
+  <td>1-bit Input Source 2
+<tr>
+  <td>
+  <td>sli
+  <td>1-bit Less Value
+</tr>
+<tr style="font-weight: bold; background-color: rgb(255, 200, 200);">
+  <th>Right: Output pin
+  <th>Pin
+  <th>Description
+<tr>
+  <td>
+  <td>R
+  <td>1-bit Output Result
+</tr>
+<tr style="font-weight: bold; background-color: rgb(255, 200, 200);">
+  <th>Bottom: Output pins
+  <th>Pin
+  <th>Description
+<tr>
+  <td>
+  <td>C-out
+  <td>Carry out from the FA
+<tr>
+  <td>
+  <td>FA-out
+  <td>FA output result
+</tr>
+</table>
+</ul>
+
+<a name="1bit_ctl">
+<h4>1-bit ALU Control</h4>
+<p>
+Your ALU must be implemented in the same way as the diagram above (and
+that was specified in class, and in the notes).  
+The controlling of the ALU was done
+through the 3 control wires, the 2-bit <tt>Select</tt> and the 1-bit
+<tt>Add/Sub</tt>.  The functionality of the circuit based on the control
+must be:
+
+<center>
+<table cellpadding="2" rules="groups">
+<colgroup span="3">
+<thead>
+<tr>
+  <th colspan="3"><em>Control</em></th>
+  <th><em>Output</em></th>
+</tr>
+<tr>
+  <th>Select<sub><font size="-2">1</font></sub></th>
+  <th>Select<sub><font size="-2">0</font></sub></th>
+  <th>Add/Sub</th>
+  <th>Function</th>
+</tr>
+<tbody>
+<tr>
+  <th>0
+  <th>0
+  <th>0
+  <th>AND
+</tr>
+<tr>
+  <th>0
+  <th>0
+  <th>1
+  <th>AND
+</tr>
+<tr>
+  <th>0
+  <th>1
+  <th>0
+  <th>OR
+</tr>
+<tr>
+  <th>0
+  <th>1
+  <th>1
+  <th>OR
+</tr>
+<tr>
+  <th>1
+  <th>0
+  <th>0
+  <th>Addition
+</tr>
+<tr>
+  <th>1
+  <th>0
+  <th>1
+  <th>Subtraction
+</tr>
+<tr>
+  <th>1
+  <th>1
+  <th>0
+  <th>Undefined
+</tr>
+<tr>
+  <th>1
+  <th>1
+  <th>1
+  <th>SLT
+</tr>
+</table>
+</center>
+<h4>Performing This Activity</h4>
+
+<p>
+When you are confident that you circuit is working as desired, save your
+work and move on to the next part (make sure to keep the file name of
+<tt>exp8-1.circ</tt> for your circuit).
+
+<h3>Activity 1b</h3>
+
+<p>
+For this activity you will work with the <tt>4-bit ALU</tt> circuit,
+still in the <tt>exp8-1.circ</tt> file.  You can bring up the circuit by
+double clicking on the <tt>4-bit ALU</tt> icon near the top of
+the component list to the left.
+</p>
+
+<h4>Logisim: Importing an Existing Circuit</h4>
+<p>
+For this activity you will be using your <tt>1-bit ALU</tt> that you
+implemented in Activity 1a to construct the <tt>4-bit ALU</tt>.  To do
+this you need to place <tt>1-bit ALU</tt> circuits, as block diagrams,
+into the <tt>4-bit ALU</tt> circuit implementation.  
+This is as easy as selecting the <tt>1-bit
+ALU</tt> (single click) just like you would select any other component,
+and then move your cursor into the circuit window.  You will get a ghost
+image of the <tt>1-bit ALU</tt> that you can then place in the circuit.
+<p>
+Note that once you place the <tt>1-bit ALU</tt> it will be unlabeled on
+the diagram, and will just be displayed as a chip:
+<center>
+<p>
+<img src="alu_1bit_chip.png" alt="1-bit ALU", width="75">
+<p>
+</center>
+<p>
+You can see what the block diagram is by leaving the cursor over the
+chip for a few seconds, so the tool tip comes up:
+<center>
+<p>
+<img src="alu_1bit_tip.png" alt="1-bit ALU", width="155">
+<p>
+</center>
+<p>
+You will notice a number of input/output pins around the outside of the
+chip, these are also not labeled, but again, it you leave your cursor
+over a pin for a few seconds, the tool tip will come up with the label
+of the pin (the label that you gave the pin in that circuits
+implementation).
+<center>
+<p>
+<img src="alu_1bit_pin.png" alt="1-bit ALU", width="85">
+<p>
+</center>
+<p> If you did not change the relative locations of the pins in the
+<tt>1-bit ALU</tt> (you were not suppose to change them), then your pins
+will match up to the order specified in the 
+<a href="#ALU_pins">diagram and table in Activity 1a</a>.
+<h4><tt>4-bit ALU</tt> Implementation Requirements</h4>
+<p>
+The <tt>4-bit ALU</tt> uses the same control input of the <tt>1-bit
+ALU</tt> (a 2-bit Select and a 1-bit Add/Sub), and uses the control to
+specify the operation identically to the <tt>1-bit ALU</tt> specified in
+the 
+<a href="#1bit_ctl">1-bit ALU Control</a> table above.
+The big differences are the data length (A, B, and Result are all 4-bits)
+and the existence of two new outputs.
+<ul>
+<li><b>Zero</b> a 1-bit output that is true if the Result of the ALU is
+the 4-bit value <tt>0</tt>.
+<li><b>Overflow</b> a 1-bit output that is true if the result of the ALU
+operation produced an overflow (the C-in and C-out of the high order bit
+don't match).
+</ul>
+<p>
+Note that the value of <tt>Overflow</tt> is always generated as
+specified above, even if the operation being performed is not arithmetic
+(and so the overflow has no meaning).
+
+<h3>Submission</h3>
+
+<!-- HIDDEN no report
+<p>
+This experiment requires that you turn in your hardcopy report sheet
+(including the printouts of the three circuit diagrams) at the beginning
+of class on the due date.
+</p>
+-->
+
+<p>
+Once you are confident that your circuits are complete, including the
+labeling, submit your circuit using this command: 
+
+<center><pre>
+try grd-250 lab8-1 exp8-1.circ
+</pre></center>
+
+<hr>
+
+<h2>Grading</h2>
+
+<p>
+This experiment is worth a total of 25 points with the following 
+grade breakdown:
+<ul>
+<li>Activity 1a, 1-bit ALU: 10 points 
+<li>Activity 1b, 4-bit ALU: 10 points 
+<li>Requirements & Style: 5 points
+</ul>
+each circuit is worth 10 points.
+</p>
+
+<!-- HIDDEN
+.(G
+.{submitted.activity} "Correct Circuits" 20
+.{other.activity} "Requirements & Style" 5
+.)G
+HIDDEN -->
+
+<hr>
+<a name="ftn"></a>
+<em>
+<a href="http://ozark.hendrix.edu/~burch/logisim/">
+Logisim</a>
+was created by
+<a href="http://ozark.hendrix.edu/~burch/">
+Dr. Carl Burch</a>
+at
+<a href="http://www.hendrix.edu//">
+Hendrix College</a>.
+</em>
+</body>
+</html>
