@@ -384,12 +384,6 @@
     <wire from="(80,140)" to="(210,140)" />
     <wire from="(120,180)" to="(210,180)" />
     <wire from="(120,250)" to="(210,250)" />
-    <comp lib="0" name="Text" loc="(579,40)">
-      <a name="text" val="Section #" />
-      <a name="font" val="Times New Roman plain 14" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
-    </comp>
     <comp lib="0" name="Pin" loc="(180,60)">
       <a name="facing" val="south" />
       <a name="output" val="false" />
@@ -405,8 +399,8 @@
       <a name="select" val="2" />
       <a name="width" val="1" />
     </comp>
-    <comp lib="0" name="Text" loc="(572,24)">
-      <a name="text" val="Name:" />
+    <comp lib="0" name="Text" loc="(571,24)">
+      <a name="text" val="Name: Jenny" />
       <a name="font" val="Times New Roman plain 14" />
       <a name="halign" val="center" />
       <a name="valign" val="base" />
@@ -416,12 +410,6 @@
       <a name="width" val="1" />
       <a name="size" val="50" />
       <a name="inputs" val="2" />
-    </comp>
-    <comp lib="0" name="Text" loc="(579,72)">
-      <a name="text" val="Activity #" />
-      <a name="font" val="Times New Roman plain 14" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
     </comp>
     <comp lib="1" name="XOR Gate" loc="(250,290)">
       <a name="facing" val="east" />
@@ -440,6 +428,18 @@
       <a name="labelloc" val="west" />
       <a name="labelfont" val="SansSerif plain 12" />
     </comp>
+    <comp lib="0" name="Text" loc="(569,71)">
+      <a name="text" val="Activity #1a" />
+      <a name="font" val="Times New Roman plain 14" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </comp>
+    <comp lib="0" name="Text" loc="(567,41)">
+      <a name="text" val="Section #01" />
+      <a name="font" val="Times New Roman plain 14" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
+    </comp>
     <comp lib="0" name="Pin" loc="(50,300)">
       <a name="facing" val="east" />
       <a name="output" val="false" />
@@ -449,6 +449,12 @@
       <a name="label" val="B" />
       <a name="labelloc" val="west" />
       <a name="labelfont" val="SansSerif plain 12" />
+    </comp>
+    <comp lib="0" name="Text" loc="(576,56)">
+      <a name="text" val="Experiment #8" />
+      <a name="font" val="Times New Roman plain 14" />
+      <a name="halign" val="center" />
+      <a name="valign" val="base" />
     </comp>
     <comp lib="0" name="Pin" loc="(360,480)">
       <a name="facing" val="north" />
@@ -502,12 +508,6 @@
       <a name="label" val="C-out" />
       <a name="labelloc" val="south" />
       <a name="labelfont" val="SansSerif plain 12" />
-    </comp>
-    <comp lib="0" name="Text" loc="(590,56)">
-      <a name="text" val="Experiment #" />
-      <a name="font" val="Times New Roman plain 14" />
-      <a name="halign" val="center" />
-      <a name="valign" val="base" />
     </comp>
     <comp lib="1" name="OR Gate" loc="(260,230)">
       <a name="facing" val="east" />
