@@ -53,7 +53,7 @@
   </lib>
   <lib name="1" desc="#Gates">
     <tool name="Constant">
-      <a name="facing" val="east" />
+      <a name="facing" val="south" />
       <a name="width" val="1" />
       <a name="value" val="0x0" />
     </tool>
@@ -529,9 +529,11 @@
     </comp>
   </circuit>
   <circuit name="4-bit ALU">
+    <wire from="(400,240)" to="(490,240)" />
     <wire from="(160,180)" to="(180,180)" />
     <wire from="(190,200)" to="(190,210)" />
     <wire from="(250,260)" to="(250,320)" />
+    <wire from="(260,270)" to="(430,270)" />
     <wire from="(190,140)" to="(190,160)" />
     <wire from="(210,350)" to="(210,370)" />
     <wire from="(320,70)" to="(320,150)" />
@@ -545,31 +547,40 @@
     <wire from="(220,320)" to="(250,320)" />
     <wire from="(130,390)" to="(180,390)" />
     <wire from="(170,220)" to="(170,290)" />
+    <wire from="(400,160)" to="(440,160)" />
+    <wire from="(400,170)" to="(400,240)" />
     <wire from="(190,270)" to="(190,280)" />
     <wire from="(190,420)" to="(540,420)" />
     <wire from="(220,180)" to="(250,180)" />
     <wire from="(170,290)" to="(190,290)" />
     <wire from="(170,140)" to="(190,140)" />
     <wire from="(170,360)" to="(190,360)" />
-    <wire from="(220,250)" to="(490,250)" />
     <wire from="(190,410)" to="(190,420)" />
+    <wire from="(250,240)" to="(400,240)" />
     <wire from="(50,110)" to="(50,380)" />
     <wire from="(200,350)" to="(200,370)" />
     <wire from="(190,220)" to="(190,230)" />
-    <wire from="(250,240)" to="(490,240)" />
+    <wire from="(400,170)" to="(440,170)" />
+    <wire from="(500,180)" to="(540,180)" />
     <wire from="(210,210)" to="(210,230)" />
     <wire from="(200,210)" to="(200,230)" />
+    <wire from="(410,250)" to="(490,250)" />
     <wire from="(150,110)" to="(150,250)" />
     <wire from="(210,150)" to="(210,160)" />
     <wire from="(70,70)" to="(70,90)" />
     <wire from="(190,360)" to="(190,370)" />
+    <wire from="(420,190)" to="(420,260)" />
     <wire from="(170,140)" to="(170,220)" />
     <wire from="(140,110)" to="(140,320)" />
     <wire from="(60,310)" to="(180,310)" />
+    <wire from="(220,250)" to="(410,250)" />
     <wire from="(190,340)" to="(190,350)" />
     <wire from="(190,140)" to="(260,140)" />
     <wire from="(260,70)" to="(260,140)" />
     <wire from="(260,270)" to="(260,390)" />
+    <wire from="(430,270)" to="(490,270)" />
+    <wire from="(410,180)" to="(410,250)" />
+    <wire from="(250,260)" to="(420,260)" />
     <wire from="(190,350)" to="(200,350)" />
     <wire from="(210,280)" to="(210,300)" />
     <wire from="(150,70)" to="(150,90)" />
@@ -577,24 +588,29 @@
     <wire from="(80,110)" to="(80,170)" />
     <wire from="(210,350)" to="(230,350)" />
     <wire from="(150,250)" to="(180,250)" />
-    <wire from="(260,270)" to="(490,270)" />
     <wire from="(190,210)" to="(200,210)" />
+    <wire from="(420,260)" to="(490,260)" />
     <wire from="(70,240)" to="(180,240)" />
     <wire from="(140,320)" to="(180,320)" />
     <wire from="(130,110)" to="(130,390)" />
     <wire from="(50,380)" to="(180,380)" />
+    <wire from="(400,150)" to="(400,160)" />
     <wire from="(230,150)" to="(320,150)" />
+    <wire from="(430,200)" to="(430,270)" />
+    <wire from="(430,200)" to="(440,200)" />
     <wire from="(510,260)" to="(540,260)" />
     <wire from="(230,280)" to="(230,350)" />
     <wire from="(210,210)" to="(230,210)" />
     <wire from="(170,220)" to="(190,220)" />
+    <wire from="(540,180)" to="(550,180)" />
     <wire from="(210,150)" to="(230,150)" />
     <wire from="(70,110)" to="(70,240)" />
+    <wire from="(410,180)" to="(440,180)" />
     <wire from="(170,290)" to="(170,360)" />
     <wire from="(160,110)" to="(160,180)" />
     <wire from="(190,290)" to="(190,300)" />
     <wire from="(230,150)" to="(230,210)" />
-    <wire from="(250,260)" to="(490,260)" />
+    <wire from="(420,190)" to="(440,190)" />
     <comp lib="0" name="Text" loc="(570,71)">
       <a name="text" val="Section #01" />
       <a name="font" val="Times New Roman plain 14" />
@@ -630,6 +646,12 @@
       <a name="label" val="B" />
       <a name="labelloc" val="north" />
       <a name="labelfont" val="SansSerif plain 12" />
+    </comp>
+    <comp lib="1" name="NOR Gate" loc="(500,180)">
+      <a name="facing" val="east" />
+      <a name="width" val="1" />
+      <a name="size" val="50" />
+      <a name="inputs" val="5" />
     </comp>
     <comp lib="0" name="Text" loc="(579,86)">
       <a name="text" val="Experiment #8" />
@@ -705,6 +727,11 @@
       <a name="bit1" val="1" />
       <a name="bit2" val="2" />
       <a name="bit3" val="3" />
+    </comp>
+    <comp lib="1" name="Constant" loc="(400,150)">
+      <a name="facing" val="south" />
+      <a name="width" val="1" />
+      <a name="value" val="0x0" />
     </comp>
     <comp lib="0" name="Pin" loc="(320,70)">
       <a name="facing" val="south" />
