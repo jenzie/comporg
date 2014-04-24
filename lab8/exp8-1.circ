@@ -4,11 +4,11 @@
   <lib name="0" desc="#Base">
     <tool name="Edit Tool">
       <a name="direction" val="horizontal" />
-      <a name="length" val="30" />
+      <a name="length" val="40" />
     </tool>
     <tool name="Select Tool">
       <a name="direction" val="horizontal" />
-      <a name="length" val="30" />
+      <a name="length" val="40" />
     </tool>
     <tool name="Text Tool">
       <a name="text" val="" />
@@ -64,7 +64,7 @@
       <a name="value" val="0x0" />
     </tool>
     <tool name="NOT Gate">
-      <a name="facing" val="east" />
+      <a name="facing" val="west" />
       <a name="width" val="1" />
       <a name="size" val="30" />
     </tool>
@@ -312,7 +312,7 @@
     <tool lib="0" name="Poke Tool" />
     <tool lib="0" name="Edit Tool">
       <a name="direction" val="horizontal" />
-      <a name="length" val="30" />
+      <a name="length" val="40" />
     </tool>
     <tool lib="0" name="Text Tool">
       <a name="text" val="" />
@@ -541,18 +541,20 @@
     <wire from="(400,240)" to="(490,240)" />
     <wire from="(160,180)" to="(180,180)" />
     <wire from="(190,200)" to="(190,210)" />
+    <wire from="(160,400)" to="(180,400)" />
     <wire from="(250,260)" to="(250,320)" />
     <wire from="(260,270)" to="(430,270)" />
     <wire from="(190,140)" to="(190,160)" />
     <wire from="(210,350)" to="(210,370)" />
     <wire from="(320,70)" to="(320,150)" />
     <wire from="(190,280)" to="(200,280)" />
-    <wire from="(230,390)" to="(230,430)" />
     <wire from="(250,180)" to="(250,240)" />
     <wire from="(230,210)" to="(230,280)" />
     <wire from="(210,280)" to="(230,280)" />
     <wire from="(190,140)" to="(200,140)" />
     <wire from="(80,170)" to="(180,170)" />
+    <wire from="(160,430)" to="(200,430)" />
+    <wire from="(220,390)" to="(260,390)" />
     <wire from="(60,110)" to="(60,310)" />
     <wire from="(170,220)" to="(170,290)" />
     <wire from="(130,390)" to="(180,390)" />
@@ -560,13 +562,12 @@
     <wire from="(400,160)" to="(440,160)" />
     <wire from="(190,270)" to="(190,280)" />
     <wire from="(400,170)" to="(400,240)" />
-    <wire from="(200,140)" to="(200,160)" />
     <wire from="(190,420)" to="(540,420)" />
+    <wire from="(200,140)" to="(200,160)" />
     <wire from="(220,180)" to="(250,180)" />
     <wire from="(170,290)" to="(190,290)" />
     <wire from="(170,140)" to="(190,140)" />
     <wire from="(170,360)" to="(190,360)" />
-    <wire from="(220,390)" to="(230,390)" />
     <wire from="(190,410)" to="(190,420)" />
     <wire from="(250,240)" to="(400,240)" />
     <wire from="(50,110)" to="(50,380)" />
@@ -580,13 +581,14 @@
     <wire from="(150,110)" to="(150,250)" />
     <wire from="(210,150)" to="(210,160)" />
     <wire from="(200,410)" to="(200,430)" />
+    <wire from="(160,260)" to="(180,260)" />
     <wire from="(200,140)" to="(260,140)" />
     <wire from="(70,70)" to="(70,90)" />
     <wire from="(190,360)" to="(190,370)" />
     <wire from="(420,190)" to="(420,260)" />
     <wire from="(170,140)" to="(170,220)" />
+    <wire from="(160,260)" to="(160,330)" />
     <wire from="(140,110)" to="(140,320)" />
-    <wire from="(230,390)" to="(260,390)" />
     <wire from="(60,310)" to="(180,310)" />
     <wire from="(220,250)" to="(410,250)" />
     <wire from="(190,340)" to="(190,350)" />
@@ -600,20 +602,24 @@
     <wire from="(150,70)" to="(150,90)" />
     <wire from="(200,280)" to="(200,300)" />
     <wire from="(80,110)" to="(80,170)" />
-    <wire from="(200,430)" to="(230,430)" />
+    <wire from="(160,330)" to="(180,330)" />
     <wire from="(210,350)" to="(230,350)" />
     <wire from="(150,250)" to="(180,250)" />
     <wire from="(190,210)" to="(200,210)" />
     <wire from="(420,260)" to="(490,260)" />
     <wire from="(70,240)" to="(180,240)" />
     <wire from="(140,320)" to="(180,320)" />
+    <wire from="(160,330)" to="(160,400)" />
     <wire from="(130,110)" to="(130,390)" />
     <wire from="(50,380)" to="(180,380)" />
     <wire from="(230,150)" to="(320,150)" />
     <wire from="(400,150)" to="(400,160)" />
+    <wire from="(160,190)" to="(160,260)" />
     <wire from="(510,260)" to="(540,260)" />
     <wire from="(430,200)" to="(440,200)" />
     <wire from="(430,200)" to="(430,270)" />
+    <wire from="(160,400)" to="(160,430)" />
+    <wire from="(160,190)" to="(180,190)" />
     <wire from="(210,210)" to="(230,210)" />
     <wire from="(230,280)" to="(230,350)" />
     <wire from="(170,220)" to="(190,220)" />
