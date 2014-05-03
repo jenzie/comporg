@@ -15,8 +15,18 @@ PRINT_STRING = 4
 READ_INT = 5
 EXIT = 10
 
+#
+# Name:		Data areas
+#
+# Description:	Data for the program, including: board data, puzzle messages, 
+#		and error messages.
+#
+
 	.data
 	.align 2
+	
+board_size:
+	.space	4		# room for board size, size for 1 word
 
 board_array:
 	.space	8*8*4	# room for input values, size for 8 by 8 words
@@ -89,9 +99,35 @@ impossible_puzzle:
 # Description:	Main logic for the program.
 #
 #	This program reads in numbers and places them in arrays representing the 
-#	skyscrapers game board. Once the reading is done, a brute force method is 
+#	skyscrapers game board. Once the reading is done, a brute-force method is 
 #	applied to attempt to solve the puzzle.
 #
 	
 main:
 	
+	li	$v0, READ_INT		# read in the value of the first integer param
+	syscall
+	
+	sw	board_size, $v0		# store the value of the first param, board size
+	
+	la	$a0, north_array	# store the address of the pointer to north_array
+	jal	parse_board_perim	# parse the input for north
+	la	$a0, east_array		# store the address of the pointer to east_array
+	jal	parse_board_perim	# parse the input for east
+	la	$a0, south_array	# store the address of the pointer to south_array
+	jal	parse_board_perim	# parse the input for south
+	la	$a0, west_array		# store the address of the pointer to west_array
+	jal	parse_board_perim	# parse the input for west
+	
+	
+parse_board_perim:
+	li	$t0, 0				# counter for the number of values read in
+	
+pbp_loop:
+	li	$v0, READ_INT		# read in a single perimeter value
+	addi	$t0, 1			# increment counter
+	beq	$t0, board_size, pbp_done
+	j	pbp_loop
+
+pbp_done:
+	jr	$ra
