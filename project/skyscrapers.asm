@@ -18,16 +18,19 @@ EXIT = 10
 	.data
 	.align 2
 
+board_array:
+	.space	8*8*4	# room for input values, size for 8 by 8 words
+	
 north_array:		# room for input values, size for 8 words
 	.space	8*4	
 
-east_array:		# room for input values, size for 8 words
+east_array:			# room for input values, size for 8 words
 	.space	8*4	
 
 south_array:		# room for input values, size for 8 words
 	.space	8*4	
 
-west_array:		# room for input values, size for 8 words
+west_array:			# room for input values, size for 8 words
 	.space	8*4	
 	
 	#
@@ -43,6 +46,9 @@ banner_msg:
 initial_msg:	
 	.asciiz	"Initial Puzzle\n\n"
 	
+final_msg:
+	.asciiz "Final Puzzle\n\n"
+	
 single_row_separator:
 	.asciiz "+--"
 
@@ -52,8 +58,40 @@ single_col_separator:
 row_terminator:
 	.asciiz "+"
 
-open_space:
+space:
 	.asciiz " "
+	
+new_line:
+	.asciiz "\n"
+	
+invalid_board_size:
+	.asciiz "Invalid board size, Skyscrapers terminating\n"
+	
+illegal_input:
+	.asciiz "Illegal input value, Skyscrapers terminating\n"
+	
+invalid_num_fv:
+	.asciiz "Invalid number of fixed values, Skyscrapers terminating\n"
+	
+illegal_fv_input:
+	.asciiz "Illegal fixed input values, Skyscrapers terminating\n"
+	
+impossible_puzzle:
+	.asciiz "Impossible Puzzle\n"
+	
+	.text			# this is program code
+	.align	2		# instructions must be on word boundaries
+	.globl	main	# main is a global label
+	
+#
+# Name:		MAIN PROGRAM
+#
+# Description:	Main logic for the program.
+#
+#	This program reads in numbers and places them in arrays representing the 
+#	skyscrapers game board. Once the reading is done, a brute force method is 
+#	applied to attempt to solve the puzzle.
+#
 	
 main:
 	
