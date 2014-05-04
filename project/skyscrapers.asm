@@ -74,6 +74,12 @@ row_terminator:
 space:
 	.asciiz " "
 	
+three_spaces:
+	.asciiz "   "
+	
+four_spaces:
+	.asciiz	"    "
+	
 new_line:
 	.asciiz "\n"
 	
@@ -92,9 +98,13 @@ illegal_fv_input:
 impossible_puzzle:
 	.asciiz "Impossible Puzzle\n\n"
 	
-	.text			# this is program code
-	.align	2		# instructions must be on word boundaries
-	.globl	main	# main is a global label
+	.text							# this is program code
+	.align	2						# instructions must be on word boundaries
+	.globl	main					# main is a global label
+	.globl	print_banner			# from printers.asm
+	.globl	print_initial_puzzle	# from printers.asm
+	.globl	print_final_puzzle		# from printers.asm
+	.globl	print_board				# from printers.asm
 	
 #
 # Name:		MAIN PROGRAM
