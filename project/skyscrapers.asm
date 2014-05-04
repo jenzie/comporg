@@ -10,6 +10,7 @@
 # CONSTANTS
 MIN_SIZE = 3
 MAX_SIZE = 8
+MIN_HEIGHT = 1
 
 # syscall codes
 PRINT_INT = 1
@@ -107,12 +108,15 @@ impossible_puzzle:
 	
 main:
 	
-	li	$v0, READ_INT		# read in the value of the first integer param
+	li	$v0, READ_INT		# read in the value of the first integer parameter
 	syscall
 	
-	sw	board_size, $v0		# store the value of the first param, board size
-	blt	board_size, MIN_SIZE, error_board_size		# validate input
-	bgt	board_size, MIN_SIZE, error_board_size		# validate input
+	la	$t0, board_size
+	sw	$v0, 0($t0)			# store the value of the first param, board size
+	
+	move	$s7, $v0		# store the board size into $s7 for easier access
+	blt	$s7, MIN_SIZE, error_board_size				# validate input
+	bgt	$s7, MIN_SIZE, error_board_size				# validate input
 	
 	la	$a0, north_array	# store the address of the pointer to north_array
 	jal	parse_board_perim	# parse the input for north
@@ -123,51 +127,105 @@ main:
 	la	$a0, west_array		# store the address of the pointer to west_array
 	jal	parse_board_perim	# parse the input for west
 	
+	li	$v0, READ_INT		# read in the value of the next integer parameter
+	syscall
+	
+	move	$a1, $v0		# store the number of fixed values
+	blt	$a1, $zero, error_num_fv					# validate input
+	
+	la	$a0, board_array	# store the address of the pointer to board_array
+	jal	parse_board			# parse the input for board
+	
 error_board_size:
 	li	$v0, PRINT_STRING			# load the syscall code
 	la	$a0, invalid_board_size		# load the address to the string
 	syscall							# tell the OS to print
-	sysexit							# terminate program
+	li	$v0, EXIT
+	syscall							# terminate program
 	
 error_input_value:
 	li	$v0, PRINT_STRING			# load the syscall code
 	la	$a0, illegal_input			# load the address to the string
 	syscall							# tell the OS to print
-	sysexit							# terminate program
+	li	$v0, EXIT
+	syscall							# terminate program
 	
 error_num_fv:
 	li	$v0, PRINT_STRING			# load the syscall code
 	la	$a0, invalid_num_fv			# load the address to the string
 	syscall							# tell the OS to print
-	sysexit							# terminate program
+	li	$v0, EXIT
+	syscall							# terminate program
 	
 error_fv_input:
 	li	$v0, PRINT_STRING			# load the syscall code
 	la	$a0, illegal_fv_input		# load the address to the string
 	syscall							# tell the OS to print
-	sysexit							# terminate program
+	li	$v0, EXIT
+	syscall							# terminate program
 	
-error_impossible puzzle:
+error_impossible_puzzle:
 	li	$v0, PRINT_STRING			# load the syscall code
 	la	$a0, impossible_puzzle		# load the address to the string
 	syscall							# tell the OS to print
-	sysexit							# terminate program
+	li	$v0, EXIT
+	syscall							# terminate program
 
 parse_board_perim:
 	li	$t0, 0						# counter for the number of values read in
 	
 pbp_loop:
+	beq	$t0, $s7, pbp_done
 	li	$v0, READ_INT				# read in a single perimeter value
 	syscall
 	
 	blt	$v0, $zero, error_input_value				# validate input
-	bgt	$v0, board_size, error_input_value			# validate input
+	bgt	$v0, $s7, error_input_value					# validate input
 	
-	sw	$v0, 0($a0)					# store the perimeter value
+	move	$v0, $a0				# store the perimeter value
 	addi	$a0, $a0, 4				# move address to base pointer over
 	addi	$t0, $t0, 1				# increment counter
-	beq	$t0, board_size, pbp_done
 	j	pbp_loop
 
 pbp_done:
+	jr	$ra
+	
+parse_board:
+	li	$t0, 0						# counter for the number of values read in
+	
+pb_loop:
+	beq	$t0, $a1, pb_done			# no fixed values to be read
+
+	li	$v0, READ_INT				# read in the row
+	syscall
+	blt	$v0, MIN_HEIGHT, error_fv_input				# validate input
+	bgt	$v0, $s7, error_fv_input					# validate input
+	move	$s0, $v0				# store the row value
+	
+	li	$v0, READ_INT				# read in the col value
+	syscall
+	blt	$v0, MIN_HEIGHT, error_fv_input				# validate input
+	bgt	$v0, $s7, error_fv_input					# validate input
+	move	$s1, $v0				# store the col value
+	
+	li	$v0, READ_INT				# read in the fixed value
+	syscall
+	blt	$v0, MIN_HEIGHT, error_fv_input				# validate input
+	bgt	$v0, $s7, error_fv_input					# validate input
+	move	$s2, $v0				# store the fixed value
+	
+	mul	$s3, $s0, $s7
+	add	$s3, $s3, $s1				# get the index of the piece
+	
+	li	$t9, 4
+	mul	$s3, $s3, $t9				# get the displacement/offset
+	add	$s3, $s3, $a0				# move the pointer over
+	
+	sw	$s2, 0($s3)					# store the fixed value
+	
+	addi	$a0, $a0, 4				# move address to base pointer over
+	addi	$t0, $t0, 1				# increment counter
+	j	pb_loop
+	
+pb_done:
 	jr	$ra
