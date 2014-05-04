@@ -216,6 +216,10 @@ parse_board:
 pb_loop:
 	beq	$t0, $a1, pb_done			# no fixed values to be read
 
+	# to-do: change the bgt s7 to s7 - 1
+	
+	move	$s3, $zero				# clear $s3
+	
 	li	$v0, READ_INT				# read in the row
 	syscall
 	blt	$v0, $zero, error_fv_input					# validate input
@@ -237,13 +241,12 @@ pb_loop:
 	mul	$s3, $s0, $s7
 	add	$s3, $s3, $s1				# get the index of the piece
 	
-	li	$t9, 4
+	li	$t9, 4						# 4 bytes in a word
 	mul	$s3, $s3, $t9				# get the displacement/offset
 	add	$s3, $s3, $a0				# move the pointer over
 	
 	sw	$s2, 0($s3)					# store the fixed value
 	
-	addi	$a0, $a0, 4				# move address to base pointer over
 	addi	$t0, $t0, 1				# increment counter
 	j	pb_loop
 	

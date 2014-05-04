@@ -71,6 +71,10 @@ print_board:
 	jal	print_west_east_rows
 	jal	print_south_row
 	
+	li 	$v0, PRINT_STRING			# load the syscall code
+	la	$a0, new_line				# load the address to the string
+	syscall							# tell the OS to print
+	
 									# restore for print_board to go skyscrapers
 	lw	$ra, 0($sp)					# restore return address of the caller
 	addi	$sp, $sp, 4

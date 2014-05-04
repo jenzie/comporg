@@ -49,40 +49,40 @@ Module:  skyscrapers.obj
                 PRINT_INT          A   0x00000001
 
 Module:  printers.obj
- Text segment:  696 bytes, load point 0x004001c4
+ Text segment:  712 bytes, load point 0x004001c4
  Symbols:
                      Name Section Mode    Value
-             print_next_w   Text   R   0x004002d8
-             print_loop_s   Text   R   0x00400364
+             print_next_w   Text   R   0x004002e8
+             print_loop_s   Text   R   0x00400374
        print_final_puzzle   Text   R   0x004001ec
-            print_we_loop   Text   R   0x004002ac
-               print_loop   Text   R   0x004003a8
+            print_we_loop   Text   R   0x004002bc
+               print_loop   Text   R   0x004003b8
                  READ_INT          A   0x00000005
-        print_one_divider   Text   R   0x0040044c
-               print_tile   Text   R   0x004003ec
-     print_west_east_rows   Text   R   0x00400278
-         print_empty_tile   Text   R   0x00400420
+        print_one_divider   Text   R   0x0040045c
+               print_tile   Text   R   0x004003fc
+     print_west_east_rows   Text   R   0x00400288
+         print_empty_tile   Text   R   0x00400430
              PRINT_STRING          A   0x00000004
              print_banner   Text   R   0x004001c4
-            print_empty_e   Text   R   0x00400314
-            print_we_done   Text   R   0x0040034c
-        print_row_divider   Text   R   0x00400434
-           print_div_done   Text   R   0x00400468
-            print_empty_w   Text   R   0x004002c8
-               print_done   Text   R   0x004003d0
+            print_empty_e   Text   R   0x00400324
+            print_we_done   Text   R   0x0040035c
+        print_row_divider   Text   R   0x00400444
+           print_div_done   Text   R   0x00400478
+            print_empty_w   Text   R   0x004002d8
+               print_done   Text   R   0x004003e0
               print_board   Text   R   0x00400200
      print_initial_puzzle   Text   R   0x004001d8
-          print_north_row   Text   R   0x00400220
-        print_loop_s_init   Text   R   0x0040035c
+          print_north_row   Text   R   0x00400230
+        print_loop_s_init   Text   R   0x0040036c
                      EXIT          A   0x0000000a
-             print_done_s   Text   R   0x0040038c
-          print_south_row   Text   R   0x0040024c
+             print_done_s   Text   R   0x0040039c
+          print_south_row   Text   R   0x0040025c
                 PRINT_INT          A   0x00000001
-             print_next_e   Text   R   0x00400324
+             print_next_e   Text   R   0x00400334
 
 Module:  r2k_startup.obj
- Text segment:  36 bytes, load point 0x0040047c
+ Text segment:  36 bytes, load point 0x0040048c
  Symbols:
                      Name Section Mode    Value
                 SYS_EXIT2          A   0x00000011
-           __r2k__entry__   Text   RG  0x00400480
+           __r2k__entry__   Text   RG  0x00400490

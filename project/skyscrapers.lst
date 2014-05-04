@@ -303,47 +303,50 @@
  216 013c               pb_loop:
  217 013c 11050020		beq	$t0, $a1, pb_done			# no fixed values to be read
  218 0140               
- 219 0140 34020005		li	$v0, READ_INT				# read in the row
- 220 0144 0000000C		syscall
- 221 0148 0040082A		blt	$v0, $zero, error_fv_input					# validate input
-     014c 1420FFE1
- 222 0150 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
-     0154 1420FFDF
- 223 0158 00408021		move	$s0, $v0				# store the row value
- 224 015c               	
- 225 015c 34020005		li	$v0, READ_INT				# read in the col value
- 226 0160 0000000C		syscall
- 227 0164 0040082A		blt	$v0, $zero, error_fv_input					# validate input
-     0168 1420FFDA
- 228 016c 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
-     0170 1420FFD8
- 229 0174 00408821		move	$s1, $v0				# store the col value
- 230 0178               	
- 231 0178 34020005		li	$v0, READ_INT				# read in the fixed value
- 232 017c 0000000C		syscall
- 233 0180 28410001		blt	$v0, MIN_HEIGHT, error_fv_input				# validate input
-     0184 1420FFD3
- 234 0188 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
-     018c 1420FFD1
- 235 0190 00409021		move	$s2, $v0				# store the fixed value
- 236 0194               	
- 237 0194 02170018		mul	$s3, $s0, $s7
-     0198 00009812
- 238 019c 02719820		add	$s3, $s3, $s1				# get the index of the piece
- 239 01a0               	
- 240 01a0 34190004		li	$t9, 4
- 241 01a4 02790018		mul	$s3, $s3, $t9				# get the displacement/offset
-     01a8 00009812
- 242 01ac 02649820		add	$s3, $s3, $a0				# move the pointer over
- 243 01b0               	
- 244 01b0 AE720000		sw	$s2, 0($s3)					# store the fixed value
- 245 01b4               	
- 246 01b4 20840004		addi	$a0, $a0, 4				# move address to base pointer over
- 247 01b8 21080001		addi	$t0, $t0, 1				# increment counter
- 248 01bc 0800004F		j	pb_loop
- 249 01c0               	
- 250 01c0               pb_done:
- 251 01c0 03E00008		jr	$ra
+ 219 0140               	# to-do: change the bgt s7 to s7 - 1
+ 220 0140               	
+ 221 0140 00009821		move	$s3, $zero				# clear $s3
+ 222 0144               	
+ 223 0144 34020005		li	$v0, READ_INT				# read in the row
+ 224 0148 0000000C		syscall
+ 225 014c 0040082A		blt	$v0, $zero, error_fv_input					# validate input
+     0150 1420FFE0
+ 226 0154 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
+     0158 1420FFDE
+ 227 015c 00408021		move	$s0, $v0				# store the row value
+ 228 0160               	
+ 229 0160 34020005		li	$v0, READ_INT				# read in the col value
+ 230 0164 0000000C		syscall
+ 231 0168 0040082A		blt	$v0, $zero, error_fv_input					# validate input
+     016c 1420FFD9
+ 232 0170 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
+     0174 1420FFD7
+ 233 0178 00408821		move	$s1, $v0				# store the col value
+ 234 017c               	
+ 235 017c 34020005		li	$v0, READ_INT				# read in the fixed value
+ 236 0180 0000000C		syscall
+ 237 0184 28410001		blt	$v0, MIN_HEIGHT, error_fv_input				# validate input
+     0188 1420FFD2
+ 238 018c 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
+     0190 1420FFD0
+ 239 0194 00409021		move	$s2, $v0				# store the fixed value
+ 240 0198               	
+ 241 0198 02170018		mul	$s3, $s0, $s7
+     019c 00009812
+ 242 01a0 02719820		add	$s3, $s3, $s1				# get the index of the piece
+ 243 01a4               	
+ 244 01a4 34190004		li	$t9, 4						# 4 bytes in a word
+ 245 01a8 02790018		mul	$s3, $s3, $t9				# get the displacement/offset
+     01ac 00009812
+ 246 01b0 02649820		add	$s3, $s3, $a0				# move the pointer over
+ 247 01b4               	
+ 248 01b4 AE720000		sw	$s2, 0($s3)					# store the fixed value
+ 249 01b8               	
+ 250 01b8 21080001		addi	$t0, $t0, 1				# increment counter
+ 251 01bc 0800004F		j	pb_loop
+ 252 01c0               	
+ 253 01c0               pb_done:
+ 254 01c0 03E00008		jr	$ra
 
 
 EXIT                     = 0000000A   

@@ -70,257 +70,262 @@
   67 003c 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
   68 0040 AFBF0000		sw	$ra, 0($sp)
   69 0044               	
-  70 0044 0C000017		jal	print_north_row
-  71 0048 0C00002D		jal	print_west_east_rows
-  72 004c 0C000022		jal	print_south_row
+  70 0044 0C00001B		jal	print_north_row
+  71 0048 0C000031		jal	print_west_east_rows
+  72 004c 0C000026		jal	print_south_row
   73 0050               	
-  74 0050               									# restore for print_board to go skyscrapers
-  75 0050 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
-  76 0054 23BD0004		addi	$sp, $sp, 4
-  77 0058               	
-  78 0058 03E00008		jr	$ra
-  79 005c               	
-  80 005c               print_north_row:
-  81 005c               									# save for print_tile
-  82 005c 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
-  83 0060 AFBF0000		sw	$ra, 0($sp)
-  84 0064               	
-  85 0064 34020004		li 	$v0, PRINT_STRING			# load the syscall code
-  86 0068 3C040000		la	$a0, three_spaces			# load the address to the string
-     006c 34840000
-  87 0070 0000000C		syscall							# tell the OS to print
+  74 0050 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+  75 0054 3C040000		la	$a0, new_line				# load the address to the string
+     0058 34840000
+  76 005c 0000000C		syscall							# tell the OS to print
+  77 0060               	
+  78 0060               									# restore for print_board to go skyscrapers
+  79 0060 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+  80 0064 23BD0004		addi	$sp, $sp, 4
+  81 0068               	
+  82 0068 03E00008		jr	$ra
+  83 006c               	
+  84 006c               print_north_row:
+  85 006c               									# save for print_tile
+  86 006c 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+  87 0070 AFBF0000		sw	$ra, 0($sp)
   88 0074               	
-  89 0074 3C0D0000		la	$t5, north_array			# load the address of an element in north
-     0078 35AD0000
-  90 007c 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in north
-  91 0080               	
-  92 0080 00007821		move	$t7, $zero				# count the number of tiles printed
-  93 0084               	
-  94 0084 08000079		j	print_loop
-  95 0088               	
-  96 0088               print_south_row:
-  97 0088               									# save for print_tile
-  98 0088 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
-  99 008c AFBF0000		sw	$ra, 0($sp)
- 100 0090               	
- 101 0090 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 102 0094 3C040000		la	$a0, three_spaces			# load the address to the string
-     0098 34840000
- 103 009c 0000000C		syscall							# tell the OS to print
+  89 0074 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+  90 0078 3C040000		la	$a0, three_spaces			# load the address to the string
+     007c 34840000
+  91 0080 0000000C		syscall							# tell the OS to print
+  92 0084               	
+  93 0084 3C0D0000		la	$t5, north_array			# load the address of an element in north
+     0088 35AD0000
+  94 008c 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in north
+  95 0090               	
+  96 0090 00007821		move	$t7, $zero				# count the number of tiles printed
+  97 0094               	
+  98 0094 0800007D		j	print_loop
+  99 0098               	
+ 100 0098               print_south_row:
+ 101 0098               									# save for print_tile
+ 102 0098 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+ 103 009c AFBF0000		sw	$ra, 0($sp)
  104 00a0               	
- 105 00a0 3C0D0000		la	$t5, south_array			# load the address of an element in south
-     00a4 35AD0000
- 106 00a8 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in south
- 107 00ac               	
- 108 00ac 00007821		move	$t7, $zero				# count the number of tiles printed
- 109 00b0               		
- 110 00b0 08000079		j	print_loop
- 111 00b4               	
- 112 00b4               print_west_east_rows:
- 113 00b4               									# save for print_loop_s
- 114 00b4 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
- 115 00b8 AFBF0000		sw	$ra, 0($sp)
- 116 00bc               	
- 117 00bc 3C090000		la	$t1, west_array				# load the address of an element in west
-     00c0 35290000
- 118 00c4 8D2A0000		lw	$t2, 0($t1)					# load the value of the element in west
- 119 00c8               	
- 120 00c8 3C0B0000		la	$t3, east_array				# load the address of an element in east
-     00cc 356B0000
- 121 00d0 8D6C0000		lw	$t4, 0($t3)					# load the value of the element in east
- 122 00d4               	
- 123 00d4 3C0D0000		la	$t5, board_array			# load the address of an element in board
-     00d8 35AD0000
- 124 00dc 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in board
- 125 00e0               	
- 126 00e0 0000C021		move	$t8, $zero				# count the number of rows printed
- 127 00e4               	
- 128 00e4 0800003A		j	print_we_loop
- 129 00e8               	
- 130 00e8               print_we_loop:
- 131 00e8 13170027		beq	$t8, $s7, print_we_done		# check counter for num rows
- 132 00ec               	
- 133 00ec 0C00009C		jal	print_row_divider
- 134 00f0               	
- 135 00f0               									# print west value
- 136 00f0               
- 137 00f0 11400004		beq	$t2, $zero, print_empty_w	# check for null value
- 138 00f4 34020001		li 	$v0, PRINT_INT				# load the syscall code
- 139 00f8 01402021		move	$a0, $t2				# load the value
- 140 00fc 0000000C		syscall							# tell the OS to print
- 141 0100 08000045		j print_next_w
- 142 0104               	
- 143 0104               print_empty_w:
- 144 0104 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 145 0108 3C040000		la	$a0, space					# load the address to the string
-     010c 34840000
- 146 0110 0000000C		syscall							# tell the OS to print
- 147 0114               	
- 148 0114               print_next_w:
- 149 0114 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 150 0118 3C040000		la	$a0, space					# load the address to the string
+ 105 00a0 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 106 00a4 3C040000		la	$a0, three_spaces			# load the address to the string
+     00a8 34840000
+ 107 00ac 0000000C		syscall							# tell the OS to print
+ 108 00b0               	
+ 109 00b0 3C0D0000		la	$t5, south_array			# load the address of an element in south
+     00b4 35AD0000
+ 110 00b8 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in south
+ 111 00bc               	
+ 112 00bc 00007821		move	$t7, $zero				# count the number of tiles printed
+ 113 00c0               		
+ 114 00c0 0800007D		j	print_loop
+ 115 00c4               	
+ 116 00c4               print_west_east_rows:
+ 117 00c4               									# save for print_loop_s
+ 118 00c4 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+ 119 00c8 AFBF0000		sw	$ra, 0($sp)
+ 120 00cc               	
+ 121 00cc 3C090000		la	$t1, west_array				# load the address of an element in west
+     00d0 35290000
+ 122 00d4 8D2A0000		lw	$t2, 0($t1)					# load the value of the element in west
+ 123 00d8               	
+ 124 00d8 3C0B0000		la	$t3, east_array				# load the address of an element in east
+     00dc 356B0000
+ 125 00e0 8D6C0000		lw	$t4, 0($t3)					# load the value of the element in east
+ 126 00e4               	
+ 127 00e4 3C0D0000		la	$t5, board_array			# load the address of an element in board
+     00e8 35AD0000
+ 128 00ec 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in board
+ 129 00f0               	
+ 130 00f0 0000C021		move	$t8, $zero				# count the number of rows printed
+ 131 00f4               	
+ 132 00f4 0800003E		j	print_we_loop
+ 133 00f8               	
+ 134 00f8               print_we_loop:
+ 135 00f8 13170027		beq	$t8, $s7, print_we_done		# check counter for num rows
+ 136 00fc               	
+ 137 00fc 0C0000A0		jal	print_row_divider
+ 138 0100               	
+ 139 0100               									# print west value
+ 140 0100               
+ 141 0100 11400004		beq	$t2, $zero, print_empty_w	# check for null value
+ 142 0104 34020001		li 	$v0, PRINT_INT				# load the syscall code
+ 143 0108 01402021		move	$a0, $t2				# load the value
+ 144 010c 0000000C		syscall							# tell the OS to print
+ 145 0110 08000049		j print_next_w
+ 146 0114               	
+ 147 0114               print_empty_w:
+ 148 0114 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 149 0118 3C040000		la	$a0, space					# load the address to the string
      011c 34840000
- 151 0120 0000000C		syscall							# tell the OS to print
- 152 0124               	
- 153 0124 00007821		move	$t7, $zero				# count the number of tiles printed
- 154 0128               	
- 155 0128 0C000066		jal	print_loop_s_init
- 156 012c               	
- 157 012c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 158 0130 3C040000		la	$a0, space					# load the address to the string
-     0134 34840000
- 159 0138 0000000C		syscall							# tell the OS to print
+ 150 0120 0000000C		syscall							# tell the OS to print
+ 151 0124               	
+ 152 0124               print_next_w:
+ 153 0124 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 154 0128 3C040000		la	$a0, space					# load the address to the string
+     012c 34840000
+ 155 0130 0000000C		syscall							# tell the OS to print
+ 156 0134               	
+ 157 0134 00007821		move	$t7, $zero				# count the number of tiles printed
+ 158 0138               	
+ 159 0138 0C00006A		jal	print_loop_s_init
  160 013c               	
- 161 013c               									# print east value
- 162 013c               									
- 163 013c 11800004		beq	$t4, $zero, print_empty_e	# check for null value
- 164 0140 34020001		li 	$v0, PRINT_INT				# load the syscall code
- 165 0144 01802021		move	$a0, $t4				# load the value
- 166 0148 0000000C		syscall							# tell the OS to print
- 167 014c 08000058		j	print_next_e
- 168 0150               	
- 169 0150               print_empty_e:
- 170 0150 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 171 0154 3C040000		la	$a0, space					# load the address to the string
-     0158 34840000
- 172 015c 0000000C		syscall							# tell the OS to print
- 173 0160               	
- 174 0160               print_next_e:
- 175 0160 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 176 0164 3C040000		la	$a0, new_line				# load the address to the string
+ 161 013c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 162 0140 3C040000		la	$a0, space					# load the address to the string
+     0144 34840000
+ 163 0148 0000000C		syscall							# tell the OS to print
+ 164 014c               	
+ 165 014c               									# print east value
+ 166 014c               									
+ 167 014c 11800004		beq	$t4, $zero, print_empty_e	# check for null value
+ 168 0150 34020001		li 	$v0, PRINT_INT				# load the syscall code
+ 169 0154 01802021		move	$a0, $t4				# load the value
+ 170 0158 0000000C		syscall							# tell the OS to print
+ 171 015c 0800005C		j	print_next_e
+ 172 0160               	
+ 173 0160               print_empty_e:
+ 174 0160 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 175 0164 3C040000		la	$a0, space					# load the address to the string
      0168 34840000
- 177 016c 0000000C		syscall							# tell the OS to print
- 178 0170               	
- 179 0170 23180001		addi	$t8, $t8, 1				# increment the counter
- 180 0174 21290004		addi	$t1, $t1, 4				# move the base pointer over for west
- 181 0178 8D2A0000		lw	$t2, 0($t1)					# load the value of the tile for west
- 182 017c 216B0004		addi	$t3, $t3, 4				# move the base pointer over for east
- 183 0180 8D6C0000		lw	$t4, 0($t3)					# load the value of the tile for east
- 184 0184               	
- 185 0184 0800003A		j	print_we_loop				# next row
- 186 0188               	
- 187 0188               print_we_done:
- 188 0188 0C00009C		jal	print_row_divider
- 189 018c               	
- 190 018c               									# restore for print_loop_s
- 191 018c 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
- 192 0190 23BD0004		addi	$sp, $sp, 4
- 193 0194               	
- 194 0194 03E00008		jr	$ra
- 195 0198               	
- 196 0198               print_loop_s_init:
- 197 0198 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
- 198 019c AFBF0000		sw	$ra, 0($sp)
- 199 01a0               	
- 200 01a0               print_loop_s:
- 201 01a0 11F70009		beq	$t7, $s7, print_done_s		# check counter for num tiles
- 202 01a4               	
- 203 01a4 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 204 01a8 3C040000		la	$a0, single_col_separator	# load the address to the string
-     01ac 34840000
- 205 01b0 0000000C		syscall							# tell the OS to print
+ 176 016c 0000000C		syscall							# tell the OS to print
+ 177 0170               	
+ 178 0170               print_next_e:
+ 179 0170 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 180 0174 3C040000		la	$a0, new_line				# load the address to the string
+     0178 34840000
+ 181 017c 0000000C		syscall							# tell the OS to print
+ 182 0180               	
+ 183 0180 23180001		addi	$t8, $t8, 1				# increment the counter
+ 184 0184 21290004		addi	$t1, $t1, 4				# move the base pointer over for west
+ 185 0188 8D2A0000		lw	$t2, 0($t1)					# load the value of the tile for west
+ 186 018c 216B0004		addi	$t3, $t3, 4				# move the base pointer over for east
+ 187 0190 8D6C0000		lw	$t4, 0($t3)					# load the value of the tile for east
+ 188 0194               	
+ 189 0194 0800003E		j	print_we_loop				# next row
+ 190 0198               	
+ 191 0198               print_we_done:
+ 192 0198 0C0000A0		jal	print_row_divider
+ 193 019c               	
+ 194 019c               									# restore for print_loop_s
+ 195 019c 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+ 196 01a0 23BD0004		addi	$sp, $sp, 4
+ 197 01a4               	
+ 198 01a4 03E00008		jr	$ra
+ 199 01a8               	
+ 200 01a8               print_loop_s_init:
+ 201 01a8 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+ 202 01ac AFBF0000		sw	$ra, 0($sp)
+ 203 01b0               	
+ 204 01b0               print_loop_s:
+ 205 01b0 11F70009		beq	$t7, $s7, print_done_s		# check counter for num tiles
  206 01b4               	
- 207 01b4 0C00008A		jal	print_tile
- 208 01b8               	
- 209 01b8 21EF0001		addi	$t7, $t7, 1				# increment the counter
- 210 01bc 21AD0004		addi	$t5, $t5, 4				# move the base pointer over for board
- 211 01c0 8DAE0000		lw	$t6, 0($t5)					# load the value of the tile for board
- 212 01c4               	
- 213 01c4 08000068		j	print_loop_s				# next tile
- 214 01c8               	
- 215 01c8               print_done_s:
- 216 01c8 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 217 01cc 3C040000		la	$a0, single_col_separator	# load the address to the string
-     01d0 34840000
- 218 01d4 0000000C		syscall							# tell the OS to print
- 219 01d8               	
- 220 01d8               									# restore for print_tile
- 221 01d8 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
- 222 01dc 23BD0004		addi	$sp, $sp, 4
- 223 01e0               	
- 224 01e0 03E00008		jr	$ra
- 225 01e4               	
- 226 01e4               print_loop:
- 227 01e4 11F70009		beq	$t7, $s7, print_done		# check counter for num tiles
- 228 01e8               	
- 229 01e8 0C00008A		jal	print_tile
- 230 01ec               	
- 231 01ec 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 232 01f0 3C040000		la	$a0, space					# load the address to the string
-     01f4 34840000
- 233 01f8 0000000C		syscall							# tell the OS to print
+ 207 01b4 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 208 01b8 3C040000		la	$a0, single_col_separator	# load the address to the string
+     01bc 34840000
+ 209 01c0 0000000C		syscall							# tell the OS to print
+ 210 01c4               	
+ 211 01c4 0C00008E		jal	print_tile
+ 212 01c8               	
+ 213 01c8 21EF0001		addi	$t7, $t7, 1				# increment the counter
+ 214 01cc 21AD0004		addi	$t5, $t5, 4				# move the base pointer over for board
+ 215 01d0 8DAE0000		lw	$t6, 0($t5)					# load the value of the tile for board
+ 216 01d4               	
+ 217 01d4 0800006C		j	print_loop_s				# next tile
+ 218 01d8               	
+ 219 01d8               print_done_s:
+ 220 01d8 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 221 01dc 3C040000		la	$a0, single_col_separator	# load the address to the string
+     01e0 34840000
+ 222 01e4 0000000C		syscall							# tell the OS to print
+ 223 01e8               	
+ 224 01e8               									# restore for print_tile
+ 225 01e8 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+ 226 01ec 23BD0004		addi	$sp, $sp, 4
+ 227 01f0               	
+ 228 01f0 03E00008		jr	$ra
+ 229 01f4               	
+ 230 01f4               print_loop:
+ 231 01f4 11F70009		beq	$t7, $s7, print_done		# check counter for num tiles
+ 232 01f8               	
+ 233 01f8 0C00008E		jal	print_tile
  234 01fc               	
- 235 01fc 21EF0001		addi	$t7, $t7, 1				# increment the counter
- 236 0200 21AD0004		addi	$t5, $t5, 4				# move the base pointer over
- 237 0204 8DAE0000		lw	$t6, 0($t5)					# load the value of the tile
- 238 0208 08000079		j	print_loop
- 239 020c               	
- 240 020c               print_done:
- 241 020c               									# restore for print_tile
- 242 020c 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
- 243 0210 23BD0004		addi	$sp, $sp, 4
- 244 0214               	
- 245 0214 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 246 0218 3C040000		la	$a0, new_line				# load the address to the string
-     021c 34840000
- 247 0220 0000000C		syscall							# tell the OS to print
+ 235 01fc 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 236 0200 3C040000		la	$a0, space					# load the address to the string
+     0204 34840000
+ 237 0208 0000000C		syscall							# tell the OS to print
+ 238 020c               	
+ 239 020c 21EF0001		addi	$t7, $t7, 1				# increment the counter
+ 240 0210 21AD0004		addi	$t5, $t5, 4				# move the base pointer over
+ 241 0214 8DAE0000		lw	$t6, 0($t5)					# load the value of the tile
+ 242 0218 0800007D		j	print_loop
+ 243 021c               	
+ 244 021c               print_done:
+ 245 021c               									# restore for print_tile
+ 246 021c 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+ 247 0220 23BD0004		addi	$sp, $sp, 4
  248 0224               	
- 249 0224 03E00008		jr	$ra
- 250 0228               	
- 251 0228               print_tile:
- 252 0228 11C0000C		beq	$t6, $zero, print_empty_tile	# check for null value
- 253 022c               	
- 254 022c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 255 0230 3C040000		la	$a0, space					# load the address to the string
-     0234 34840000
- 256 0238 0000000C		syscall							# tell the OS to print
+ 249 0224 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 250 0228 3C040000		la	$a0, new_line				# load the address to the string
+     022c 34840000
+ 251 0230 0000000C		syscall							# tell the OS to print
+ 252 0234               	
+ 253 0234 03E00008		jr	$ra
+ 254 0238               	
+ 255 0238               print_tile:
+ 256 0238 11C0000C		beq	$t6, $zero, print_empty_tile	# check for null value
  257 023c               	
- 258 023c 34020001		li 	$v0, PRINT_INT				# load the syscall code
- 259 0240 01C02021		move 	$a0, $t6				# load the address to the string
- 260 0244 0000000C		syscall							# tell the OS to print
- 261 0248               	
- 262 0248 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 263 024c 3C040000		la	$a0, space					# load the address to the string
-     0250 34840000
+ 258 023c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 259 0240 3C040000		la	$a0, space					# load the address to the string
+     0244 34840000
+ 260 0248 0000000C		syscall							# tell the OS to print
+ 261 024c               	
+ 262 024c 34020001		li 	$v0, PRINT_INT				# load the syscall code
+ 263 0250 01C02021		move 	$a0, $t6				# load the address to the string
  264 0254 0000000C		syscall							# tell the OS to print
  265 0258               	
- 266 0258 03E00008		jr	$ra
- 267 025c               	
- 268 025c               print_empty_tile:
- 269 025c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 270 0260 3C040000		la	$a0, three_spaces			# load the address to the string
-     0264 34840000
- 271 0268 0000000C		syscall							# tell the OS to print
- 272 026c               	
- 273 026c 03E00008		jr	$ra
- 274 0270               	
- 275 0270               print_row_divider:
- 276 0270 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 277 0274 3C040000		la	$a0, two_spaces				# load the address to the string
-     0278 34840000
- 278 027c 0000000C		syscall							# tell the OS to print
- 279 0280               	
- 280 0280 00007821		move	$t7, $zero				# count the number of tiles printed
- 281 0284 080000A2		j	print_one_divider
- 282 0288               	
- 283 0288               print_one_divider:
- 284 0288 11F70006		beq	$t7, $s7, print_div_done
- 285 028c               	
- 286 028c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 287 0290 3C040000		la	$a0, single_row_separator	# load the address to the string
-     0294 34840000
- 288 0298 0000000C		syscall							# tell the OS to print
+ 266 0258 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 267 025c 3C040000		la	$a0, space					# load the address to the string
+     0260 34840000
+ 268 0264 0000000C		syscall							# tell the OS to print
+ 269 0268               	
+ 270 0268 03E00008		jr	$ra
+ 271 026c               	
+ 272 026c               print_empty_tile:
+ 273 026c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 274 0270 3C040000		la	$a0, three_spaces			# load the address to the string
+     0274 34840000
+ 275 0278 0000000C		syscall							# tell the OS to print
+ 276 027c               	
+ 277 027c 03E00008		jr	$ra
+ 278 0280               	
+ 279 0280               print_row_divider:
+ 280 0280 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 281 0284 3C040000		la	$a0, two_spaces				# load the address to the string
+     0288 34840000
+ 282 028c 0000000C		syscall							# tell the OS to print
+ 283 0290               	
+ 284 0290 00007821		move	$t7, $zero				# count the number of tiles printed
+ 285 0294 080000A6		j	print_one_divider
+ 286 0298               	
+ 287 0298               print_one_divider:
+ 288 0298 11F70006		beq	$t7, $s7, print_div_done
  289 029c               	
- 290 029c 21EF0001		addi	$t7, $t7, 1				# increment the counter
- 291 02a0 080000A2		j	print_one_divider
- 292 02a4               	
- 293 02a4               print_div_done:
- 294 02a4 34020004		li 	$v0, PRINT_STRING			# load the syscall code
- 295 02a8 3C040000		la	$a0, row_terminator			# load the address to the string
-     02ac 34840000
- 296 02b0 0000000C		syscall							# tell the OS to print
- 297 02b4               	
- 298 02b4 03E00008		jr	$ra
+ 290 029c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 291 02a0 3C040000		la	$a0, single_row_separator	# load the address to the string
+     02a4 34840000
+ 292 02a8 0000000C		syscall							# tell the OS to print
+ 293 02ac               	
+ 294 02ac 21EF0001		addi	$t7, $t7, 1				# increment the counter
+ 295 02b0 080000A6		j	print_one_divider
+ 296 02b4               	
+ 297 02b4               print_div_done:
+ 298 02b4 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 299 02b8 3C040000		la	$a0, row_terminator			# load the address to the string
+     02bc 34840000
+ 300 02c0 0000000C		syscall							# tell the OS to print
+ 301 02c4               	
+ 302 02c4 03E00008		jr	$ra
 
 
 EXIT                  = 0000000A   
@@ -339,27 +344,27 @@ new_line                ******** XG
 north_array             ******** XG
 print_banner            00000000 R  text 
 print_board             0000003C R  text 
-print_div_done          000002A4 R  text 
-print_done              0000020C R  text 
-print_done_s            000001C8 R  text 
-print_empty_e           00000150 R  text 
-print_empty_tile        0000025C R  text 
-print_empty_w           00000104 R  text 
+print_div_done          000002B4 R  text 
+print_done              0000021C R  text 
+print_done_s            000001D8 R  text 
+print_empty_e           00000160 R  text 
+print_empty_tile        0000026C R  text 
+print_empty_w           00000114 R  text 
 print_final_puzzle      00000028 R  text 
 print_initial_puzzle    00000014 R  text 
-print_loop              000001E4 R  text 
-print_loop_s            000001A0 R  text 
-print_loop_s_init       00000198 R  text 
-print_next_e            00000160 R  text 
-print_next_w            00000114 R  text 
-print_north_row         0000005C R  text 
-print_one_divider       00000288 R  text 
-print_row_divider       00000270 R  text 
-print_south_row         00000088 R  text 
-print_tile              00000228 R  text 
-print_we_done           00000188 R  text 
-print_we_loop           000000E8 R  text 
-print_west_east_rows    000000B4 R  text 
+print_loop              000001F4 R  text 
+print_loop_s            000001B0 R  text 
+print_loop_s_init       000001A8 R  text 
+print_next_e            00000170 R  text 
+print_next_w            00000124 R  text 
+print_north_row         0000006C R  text 
+print_one_divider       00000298 R  text 
+print_row_divider       00000280 R  text 
+print_south_row         00000098 R  text 
+print_tile              00000238 R  text 
+print_we_done           00000198 R  text 
+print_we_loop           000000F8 R  text 
+print_west_east_rows    000000C4 R  text 
 row_terminator          ******** XG
 single_col_separator    ******** XG
 single_row_separator    ******** XG
