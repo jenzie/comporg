@@ -7,365 +7,330 @@
    7 0000               # Returns:
    8 0000               #
    9 0000               
-  10 0000               #
-  11 0000               # Name: print_puzzle
-  12 0000               #
-  13 0000               # Description:	Print a single Skyscrapers puzzle.
-  14 0000               # Arguments:
-  15 0000               #
-  16 0000               
-  17 0000               print_banner:
-  18 0000               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
-  19 0000 3C040000		la 	$a0, banner_msg				# load the address to the string
-     0004 34840000
-Error: Undefined symbol(s) in expression
-  20 0008 0000000C		syscall							# tell the OS to print
-  21 000c               
-  22 000c               print_initial_puzzle:
-  23 000c               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
-  24 000c 3C040000		la 	$a0, initial_msg			# load the address to the string
-     0010 34840000
-Error: Undefined symbol(s) in expression
-  25 0014 0000000C		syscall							# tell the OS to print
-  26 0018               	
-  27 0018 0800000B		j	print_board
-  28 001c               	
-  29 001c               print_final_puzzle:
-  30 001c               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
-  31 001c 3C040000		la 	$a0, final_msg				# load the address to the string
-     0020 34840000
-Error: Undefined symbol(s) in expression
-  32 0024 0000000C		syscall							# tell the OS to print
-  33 0028               	
-  34 0028 0800000B		j	print_board
-  35 002c               	
-  36 002c               print_board:
-  37 002c               									# save for print_north_row
-  38 002c 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
-  39 0030 AFBF0000		sw	$ra, 0($sp)
-  40 0034               	
-  41 0034 0C000013		jal	print_north_row
-  42 0038 0C000027		jal	print_west_east_rows
-  43 003c 0C00001D		jal	print_south_row
-  44 0040               	
-  45 0040               									# restore for print_north_row
-  46 0040 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
-  47 0044 23BD0004		addi	$sp, $sp, 4
-  48 0048               	
-  49 0048 03E00008		jr	$ra
-  50 004c               	
-  51 004c               print_north_row:
-  52 004c               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
-  53 004c 3C040000		la	$a0, three_spaces			# load the address to the string
-     0050 34840000
-Error: Undefined symbol(s) in expression
-  54 0054 0000000C		syscall							# tell the OS to print
-  55 0058               	
-  56 0058 3C0D0000		la	$t5, north_array			# load the address of an element in north
-     005c 35AD0000
-Error: Undefined symbol(s) in expression
-  57 0060 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in north
-  58 0064               	
-  59 0064 00007821		move	$t7, $zero				# count the number of tiles printed
-  60 0068               	
-  61 0068               									# save for print_tile
-  62 0068 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
-  63 006c AFBF0000		sw	$ra, 0($sp)
-  64 0070               	
-  65 0070 0800005E		j	print_loop
-  66 0074               	
-  67 0074               print_south_row:
-  68 0074               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
-  69 0074 3C040000		la	$a0, three_spaces			# load the address to the string
-     0078 34840000
-Error: Undefined symbol(s) in expression
-  70 007c 0000000C		syscall							# tell the OS to print
-  71 0080               	
-  72 0080 3C0D0000		la	$t5, south_array			# load the address of an element in south
-     0084 35AD0000
-Error: Undefined symbol(s) in expression
-  73 0088 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in south
-  74 008c               	
-  75 008c 00007821		move	$t7, $zero				# count the number of tiles printed
-  76 0090               	
-  77 0090               									# save for print_tile
-  78 0090 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
-  79 0094 AFBF0000		sw	$ra, 0($sp)
-  80 0098               	
-  81 0098 0800005E		j	print_loop
-  82 009c               	
-  83 009c               print_west_east_rows:
-  84 009c 3C090000		la	$t1, west_array				# load the address of an element in west
-     00a0 35290000
-Error: Undefined symbol(s) in expression
-  85 00a4 8D2A0000		lw	$t2, 0($t1)					# load the value of the element in west
-  86 00a8               	
-  87 00a8 3C0B0000		la	$t3, east_array				# load the address of an element in east
-     00ac 356B0000
-Error: Undefined symbol(s) in expression
-  88 00b0 8D6C0000		lw	$t4, 0($t3)					# load the value of the element in east
-  89 00b4               	
-  90 00b4 3C0D0000		la	$t5, board_array			# load the address of an element in board
-     00b8 35AD0000
-Error: Undefined symbol(s) in expression
-  91 00bc 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in board
-  92 00c0               	
-  93 00c0 0000C021		move	$t8, $zero				# count the number of rows printed
-  94 00c4               	
-  95 00c4               									# save for print_loop_s
-  96 00c4 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
-  97 00c8 AFBF0000		sw	$ra, 0($sp)
-  98 00cc               	
-  99 00cc 08000034		j	print_we_loop
- 100 00d0               	
- 101 00d0               print_we_loop:
- 102 00d0 13170017		beq	$t8, $s7, print_we_done		# check counter for num rows
- 103 00d4               	
- 104 00d4               									# print west value
- 105 00d4               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 106 00d4 00000000		la 	$a0, $t2					# load the address to the string
-Error: Invalid/illegal second operand
-Error: Invalid operand combination in expression
- 107 00d8 0000000C		syscall							# tell the OS to print
- 108 00dc               	
- 109 00dc               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 110 00dc 3C040000		la	$a0, space					# load the address to the string
-     00e0 34840000
-Error: Undefined symbol(s) in expression
- 111 00e4 0000000C		syscall							# tell the OS to print
- 112 00e8               	
- 113 00e8 00007821		move	$t7, $zero				# count the number of tiles printed
- 114 00ec               	
- 115 00ec               									# save for print_tile
- 116 00ec 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
- 117 00f0 AFBF0000		sw	$ra, 0($sp)
- 118 00f4               	
- 119 00f4 0C00004F		jal	print_loop_s
- 120 00f8               	
- 121 00f8               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 122 00f8 3C040000		la	$a0, space					# load the address to the string
-     00fc 34840000
-Error: Undefined symbol(s) in expression
- 123 0100 0000000C		syscall							# tell the OS to print
- 124 0104               	
- 125 0104               									# print east value
- 126 0104               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 127 0104 00000000		la 	$a0, $t4					# load the address to the string
-Error: Invalid/illegal second operand
-Error: Invalid operand combination in expression
- 128 0108 0000000C		syscall							# tell the OS to print
- 129 010c               	
- 130 010c               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 131 010c 3C040000		la	$a0, new_line				# load the address to the string
-     0110 34840000
-Error: Undefined symbol(s) in expression
- 132 0114 0000000C		syscall							# tell the OS to print
- 133 0118               	
- 134 0118 23180001		addi	$t8, $t8, 1				# increment the counter
- 135 011c 21290004		addi	$t1, $t1, 4				# move the base pointer over for west
- 136 0120 8D2A0000		lw	$t2, 0($t1)					# load the value of the tile for west
- 137 0124 216B0004		addi	$t3, $t3, 4				# move the base pointer over for east
- 138 0128 8D6C0000		lw	$t4, 0($t3)					# load the value of the tile for east
- 139 012c               	
- 140 012c 08000034		j	print_we_loop
- 141 0130               	
- 142 0130               print_we_done:
- 143 0130               									# restore for print_loop_s
- 144 0130 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
- 145 0134 23BD0004		addi	$sp, $sp, 4
- 146 0138               	
- 147 0138 03E00008		jr	$ra
- 148 013c               	
- 149 013c               print_loop_s:
- 150 013c 11F70008		beq	$t7, $s7, print_done_s		# check counter for num tiles
- 151 0140               	
- 152 0140               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 153 0140 3C040000		la	$a0, single_col_separator	# load the address to the string
-     0144 34840000
-Error: Undefined symbol(s) in expression
- 154 0148 0000000C		syscall							# tell the OS to print
- 155 014c               	
- 156 014c 0C00006A		jal	print_tile
- 157 0150               	
- 158 0150 21EF0001		addi	$t7, $t7, 1				# increment the counter
- 159 0154 21AD0004		addi	$t5, $t5, 4				# move the base pointer over for board
- 160 0158 8DAE0000		lw	$t6, 0($t5)					# load the value of the tile for board
- 161 015c               	
- 162 015c 0800005E		j	print_loop
- 163 0160               	
- 164 0160               print_done_s:
- 165 0160               									# restore for print_tile
- 166 0160 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
- 167 0164 23BD0004		addi	$sp, $sp, 4
- 168 0168               	
- 169 0168               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 170 0168 3C040000		la	$a0, single_col_separator	# load the address to the string
-     016c 34840000
-Error: Undefined symbol(s) in expression
- 171 0170 0000000C		syscall							# tell the OS to print
- 172 0174               	
- 173 0174 03E00008		jr	$ra
- 174 0178               	
- 175 0178               print_loop:
- 176 0178 11F70005		beq	$t7, $s7, print_done		# check counter for num tiles
- 177 017c               	
- 178 017c 0C00006A		jal	print_tile
- 179 0180               	
- 180 0180 21EF0001		addi	$t7, $t7, 1				# increment the counter
- 181 0184 21AD0004		addi	$t5, $t5, 4				# move the base pointer over
- 182 0188 8DAE0000		lw	$t6, 0($t5)					# load the value of the tile
- 183 018c 0800005E		j	print_loop
- 184 0190               	
- 185 0190               print_done:
- 186 0190               									# restore for print_tile
- 187 0190 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
- 188 0194 23BD0004		addi	$sp, $sp, 4
- 189 0198               	
- 190 0198               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 191 0198 3C040000		la	$a0, new_line				# load the address to the string
-     019c 34840000
-Error: Undefined symbol(s) in expression
- 192 01a0 0000000C		syscall							# tell the OS to print
- 193 01a4               	
- 194 01a4 03E00008		jr	$ra
- 195 01a8               	
- 196 01a8               print_tile:
- 197 01a8 11C00009		beq	$t6, $zero, print_empty_tile	# check for null value
- 198 01ac               	
- 199 01ac               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 200 01ac 3C040000		la	$a0, space					# load the address to the string
-     01b0 34840000
-Error: Undefined symbol(s) in expression
- 201 01b4 0000000C		syscall							# tell the OS to print
- 202 01b8               	
- 203 01b8               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 204 01b8 00000000		la 	$a0, $t5					# load the address to the string
-Error: Invalid/illegal second operand
-Error: Invalid operand combination in expression
- 205 01bc 0000000C		syscall							# tell the OS to print
- 206 01c0               	
- 207 01c0               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 208 01c0 3C040000		la	$a0, space					# load the address to the string
-     01c4 34840000
-Error: Undefined symbol(s) in expression
- 209 01c8 0000000C		syscall							# tell the OS to print
- 210 01cc               	
- 211 01cc 03E00008		jr	$ra
- 212 01d0               	
- 213 01d0               print_empty_tile:
- 214 01d0               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 215 01d0 3C040000		la	$a0, three_spaces			# load the address to the string
+  10 0000               # syscall codes
+  11 0000               PRINT_INT = 1
+  12 0000               PRINT_STRING = 4
+  13 0000               READ_INT = 5
+  14 0000               EXIT = 10
+  15 0000               
+  16 0000               	.text							# this is program code
+  17 0000               	
+  18 0000               									# global data
+  19 0000               	.globl	board_size
+  20 0000               	.globl	board_array
+  21 0000               	.globl	north_array
+  22 0000               	.globl	east_array
+  23 0000               	.globl	south_array
+  24 0000               	.globl	west_array
+  25 0000               	.globl	banner_msg
+  26 0000               	.globl	initial_msg
+  27 0000               	.globl	final_msg
+  28 0000               	.globl	single_row_separator
+  29 0000               	.globl	single_col_separator
+  30 0000               	.globl	row_terminator
+  31 0000               	.globl	space
+  32 0000               	.globl	two_spaces
+  33 0000               	.globl	three_spaces
+  34 0000               	.globl	four_spaces
+  35 0000               	.globl	new_line
+  36 0000               	.globl	impossible_puzzle
+  37 0000               
+  38 0000               #
+  39 0000               # Name: print_puzzle
+  40 0000               #
+  41 0000               # Description:	Print a single Skyscrapers puzzle.
+  42 0000               # Arguments:
+  43 0000               #
+  44 0000               
+  45 0000               print_banner:
+  46 0000 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+  47 0004 3C040000		la 	$a0, banner_msg				# load the address to the string
+     0008 34840000
+  48 000c 0000000C		syscall							# tell the OS to print
+  49 0010 03E00008		jr	$ra
+  50 0014               
+  51 0014               print_initial_puzzle:
+  52 0014 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+  53 0018 3C040000		la 	$a0, initial_msg			# load the address to the string
+     001c 34840000
+  54 0020 0000000C		syscall							# tell the OS to print
+  55 0024               	
+  56 0024 0800000F		j	print_board
+  57 0028               	
+  58 0028               print_final_puzzle:
+  59 0028 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+  60 002c 3C040000		la 	$a0, final_msg				# load the address to the string
+     0030 34840000
+  61 0034 0000000C		syscall							# tell the OS to print
+  62 0038               	
+  63 0038 0800000F		j	print_board
+  64 003c               	
+  65 003c               print_board:
+  66 003c               									# save for print_north_row
+  67 003c 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+  68 0040 AFBF0000		sw	$ra, 0($sp)
+  69 0044               	
+  70 0044 0C000017		jal	print_north_row
+  71 0048 0C00002D		jal	print_west_east_rows
+  72 004c 0C000022		jal	print_south_row
+  73 0050               	
+  74 0050               									# restore for print_north_row
+  75 0050 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+  76 0054 23BD0004		addi	$sp, $sp, 4
+  77 0058               	
+  78 0058 03E00008		jr	$ra
+  79 005c               	
+  80 005c               print_north_row:
+  81 005c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+  82 0060 3C040000		la	$a0, three_spaces			# load the address to the string
+     0064 34840000
+  83 0068 0000000C		syscall							# tell the OS to print
+  84 006c               	
+  85 006c 3C0D0000		la	$t5, north_array			# load the address of an element in north
+     0070 35AD0000
+  86 0074 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in north
+  87 0078               	
+  88 0078 00007821		move	$t7, $zero				# count the number of tiles printed
+  89 007c               	
+  90 007c               									# save for print_tile
+  91 007c 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+  92 0080 AFBF0000		sw	$ra, 0($sp)
+  93 0084               	
+  94 0084 0800006B		j	print_loop
+  95 0088               	
+  96 0088               print_south_row:
+  97 0088 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+  98 008c 3C040000		la	$a0, three_spaces			# load the address to the string
+     0090 34840000
+  99 0094 0000000C		syscall							# tell the OS to print
+ 100 0098               	
+ 101 0098 3C0D0000		la	$t5, south_array			# load the address of an element in south
+     009c 35AD0000
+ 102 00a0 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in south
+ 103 00a4               	
+ 104 00a4 00007821		move	$t7, $zero				# count the number of tiles printed
+ 105 00a8               	
+ 106 00a8               									# save for print_tile
+ 107 00a8 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+ 108 00ac AFBF0000		sw	$ra, 0($sp)
+ 109 00b0               	
+ 110 00b0 0800006B		j	print_loop
+ 111 00b4               	
+ 112 00b4               print_west_east_rows:
+ 113 00b4 3C090000		la	$t1, west_array				# load the address of an element in west
+     00b8 35290000
+ 114 00bc 8D2A0000		lw	$t2, 0($t1)					# load the value of the element in west
+ 115 00c0               	
+ 116 00c0 3C0B0000		la	$t3, east_array				# load the address of an element in east
+     00c4 356B0000
+ 117 00c8 8D6C0000		lw	$t4, 0($t3)					# load the value of the element in east
+ 118 00cc               	
+ 119 00cc 3C0D0000		la	$t5, board_array			# load the address of an element in board
+     00d0 35AD0000
+ 120 00d4 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in board
+ 121 00d8               	
+ 122 00d8 0000C021		move	$t8, $zero				# count the number of rows printed
+ 123 00dc               	
+ 124 00dc               									# save for print_loop_s
+ 125 00dc 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+ 126 00e0 AFBF0000		sw	$ra, 0($sp)
+ 127 00e4               	
+ 128 00e4 0800003A		j	print_we_loop
+ 129 00e8               	
+ 130 00e8               print_we_loop:
+ 131 00e8 1317001C		beq	$t8, $s7, print_we_done		# check counter for num rows
+ 132 00ec               	
+ 133 00ec               									# print west value
+ 134 00ec 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 135 00f0 01202021		move	$a0, $t1				# load the address to the string
+ 136 00f4 0000000C		syscall							# tell the OS to print
+ 137 00f8               	
+ 138 00f8 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 139 00fc 3C040000		la	$a0, space					# load the address to the string
+     0100 34840000
+ 140 0104 0000000C		syscall							# tell the OS to print
+ 141 0108               	
+ 142 0108 00007821		move	$t7, $zero				# count the number of tiles printed
+ 143 010c               	
+ 144 010c               									# save for print_tile
+ 145 010c 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+ 146 0110 AFBF0000		sw	$ra, 0($sp)
+ 147 0114               	
+ 148 0114 0C00005A		jal	print_loop_s
+ 149 0118               	
+ 150 0118 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 151 011c 3C040000		la	$a0, space					# load the address to the string
+     0120 34840000
+ 152 0124 0000000C		syscall							# tell the OS to print
+ 153 0128               	
+ 154 0128               									# print east value
+ 155 0128 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 156 012c 01602021		move	$a0, $t3				# load the address to the string
+ 157 0130 0000000C		syscall							# tell the OS to print
+ 158 0134               	
+ 159 0134 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 160 0138 3C040000		la	$a0, new_line				# load the address to the string
+     013c 34840000
+ 161 0140 0000000C		syscall							# tell the OS to print
+ 162 0144               	
+ 163 0144 23180001		addi	$t8, $t8, 1				# increment the counter
+ 164 0148 21290004		addi	$t1, $t1, 4				# move the base pointer over for west
+ 165 014c 8D2A0000		lw	$t2, 0($t1)					# load the value of the tile for west
+ 166 0150 216B0004		addi	$t3, $t3, 4				# move the base pointer over for east
+ 167 0154 8D6C0000		lw	$t4, 0($t3)					# load the value of the tile for east
+ 168 0158               	
+ 169 0158 0800003A		j	print_we_loop
+ 170 015c               	
+ 171 015c               print_we_done:
+ 172 015c               									# restore for print_loop_s
+ 173 015c 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+ 174 0160 23BD0004		addi	$sp, $sp, 4
+ 175 0164               	
+ 176 0164 03E00008		jr	$ra
+ 177 0168               	
+ 178 0168               print_loop_s:
+ 179 0168 11F70009		beq	$t7, $s7, print_done_s		# check counter for num tiles
+ 180 016c               	
+ 181 016c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 182 0170 3C040000		la	$a0, single_col_separator	# load the address to the string
+     0174 34840000
+ 183 0178 0000000C		syscall							# tell the OS to print
+ 184 017c               	
+ 185 017c 0C000078		jal	print_tile
+ 186 0180               	
+ 187 0180 21EF0001		addi	$t7, $t7, 1				# increment the counter
+ 188 0184 21AD0004		addi	$t5, $t5, 4				# move the base pointer over for board
+ 189 0188 8DAE0000		lw	$t6, 0($t5)					# load the value of the tile for board
+ 190 018c               	
+ 191 018c 0800006B		j	print_loop
+ 192 0190               	
+ 193 0190               print_done_s:
+ 194 0190               									# restore for print_tile
+ 195 0190 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+ 196 0194 23BD0004		addi	$sp, $sp, 4
+ 197 0198               	
+ 198 0198 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 199 019c 3C040000		la	$a0, single_col_separator	# load the address to the string
+     01a0 34840000
+ 200 01a4 0000000C		syscall							# tell the OS to print
+ 201 01a8               	
+ 202 01a8 03E00008		jr	$ra
+ 203 01ac               	
+ 204 01ac               print_loop:
+ 205 01ac 11F70005		beq	$t7, $s7, print_done		# check counter for num tiles
+ 206 01b0               	
+ 207 01b0 0C000078		jal	print_tile
+ 208 01b4               	
+ 209 01b4 21EF0001		addi	$t7, $t7, 1				# increment the counter
+ 210 01b8 21AD0004		addi	$t5, $t5, 4				# move the base pointer over
+ 211 01bc 8DAE0000		lw	$t6, 0($t5)					# load the value of the tile
+ 212 01c0 0800006B		j	print_loop
+ 213 01c4               	
+ 214 01c4               print_done:
+ 215 01c4               									# restore for print_tile
+ 216 01c4 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+ 217 01c8 23BD0004		addi	$sp, $sp, 4
+ 218 01cc               	
+ 219 01cc 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 220 01d0 3C040000		la	$a0, new_line				# load the address to the string
      01d4 34840000
-Error: Undefined symbol(s) in expression
- 216 01d8 0000000C		syscall							# tell the OS to print
- 217 01dc               	
- 218 01dc 03E00008		jr	$ra
- 219 01e0               	
- 220 01e0               print_row_divider:
- 221 01e0               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 222 01e0 3C040000		la	$a0, two_spaces				# load the address to the string
-     01e4 34840000
-Error: Undefined symbol(s) in expression
- 223 01e8 0000000C		syscall							# tell the OS to print
- 224 01ec               	
- 225 01ec 00007821		move	$t7, $zero				# count the number of tiles printed
- 226 01f0 0800007D		j	print_one_divider
- 227 01f4               	
- 228 01f4               print_one_divider:
- 229 01f4 11E00005		beq	$t7, $zero, print_div_done
- 230 01f8               	
- 231 01f8               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 232 01f8 3C040000		la	$a0, single_row_separator	# load the address to the string
-     01fc 34840000
-Error: Undefined symbol(s) in expression
- 233 0200 0000000C		syscall							# tell the OS to print
- 234 0204               	
- 235 0204 21EF0001		addi	$t7, $t7, 1				# increment the counter
- 236 0208 0800007D		j	print_one_divider
- 237 020c               	
- 238 020c               print_div_done:
- 239 020c               	li 	$v0, PRINT_STRING			# load the syscall code
-Error: Invalid/illegal second operand
-Error: Undefined symbol(s) in expression
- 240 020c 3C040000		la	$a0, row_terminator			# load the address to the string
-     0210 34840000
-Error: Undefined symbol(s) in expression
- 241 0214 0000000C		syscall							# tell the OS to print
- 242 0218               	
- 243 0218 03E00008		jr	$ra
+ 221 01d8 0000000C		syscall							# tell the OS to print
+ 222 01dc               	
+ 223 01dc 03E00008		jr	$ra
+ 224 01e0               	
+ 225 01e0               print_tile:
+ 226 01e0 11C0000C		beq	$t6, $zero, print_empty_tile	# check for null value
+ 227 01e4               	
+ 228 01e4 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 229 01e8 3C040000		la	$a0, space					# load the address to the string
+     01ec 34840000
+ 230 01f0 0000000C		syscall							# tell the OS to print
+ 231 01f4               	
+ 232 01f4 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 233 01f8 01A02021		move 	$a0, $t5					# load the address to the string
+ 234 01fc 0000000C		syscall							# tell the OS to print
+ 235 0200               	
+ 236 0200 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 237 0204 3C040000		la	$a0, space					# load the address to the string
+     0208 34840000
+ 238 020c 0000000C		syscall							# tell the OS to print
+ 239 0210               	
+ 240 0210 03E00008		jr	$ra
+ 241 0214               	
+ 242 0214               print_empty_tile:
+ 243 0214 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 244 0218 3C040000		la	$a0, three_spaces			# load the address to the string
+     021c 34840000
+ 245 0220 0000000C		syscall							# tell the OS to print
+ 246 0224               	
+ 247 0224 03E00008		jr	$ra
+ 248 0228               	
+ 249 0228               print_row_divider:
+ 250 0228 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 251 022c 3C040000		la	$a0, two_spaces				# load the address to the string
+     0230 34840000
+ 252 0234 0000000C		syscall							# tell the OS to print
+ 253 0238               	
+ 254 0238 00007821		move	$t7, $zero				# count the number of tiles printed
+ 255 023c 08000090		j	print_one_divider
+ 256 0240               	
+ 257 0240               print_one_divider:
+ 258 0240 11E00006		beq	$t7, $zero, print_div_done
+ 259 0244               	
+ 260 0244 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 261 0248 3C040000		la	$a0, single_row_separator	# load the address to the string
+     024c 34840000
+ 262 0250 0000000C		syscall							# tell the OS to print
+ 263 0254               	
+ 264 0254 21EF0001		addi	$t7, $t7, 1				# increment the counter
+ 265 0258 08000090		j	print_one_divider
+ 266 025c               	
+ 267 025c               print_div_done:
+ 268 025c 34020004		li 	$v0, PRINT_STRING			# load the syscall code
+ 269 0260 3C040000		la	$a0, row_terminator			# load the address to the string
+     0264 34840000
+ 270 0268 0000000C		syscall							# tell the OS to print
+ 271 026c               	
+ 272 026c 03E00008		jr	$ra
 
-There were 68 fatal errors
 
-
-PRINT_STRING            ******** U 
-banner_msg              ******** U 
-board_array             ******** U 
-east_array              ******** U 
-final_msg               ******** U 
-initial_msg             ******** U 
-new_line                ******** U 
-north_array             ******** U 
+EXIT                  = 0000000A   
+PRINT_INT             = 00000001   
+PRINT_STRING          = 00000004   
+READ_INT              = 00000005   
+banner_msg              ******** XG
+board_array             ******** XG
+board_size              ******** XG
+east_array              ******** XG
+final_msg               ******** XG
+four_spaces             ******** XG
+impossible_puzzle       ******** XG
+initial_msg             ******** XG
+new_line                ******** XG
+north_array             ******** XG
 print_banner            00000000 R  text 
-print_board             0000002C R  text 
-print_div_done          0000020C R  text 
-print_done              00000190 R  text 
-print_done_s            00000160 R  text 
-print_empty_tile        000001D0 R  text 
-print_final_puzzle      0000001C R  text 
-print_initial_puzzle    0000000C R  text 
-print_loop              00000178 R  text 
-print_loop_s            0000013C R  text 
-print_north_row         0000004C R  text 
-print_one_divider       000001F4 R  text 
-print_row_divider       000001E0 R  text 
-print_south_row         00000074 R  text 
-print_tile              000001A8 R  text 
-print_we_done           00000130 R  text 
-print_we_loop           000000D0 R  text 
-print_west_east_rows    0000009C R  text 
-row_terminator          ******** U 
-single_col_separator    ******** U 
-single_row_separator    ******** U 
-south_array             ******** U 
-space                   ******** U 
-three_spaces            ******** U 
-two_spaces              ******** U 
-west_array              ******** U 
+print_board             0000003C R  text 
+print_div_done          0000025C R  text 
+print_done              000001C4 R  text 
+print_done_s            00000190 R  text 
+print_empty_tile        00000214 R  text 
+print_final_puzzle      00000028 R  text 
+print_initial_puzzle    00000014 R  text 
+print_loop              000001AC R  text 
+print_loop_s            00000168 R  text 
+print_north_row         0000005C R  text 
+print_one_divider       00000240 R  text 
+print_row_divider       00000228 R  text 
+print_south_row         00000088 R  text 
+print_tile              000001E0 R  text 
+print_we_done           0000015C R  text 
+print_we_loop           000000E8 R  text 
+print_west_east_rows    000000B4 R  text 
+row_terminator          ******** XG
+single_col_separator    ******** XG
+single_row_separator    ******** XG
+south_array             ******** XG
+space                   ******** XG
+three_spaces            ******** XG
+two_spaces              ******** XG
+west_array              ******** XG

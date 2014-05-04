@@ -103,7 +103,9 @@ impossible_puzzle:
 	
 	.text							# this is program code
 	.align	2						# instructions must be on word boundaries
-	.globl	main					# main is a global label
+	
+									# global labels
+	.globl	main					# from skyscrapers.asm
 	.globl	print_banner			# from printers.asm
 	.globl	print_initial_puzzle	# from printers.asm
 	.globl	print_final_puzzle		# from printers.asm
@@ -128,7 +130,7 @@ main:
 	
 	move	$s7, $v0		# store the board size into $s7 for easier access
 	blt	$s7, MIN_SIZE, error_board_size				# validate input
-	bgt	$s7, MIN_SIZE, error_board_size				# validate input
+	bgt	$s7, MAX_SIZE, error_board_size				# validate input
 	
 	la	$a0, north_array	# store the address of the pointer to north_array
 	jal	parse_board_perim	# parse the input for north
@@ -147,6 +149,13 @@ main:
 	
 	la	$a0, board_array	# store the address of the pointer to board_array
 	jal	parse_board			# parse the input for board
+	
+	jal	print_banner
+	jal	print_initial_puzzle
+	jal	print_final_puzzle
+	
+	li	$v0, EXIT
+	syscall							# terminate program
 	
 error_board_size:
 	li	$v0, PRINT_STRING			# load the syscall code
@@ -191,6 +200,10 @@ pbp_loop:
 	li	$v0, READ_INT				# read in a single perimeter value
 	syscall
 	
+	li	$v0, PRINT_INT
+	move $a0, $v0
+	syscall
+	
 	blt	$v0, $zero, error_input_value				# validate input
 	bgt	$v0, $s7, error_input_value					# validate input
 	
@@ -210,13 +223,13 @@ pb_loop:
 
 	li	$v0, READ_INT				# read in the row
 	syscall
-	blt	$v0, MIN_HEIGHT, error_fv_input				# validate input
+	blt	$v0, $zero, error_fv_input					# validate input
 	bgt	$v0, $s7, error_fv_input					# validate input
 	move	$s0, $v0				# store the row value
 	
 	li	$v0, READ_INT				# read in the col value
 	syscall
-	blt	$v0, MIN_HEIGHT, error_fv_input				# validate input
+	blt	$v0, $zero, error_fv_input					# validate input
 	bgt	$v0, $s7, error_fv_input					# validate input
 	move	$s1, $v0				# store the col value
 	

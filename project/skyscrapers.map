@@ -2,7 +2,7 @@ Load map
 ========
 
 Module:  skyscrapers.obj
- Text segment:  432 bytes, load point 0x00400000
+ Text segment:  464 bytes, load point 0x00400000
  Data segment:  728 bytes, load point 0x10000000
  Symbols:
                      Name Section Mode    Value
@@ -11,26 +11,26 @@ Module:  skyscrapers.obj
               initial_msg   Data   R   0x100001c0
         impossible_puzzle   Data   R   0x100002c2
        invalid_board_size   Data   R   0x100001f9
-         error_board_size   Text   R   0x00400078
+         error_board_size   Text   R   0x0040008c
                west_array   Data   R   0x10000164
               north_array   Data   R   0x10000104
               board_array   Data   R   0x10000004
      single_col_separator   Data   R   0x100001e4
                board_size   Data   R   0x10000000
-             error_num_fv   Text   R   0x004000a8
+             error_num_fv   Text   R   0x004000bc
                  READ_INT          A   0x00000005
                MIN_HEIGHT          A   0x00000001
-              parse_board   Text   R   0x00400124
-        error_input_value   Text   R   0x00400090
-                  pb_done   Text   R   0x004001ac
+              parse_board   Text   R   0x00400144
+        error_input_value   Text   R   0x004000a4
+                  pb_done   Text   R   0x004001cc
                  new_line   Data   R   0x100001f7
-           error_fv_input   Text   R   0x004000c0
-                 pbp_done   Text   R   0x00400120
+           error_fv_input   Text   R   0x004000d4
+                 pbp_done   Text   R   0x00400140
                 final_msg   Data   R   0x100001d1
                  MAX_SIZE          A   0x00000008
              three_spaces   Data   R   0x100001ee
            invalid_num_fv   Data   R   0x10000254
-        parse_board_perim   Text   R   0x004000f0
+        parse_board_perim   Text   R   0x00400104
              PRINT_STRING          A   0x00000004
                      main   Text   RG  0x00400000
               south_array   Data   R   0x10000144
@@ -39,18 +39,45 @@ Module:  skyscrapers.obj
          illegal_fv_input   Data   R   0x1000028d
               four_spaces   Data   R   0x100001f2
             illegal_input   Data   R   0x10000226
-                  pb_loop   Text   R   0x00400128
+                  pb_loop   Text   R   0x00400148
                  MIN_SIZE          A   0x00000003
                      EXIT          A   0x0000000a
                east_array   Data   R   0x10000124
                banner_msg   Data   R   0x10000184
-  error_impossible_puzzle   Text   R   0x004000d8
-                 pbp_loop   Text   R   0x004000f4
+  error_impossible_puzzle   Text   R   0x004000ec
+                 pbp_loop   Text   R   0x00400108
+                PRINT_INT          A   0x00000001
+
+Module:  printers.obj
+ Text segment:  624 bytes, load point 0x004001d0
+ Symbols:
+                     Name Section Mode    Value
+             print_loop_s   Text   R   0x00400338
+       print_final_puzzle   Text   R   0x004001f8
+            print_we_loop   Text   R   0x004002b8
+               print_loop   Text   R   0x0040037c
+                 READ_INT          A   0x00000005
+        print_one_divider   Text   R   0x00400410
+               print_tile   Text   R   0x004003b0
+     print_west_east_rows   Text   R   0x00400284
+         print_empty_tile   Text   R   0x004003e4
+             PRINT_STRING          A   0x00000004
+             print_banner   Text   R   0x004001d0
+            print_we_done   Text   R   0x0040032c
+        print_row_divider   Text   R   0x004003f8
+           print_div_done   Text   R   0x0040042c
+               print_done   Text   R   0x00400394
+              print_board   Text   R   0x0040020c
+     print_initial_puzzle   Text   R   0x004001e4
+          print_north_row   Text   R   0x0040022c
+                     EXIT          A   0x0000000a
+             print_done_s   Text   R   0x00400360
+          print_south_row   Text   R   0x00400258
                 PRINT_INT          A   0x00000001
 
 Module:  r2k_startup.obj
- Text segment:  36 bytes, load point 0x004001b0
+ Text segment:  36 bytes, load point 0x00400440
  Symbols:
                      Name Section Mode    Value
                 SYS_EXIT2          A   0x00000011
-           __r2k__entry__   Text   RG  0x004001b4
+           __r2k__entry__   Text   RG  0x00400444

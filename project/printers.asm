@@ -7,6 +7,34 @@
 # Returns:
 #
 
+# syscall codes
+PRINT_INT = 1
+PRINT_STRING = 4
+READ_INT = 5
+EXIT = 10
+
+	.text							# this is program code
+	
+									# global data
+	.globl	board_size
+	.globl	board_array
+	.globl	north_array
+	.globl	east_array
+	.globl	south_array
+	.globl	west_array
+	.globl	banner_msg
+	.globl	initial_msg
+	.globl	final_msg
+	.globl	single_row_separator
+	.globl	single_col_separator
+	.globl	row_terminator
+	.globl	space
+	.globl	two_spaces
+	.globl	three_spaces
+	.globl	four_spaces
+	.globl	new_line
+	.globl	impossible_puzzle
+
 #
 # Name: print_puzzle
 #
@@ -18,6 +46,7 @@ print_banner:
 	li 	$v0, PRINT_STRING			# load the syscall code
 	la 	$a0, banner_msg				# load the address to the string
 	syscall							# tell the OS to print
+	jr	$ra
 
 print_initial_puzzle:
 	li 	$v0, PRINT_STRING			# load the syscall code
@@ -103,7 +132,7 @@ print_we_loop:
 	
 									# print west value
 	li 	$v0, PRINT_STRING			# load the syscall code
-	la 	$a0, $t2					# load the address to the string
+	move	$a0, $t1				# load the address to the string
 	syscall							# tell the OS to print
 	
 	li 	$v0, PRINT_STRING			# load the syscall code
@@ -124,7 +153,7 @@ print_we_loop:
 	
 									# print east value
 	li 	$v0, PRINT_STRING			# load the syscall code
-	la 	$a0, $t4					# load the address to the string
+	move	$a0, $t3				# load the address to the string
 	syscall							# tell the OS to print
 	
 	li 	$v0, PRINT_STRING			# load the syscall code
@@ -201,7 +230,7 @@ print_tile:
 	syscall							# tell the OS to print
 	
 	li 	$v0, PRINT_STRING			# load the syscall code
-	la 	$a0, $t5					# load the address to the string
+	move 	$a0, $t5					# load the address to the string
 	syscall							# tell the OS to print
 	
 	li 	$v0, PRINT_STRING			# load the syscall code
