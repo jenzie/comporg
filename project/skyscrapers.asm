@@ -66,13 +66,16 @@ single_row_separator:
 	.asciiz "+--"
 
 single_col_separator:
-	.asciiz " | "
+	.asciiz "|"
 	
 row_terminator:
-	.asciiz "+"
+	.asciiz "+\n"
 
 space:
 	.asciiz " "
+	
+two_spaces:
+	.asciiz "  "
 	
 three_spaces:
 	.asciiz "   "
