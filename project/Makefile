@@ -16,7 +16,7 @@ RLINK = /home/fac/wrc/bin/rlink
 #
 # Object files
 #
-OBJFILES = skyscrapers.obj
+OBJFILES = skyscrapers.obj printers.obj
 
 #
 # Transformation rule: .asm into .obj
@@ -35,3 +35,6 @@ OBJFILES = skyscrapers.obj
 #
 skyscrapers.out:	$(OBJFILES)
 	$(RLINK) -m -o $*.out $(OBJFILES) > $*.map
+
+run:	skyscrapers.out
+	$(RSIM) skyscrapers.out

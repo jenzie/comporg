@@ -1,0 +1,371 @@
+   1 0000               # File: printers.asm
+   2 0000               # Author: Jenny Zhen
+   3 0000               # Description: Prints a Skyscrapers puzzle.
+   4 0000               # Arguments:
+   5 0000               # 	
+   6 0000               #
+   7 0000               # Returns:
+   8 0000               #
+   9 0000               
+  10 0000               #
+  11 0000               # Name: print_puzzle
+  12 0000               #
+  13 0000               # Description:	Print a single Skyscrapers puzzle.
+  14 0000               # Arguments:
+  15 0000               #
+  16 0000               
+  17 0000               print_banner:
+  18 0000               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+  19 0000 3C040000		la 	$a0, banner_msg				# load the address to the string
+     0004 34840000
+Error: Undefined symbol(s) in expression
+  20 0008 0000000C		syscall							# tell the OS to print
+  21 000c               
+  22 000c               print_initial_puzzle:
+  23 000c               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+  24 000c 3C040000		la 	$a0, initial_msg			# load the address to the string
+     0010 34840000
+Error: Undefined symbol(s) in expression
+  25 0014 0000000C		syscall							# tell the OS to print
+  26 0018               	
+  27 0018 0800000B		j	print_board
+  28 001c               	
+  29 001c               print_final_puzzle:
+  30 001c               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+  31 001c 3C040000		la 	$a0, final_msg				# load the address to the string
+     0020 34840000
+Error: Undefined symbol(s) in expression
+  32 0024 0000000C		syscall							# tell the OS to print
+  33 0028               	
+  34 0028 0800000B		j	print_board
+  35 002c               	
+  36 002c               print_board:
+  37 002c               									# save for print_north_row
+  38 002c 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+  39 0030 AFBF0000		sw	$ra, 0($sp)
+  40 0034               	
+  41 0034 0C000013		jal	print_north_row
+  42 0038 0C000027		jal	print_west_east_rows
+  43 003c 0C00001D		jal	print_south_row
+  44 0040               	
+  45 0040               									# restore for print_north_row
+  46 0040 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+  47 0044 23BD0004		addi	$sp, $sp, 4
+  48 0048               	
+  49 0048 03E00008		jr	$ra
+  50 004c               	
+  51 004c               print_north_row:
+  52 004c               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+  53 004c 3C040000		la	$a0, three_spaces			# load the address to the string
+     0050 34840000
+Error: Undefined symbol(s) in expression
+  54 0054 0000000C		syscall							# tell the OS to print
+  55 0058               	
+  56 0058 3C0D0000		la	$t5, north_array			# load the address of an element in north
+     005c 35AD0000
+Error: Undefined symbol(s) in expression
+  57 0060 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in north
+  58 0064               	
+  59 0064 00007821		move	$t7, $zero				# count the number of tiles printed
+  60 0068               	
+  61 0068               									# save for print_tile
+  62 0068 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+  63 006c AFBF0000		sw	$ra, 0($sp)
+  64 0070               	
+  65 0070 0800005E		j	print_loop
+  66 0074               	
+  67 0074               print_south_row:
+  68 0074               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+  69 0074 3C040000		la	$a0, three_spaces			# load the address to the string
+     0078 34840000
+Error: Undefined symbol(s) in expression
+  70 007c 0000000C		syscall							# tell the OS to print
+  71 0080               	
+  72 0080 3C0D0000		la	$t5, south_array			# load the address of an element in south
+     0084 35AD0000
+Error: Undefined symbol(s) in expression
+  73 0088 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in south
+  74 008c               	
+  75 008c 00007821		move	$t7, $zero				# count the number of tiles printed
+  76 0090               	
+  77 0090               									# save for print_tile
+  78 0090 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+  79 0094 AFBF0000		sw	$ra, 0($sp)
+  80 0098               	
+  81 0098 0800005E		j	print_loop
+  82 009c               	
+  83 009c               print_west_east_rows:
+  84 009c 3C090000		la	$t1, west_array				# load the address of an element in west
+     00a0 35290000
+Error: Undefined symbol(s) in expression
+  85 00a4 8D2A0000		lw	$t2, 0($t1)					# load the value of the element in west
+  86 00a8               	
+  87 00a8 3C0B0000		la	$t3, east_array				# load the address of an element in east
+     00ac 356B0000
+Error: Undefined symbol(s) in expression
+  88 00b0 8D6C0000		lw	$t4, 0($t3)					# load the value of the element in east
+  89 00b4               	
+  90 00b4 3C0D0000		la	$t5, board_array			# load the address of an element in board
+     00b8 35AD0000
+Error: Undefined symbol(s) in expression
+  91 00bc 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in board
+  92 00c0               	
+  93 00c0 0000C021		move	$t8, $zero				# count the number of rows printed
+  94 00c4               	
+  95 00c4               									# save for print_loop_s
+  96 00c4 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+  97 00c8 AFBF0000		sw	$ra, 0($sp)
+  98 00cc               	
+  99 00cc 08000034		j	print_we_loop
+ 100 00d0               	
+ 101 00d0               print_we_loop:
+ 102 00d0 13170017		beq	$t8, $s7, print_we_done		# check counter for num rows
+ 103 00d4               	
+ 104 00d4               									# print west value
+ 105 00d4               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 106 00d4 00000000		la 	$a0, $t2					# load the address to the string
+Error: Invalid/illegal second operand
+Error: Invalid operand combination in expression
+ 107 00d8 0000000C		syscall							# tell the OS to print
+ 108 00dc               	
+ 109 00dc               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 110 00dc 3C040000		la	$a0, space					# load the address to the string
+     00e0 34840000
+Error: Undefined symbol(s) in expression
+ 111 00e4 0000000C		syscall							# tell the OS to print
+ 112 00e8               	
+ 113 00e8 00007821		move	$t7, $zero				# count the number of tiles printed
+ 114 00ec               	
+ 115 00ec               									# save for print_tile
+ 116 00ec 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+ 117 00f0 AFBF0000		sw	$ra, 0($sp)
+ 118 00f4               	
+ 119 00f4 0C00004F		jal	print_loop_s
+ 120 00f8               	
+ 121 00f8               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 122 00f8 3C040000		la	$a0, space					# load the address to the string
+     00fc 34840000
+Error: Undefined symbol(s) in expression
+ 123 0100 0000000C		syscall							# tell the OS to print
+ 124 0104               	
+ 125 0104               									# print east value
+ 126 0104               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 127 0104 00000000		la 	$a0, $t4					# load the address to the string
+Error: Invalid/illegal second operand
+Error: Invalid operand combination in expression
+ 128 0108 0000000C		syscall							# tell the OS to print
+ 129 010c               	
+ 130 010c               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 131 010c 3C040000		la	$a0, new_line				# load the address to the string
+     0110 34840000
+Error: Undefined symbol(s) in expression
+ 132 0114 0000000C		syscall							# tell the OS to print
+ 133 0118               	
+ 134 0118 23180001		addi	$t8, $t8, 1				# increment the counter
+ 135 011c 21290004		addi	$t1, $t1, 4				# move the base pointer over for west
+ 136 0120 8D2A0000		lw	$t2, 0($t1)					# load the value of the tile for west
+ 137 0124 216B0004		addi	$t3, $t3, 4				# move the base pointer over for east
+ 138 0128 8D6C0000		lw	$t4, 0($t3)					# load the value of the tile for east
+ 139 012c               	
+ 140 012c 08000034		j	print_we_loop
+ 141 0130               	
+ 142 0130               print_we_done:
+ 143 0130               									# restore for print_loop_s
+ 144 0130 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+ 145 0134 23BD0004		addi	$sp, $sp, 4
+ 146 0138               	
+ 147 0138 03E00008		jr	$ra
+ 148 013c               	
+ 149 013c               print_loop_s:
+ 150 013c 11F70008		beq	$t7, $s7, print_done_s		# check counter for num tiles
+ 151 0140               	
+ 152 0140               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 153 0140 3C040000		la	$a0, single_col_separator	# load the address to the string
+     0144 34840000
+Error: Undefined symbol(s) in expression
+ 154 0148 0000000C		syscall							# tell the OS to print
+ 155 014c               	
+ 156 014c 0C00006A		jal	print_tile
+ 157 0150               	
+ 158 0150 21EF0001		addi	$t7, $t7, 1				# increment the counter
+ 159 0154 21AD0004		addi	$t5, $t5, 4				# move the base pointer over for board
+ 160 0158 8DAE0000		lw	$t6, 0($t5)					# load the value of the tile for board
+ 161 015c               	
+ 162 015c 0800005E		j	print_loop
+ 163 0160               	
+ 164 0160               print_done_s:
+ 165 0160               									# restore for print_tile
+ 166 0160 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+ 167 0164 23BD0004		addi	$sp, $sp, 4
+ 168 0168               	
+ 169 0168               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 170 0168 3C040000		la	$a0, single_col_separator	# load the address to the string
+     016c 34840000
+Error: Undefined symbol(s) in expression
+ 171 0170 0000000C		syscall							# tell the OS to print
+ 172 0174               	
+ 173 0174 03E00008		jr	$ra
+ 174 0178               	
+ 175 0178               print_loop:
+ 176 0178 11F70005		beq	$t7, $s7, print_done		# check counter for num tiles
+ 177 017c               	
+ 178 017c 0C00006A		jal	print_tile
+ 179 0180               	
+ 180 0180 21EF0001		addi	$t7, $t7, 1				# increment the counter
+ 181 0184 21AD0004		addi	$t5, $t5, 4				# move the base pointer over
+ 182 0188 8DAE0000		lw	$t6, 0($t5)					# load the value of the tile
+ 183 018c 0800005E		j	print_loop
+ 184 0190               	
+ 185 0190               print_done:
+ 186 0190               									# restore for print_tile
+ 187 0190 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+ 188 0194 23BD0004		addi	$sp, $sp, 4
+ 189 0198               	
+ 190 0198               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 191 0198 3C040000		la	$a0, new_line				# load the address to the string
+     019c 34840000
+Error: Undefined symbol(s) in expression
+ 192 01a0 0000000C		syscall							# tell the OS to print
+ 193 01a4               	
+ 194 01a4 03E00008		jr	$ra
+ 195 01a8               	
+ 196 01a8               print_tile:
+ 197 01a8 11C00009		beq	$t6, $zero, print_empty_tile	# check for null value
+ 198 01ac               	
+ 199 01ac               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 200 01ac 3C040000		la	$a0, space					# load the address to the string
+     01b0 34840000
+Error: Undefined symbol(s) in expression
+ 201 01b4 0000000C		syscall							# tell the OS to print
+ 202 01b8               	
+ 203 01b8               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 204 01b8 00000000		la 	$a0, $t5					# load the address to the string
+Error: Invalid/illegal second operand
+Error: Invalid operand combination in expression
+ 205 01bc 0000000C		syscall							# tell the OS to print
+ 206 01c0               	
+ 207 01c0               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 208 01c0 3C040000		la	$a0, space					# load the address to the string
+     01c4 34840000
+Error: Undefined symbol(s) in expression
+ 209 01c8 0000000C		syscall							# tell the OS to print
+ 210 01cc               	
+ 211 01cc 03E00008		jr	$ra
+ 212 01d0               	
+ 213 01d0               print_empty_tile:
+ 214 01d0               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 215 01d0 3C040000		la	$a0, three_spaces			# load the address to the string
+     01d4 34840000
+Error: Undefined symbol(s) in expression
+ 216 01d8 0000000C		syscall							# tell the OS to print
+ 217 01dc               	
+ 218 01dc 03E00008		jr	$ra
+ 219 01e0               	
+ 220 01e0               print_row_divider:
+ 221 01e0               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 222 01e0 3C040000		la	$a0, two_spaces				# load the address to the string
+     01e4 34840000
+Error: Undefined symbol(s) in expression
+ 223 01e8 0000000C		syscall							# tell the OS to print
+ 224 01ec               	
+ 225 01ec 00007821		move	$t7, $zero				# count the number of tiles printed
+ 226 01f0 0800007D		j	print_one_divider
+ 227 01f4               	
+ 228 01f4               print_one_divider:
+ 229 01f4 11E00005		beq	$t7, $zero, print_div_done
+ 230 01f8               	
+ 231 01f8               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 232 01f8 3C040000		la	$a0, single_row_separator	# load the address to the string
+     01fc 34840000
+Error: Undefined symbol(s) in expression
+ 233 0200 0000000C		syscall							# tell the OS to print
+ 234 0204               	
+ 235 0204 21EF0001		addi	$t7, $t7, 1				# increment the counter
+ 236 0208 0800007D		j	print_one_divider
+ 237 020c               	
+ 238 020c               print_div_done:
+ 239 020c               	li 	$v0, PRINT_STRING			# load the syscall code
+Error: Invalid/illegal second operand
+Error: Undefined symbol(s) in expression
+ 240 020c 3C040000		la	$a0, row_terminator			# load the address to the string
+     0210 34840000
+Error: Undefined symbol(s) in expression
+ 241 0214 0000000C		syscall							# tell the OS to print
+ 242 0218               	
+ 243 0218 03E00008		jr	$ra
+
+There were 68 fatal errors
+
+
+PRINT_STRING            ******** U 
+banner_msg              ******** U 
+board_array             ******** U 
+east_array              ******** U 
+final_msg               ******** U 
+initial_msg             ******** U 
+new_line                ******** U 
+north_array             ******** U 
+print_banner            00000000 R  text 
+print_board             0000002C R  text 
+print_div_done          0000020C R  text 
+print_done              00000190 R  text 
+print_done_s            00000160 R  text 
+print_empty_tile        000001D0 R  text 
+print_final_puzzle      0000001C R  text 
+print_initial_puzzle    0000000C R  text 
+print_loop              00000178 R  text 
+print_loop_s            0000013C R  text 
+print_north_row         0000004C R  text 
+print_one_divider       000001F4 R  text 
+print_row_divider       000001E0 R  text 
+print_south_row         00000074 R  text 
+print_tile              000001A8 R  text 
+print_we_done           00000130 R  text 
+print_we_loop           000000D0 R  text 
+print_west_east_rows    0000009C R  text 
+row_terminator          ******** U 
+single_col_separator    ******** U 
+single_row_separator    ******** U 
+south_array             ******** U 
+space                   ******** U 
+three_spaces            ******** U 
+two_spaces              ******** U 
+west_array              ******** U 
