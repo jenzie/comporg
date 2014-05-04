@@ -131,6 +131,14 @@ print_we_loop:
 	la	$a0, new_line				# load the address to the string
 	syscall							# tell the OS to print
 	
+	addi	$t8, $t8, 1				# increment the counter
+	addi	$t1, $t1, 4				# move the base pointer over for west
+	lw	$t2, 0($t1)					# load the value of the tile for west
+	addi	$t3, $t3, 4				# move the base pointer over for east
+	lw	$t4, 0($t3)					# load the value of the tile for east
+	
+	j	print_we_loop
+	
 print_we_done:
 									# restore for print_loop_s
 	lw	$ra, 0($sp)					# restore return address of the caller
@@ -148,8 +156,9 @@ print_loop_s:
 	jal	print_tile
 	
 	addi	$t7, $t7, 1				# increment the counter
-	addi	$t5, $t5, 4				# move the base pointer over
-	lw	$t6, 0($t5)					# load the value of the tile
+	addi	$t5, $t5, 4				# move the base pointer over for board
+	lw	$t6, 0($t5)					# load the value of the tile for board
+	
 	j	print_loop
 	
 print_done_s:
