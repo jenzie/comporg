@@ -53,7 +53,7 @@ west_array:			# room for input values, size for 8 words
 
 banner_msg:	
 	.ascii	"*******************\n"
-	.ascii "** SKYSCRAPERS **\n"
+	.ascii	"**  SKYSCRAPERS  **\n"
 	.asciiz	"*******************\n\n"
 
 initial_msg:	
@@ -121,7 +121,6 @@ impossible_puzzle:
 #
 	
 main:
-	
 	li	$v0, READ_INT		# read in the value of the first integer parameter
 	syscall
 	
@@ -198,10 +197,6 @@ parse_board_perim:
 pbp_loop:
 	beq	$t0, $s7, pbp_done
 	li	$v0, READ_INT				# read in a single perimeter value
-	syscall
-	
-	li	$v0, PRINT_INT
-	move $a0, $v0
 	syscall
 	
 	blt	$v0, $zero, error_input_value				# validate input

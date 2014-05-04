@@ -82,95 +82,95 @@
           2A2A2A2A
           2A2A2A2A
           2A2A2A0A
-  56 0198 2A2A2053		.ascii "** SKYSCRAPERS **\n"
-          4B595343
-          52415045
-          5253202A
-          2A0A    
-  57 01aa 2A2A2A2A		.asciiz	"*******************\n\n"
+  56 0198 2A2A2020		.ascii	"**  SKYSCRAPERS  **\n"
+          534B5953
+          43524150
+          45525320
+          202A2A0A
+  57 01ac 2A2A2A2A		.asciiz	"*******************\n\n"
           2A2A2A2A
           2A2A2A2A
           2A2A2A2A
           2A2A2A0A
           0A00    
-  58 01c0               
-  59 01c0               initial_msg:	
-  60 01c0 496E6974		.asciiz	"Initial Puzzle\n\n"
+  58 01c2               
+  59 01c2               initial_msg:	
+  60 01c2 496E6974		.asciiz	"Initial Puzzle\n\n"
           69616C20
           50757A7A
           6C650A0A
           00      
-  61 01d1               	
-  62 01d1               final_msg:
-  63 01d1 46696E61		.asciiz "Final Puzzle\n\n"
+  61 01d3               	
+  62 01d3               final_msg:
+  63 01d3 46696E61		.asciiz "Final Puzzle\n\n"
           6C205075
           7A7A6C65
           0A0A00  
-  64 01e0               	
-  65 01e0               single_row_separator:
-  66 01e0 2B2D2D00		.asciiz "+--"
-  67 01e4               
-  68 01e4               single_col_separator:
-  69 01e4 7C00    		.asciiz "|"
-  70 01e6               	
-  71 01e6               row_terminator:
-  72 01e6 2B0A00  		.asciiz "+\n"
-  73 01e9               
-  74 01e9               space:
-  75 01e9 2000    		.asciiz " "
-  76 01eb               	
-  77 01eb               two_spaces:
-  78 01eb 202000  		.asciiz "  "
-  79 01ee               	
-  80 01ee               three_spaces:
-  81 01ee 20202000		.asciiz "   "
-  82 01f2               	
-  83 01f2               four_spaces:
-  84 01f2 20202020		.asciiz	"    "
+  64 01e2               	
+  65 01e2               single_row_separator:
+  66 01e2 2B2D2D00		.asciiz "+--"
+  67 01e6               
+  68 01e6               single_col_separator:
+  69 01e6 7C00    		.asciiz "|"
+  70 01e8               	
+  71 01e8               row_terminator:
+  72 01e8 2B0A00  		.asciiz "+\n"
+  73 01eb               
+  74 01eb               space:
+  75 01eb 2000    		.asciiz " "
+  76 01ed               	
+  77 01ed               two_spaces:
+  78 01ed 202000  		.asciiz "  "
+  79 01f0               	
+  80 01f0               three_spaces:
+  81 01f0 20202000		.asciiz "   "
+  82 01f4               	
+  83 01f4               four_spaces:
+  84 01f4 20202020		.asciiz	"    "
           00      
-  85 01f7               	
-  86 01f7               new_line:
-  87 01f7 0A00    		.asciiz "\n"
-  88 01f9               	
-  89 01f9               invalid_board_size:
-  90 01f9 496E7661		.asciiz "Invalid board size, Skyscrapers terminating\n"
+  85 01f9               	
+  86 01f9               new_line:
+  87 01f9 0A00    		.asciiz "\n"
+  88 01fb               	
+  89 01fb               invalid_board_size:
+  90 01fb 496E7661		.asciiz "Invalid board size, Skyscrapers terminating\n"
           6C696420
           626F6172
           64207369
           7A652C20
           536B7973
-  91 0226               	
-  92 0226               illegal_input:
-  93 0226 496C6C65		.asciiz "Illegal input value, Skyscrapers terminating\n"
+  91 0228               	
+  92 0228               illegal_input:
+  93 0228 496C6C65		.asciiz "Illegal input value, Skyscrapers terminating\n"
           67616C20
           696E7075
           74207661
           6C75652C
           20536B79
-  94 0254               	
-  95 0254               invalid_num_fv:
-  96 0254 496E7661		.asciiz "Invalid number of fixed values, Skyscrapers terminating\n"
+  94 0256               	
+  95 0256               invalid_num_fv:
+  96 0256 496E7661		.asciiz "Invalid number of fixed values, Skyscrapers terminating\n"
           6C696420
           6E756D62
           6572206F
           66206669
           78656420
-  97 028d               	
-  98 028d               illegal_fv_input:
-  99 028d 496C6C65		.asciiz "Illegal fixed input values, Skyscrapers terminating\n"
+  97 028f               	
+  98 028f               illegal_fv_input:
+  99 028f 496C6C65		.asciiz "Illegal fixed input values, Skyscrapers terminating\n"
           67616C20
           66697865
           6420696E
           70757420
           76616C75
- 100 02c2               	
- 101 02c2               impossible_puzzle:
- 102 02c2 496D706F		.asciiz "Impossible Puzzle\n\n"
+ 100 02c4               	
+ 101 02c4               impossible_puzzle:
+ 102 02c4 496D706F		.asciiz "Impossible Puzzle\n\n"
           73736962
           6C652050
           757A7A6C
           650A0A00
- 103 02d6               	
+ 103 02d8               	
  104 0000               	.text							# this is program code
  105 0000               	.align	2						# instructions must be on word boundaries
  106 0000               	
@@ -191,163 +191,158 @@
  121 0000               #
  122 0000               	
  123 0000               main:
- 124 0000               	
- 125 0000 34020005		li	$v0, READ_INT		# read in the value of the first integer parameter
- 126 0004 0000000C		syscall
- 127 0008               	
- 128 0008 3C080000		la	$t0, board_size
+ 124 0000 34020005		li	$v0, READ_INT		# read in the value of the first integer parameter
+ 125 0004 0000000C		syscall
+ 126 0008               	
+ 127 0008 3C080000		la	$t0, board_size
      000c 35080000
- 129 0010 AD020000		sw	$v0, 0($t0)			# store the value of the first param, board size
- 130 0014               	
- 131 0014 0040B821		move	$s7, $v0		# store the board size into $s7 for easier access
- 132 0018 2AE10003		blt	$s7, MIN_SIZE, error_board_size				# validate input
+ 128 0010 AD020000		sw	$v0, 0($t0)			# store the value of the first param, board size
+ 129 0014               	
+ 130 0014 0040B821		move	$s7, $v0		# store the board size into $s7 for easier access
+ 131 0018 2AE10003		blt	$s7, MIN_SIZE, error_board_size				# validate input
      001c 1420001B
- 133 0020 2AE10009		bgt	$s7, MAX_SIZE, error_board_size				# validate input
+ 132 0020 2AE10009		bgt	$s7, MAX_SIZE, error_board_size				# validate input
      0024 10200019
- 134 0028               	
- 135 0028 3C040000		la	$a0, north_array	# store the address of the pointer to north_array
+ 133 0028               	
+ 134 0028 3C040000		la	$a0, north_array	# store the address of the pointer to north_array
      002c 34840000
- 136 0030 0C000041		jal	parse_board_perim	# parse the input for north
- 137 0034 3C040000		la	$a0, east_array		# store the address of the pointer to east_array
+ 135 0030 0C000041		jal	parse_board_perim	# parse the input for north
+ 136 0034 3C040000		la	$a0, east_array		# store the address of the pointer to east_array
      0038 34840000
- 138 003c 0C000041		jal	parse_board_perim	# parse the input for east
- 139 0040 3C040000		la	$a0, south_array	# store the address of the pointer to south_array
+ 137 003c 0C000041		jal	parse_board_perim	# parse the input for east
+ 138 0040 3C040000		la	$a0, south_array	# store the address of the pointer to south_array
      0044 34840000
- 140 0048 0C000041		jal	parse_board_perim	# parse the input for south
- 141 004c 3C040000		la	$a0, west_array		# store the address of the pointer to west_array
+ 139 0048 0C000041		jal	parse_board_perim	# parse the input for south
+ 140 004c 3C040000		la	$a0, west_array		# store the address of the pointer to west_array
      0050 34840000
- 142 0054 0C000041		jal	parse_board_perim	# parse the input for west
- 143 0058               	
- 144 0058 34020005		li	$v0, READ_INT		# read in the value of the next integer parameter
- 145 005c 0000000C		syscall
- 146 0060               	
- 147 0060 00402821		move	$a1, $v0		# store the number of fixed values
- 148 0064 00A0082A		blt	$a1, $zero, error_num_fv					# validate input
+ 141 0054 0C000041		jal	parse_board_perim	# parse the input for west
+ 142 0058               	
+ 143 0058 34020005		li	$v0, READ_INT		# read in the value of the next integer parameter
+ 144 005c 0000000C		syscall
+ 145 0060               	
+ 146 0060 00402821		move	$a1, $v0		# store the number of fixed values
+ 147 0064 00A0082A		blt	$a1, $zero, error_num_fv					# validate input
      0068 14200014
- 149 006c               	
- 150 006c 3C040000		la	$a0, board_array	# store the address of the pointer to board_array
+ 148 006c               	
+ 149 006c 3C040000		la	$a0, board_array	# store the address of the pointer to board_array
      0070 34840000
- 151 0074 0C000051		jal	parse_board			# parse the input for board
- 152 0078               	
- 153 0078 0C000000		jal	print_banner
- 154 007c 0C000000		jal	print_initial_puzzle
- 155 0080 0C000000		jal	print_final_puzzle
- 156 0084               	
- 157 0084 3402000A		li	$v0, EXIT
- 158 0088 0000000C		syscall							# terminate program
- 159 008c               	
- 160 008c               error_board_size:
- 161 008c 34020004		li	$v0, PRINT_STRING			# load the syscall code
- 162 0090 3C040000		la	$a0, invalid_board_size		# load the address to the string
+ 150 0074 0C00004E		jal	parse_board			# parse the input for board
+ 151 0078               	
+ 152 0078 0C000000		jal	print_banner
+ 153 007c 0C000000		jal	print_initial_puzzle
+ 154 0080 0C000000		jal	print_final_puzzle
+ 155 0084               	
+ 156 0084 3402000A		li	$v0, EXIT
+ 157 0088 0000000C		syscall							# terminate program
+ 158 008c               	
+ 159 008c               error_board_size:
+ 160 008c 34020004		li	$v0, PRINT_STRING			# load the syscall code
+ 161 0090 3C040000		la	$a0, invalid_board_size		# load the address to the string
      0094 34840000
- 163 0098 0000000C		syscall							# tell the OS to print
- 164 009c 3402000A		li	$v0, EXIT
- 165 00a0 0000000C		syscall							# terminate program
- 166 00a4               	
- 167 00a4               error_input_value:
- 168 00a4 34020004		li	$v0, PRINT_STRING			# load the syscall code
- 169 00a8 3C040000		la	$a0, illegal_input			# load the address to the string
+ 162 0098 0000000C		syscall							# tell the OS to print
+ 163 009c 3402000A		li	$v0, EXIT
+ 164 00a0 0000000C		syscall							# terminate program
+ 165 00a4               	
+ 166 00a4               error_input_value:
+ 167 00a4 34020004		li	$v0, PRINT_STRING			# load the syscall code
+ 168 00a8 3C040000		la	$a0, illegal_input			# load the address to the string
      00ac 34840000
- 170 00b0 0000000C		syscall							# tell the OS to print
- 171 00b4 3402000A		li	$v0, EXIT
- 172 00b8 0000000C		syscall							# terminate program
- 173 00bc               	
- 174 00bc               error_num_fv:
- 175 00bc 34020004		li	$v0, PRINT_STRING			# load the syscall code
- 176 00c0 3C040000		la	$a0, invalid_num_fv			# load the address to the string
+ 169 00b0 0000000C		syscall							# tell the OS to print
+ 170 00b4 3402000A		li	$v0, EXIT
+ 171 00b8 0000000C		syscall							# terminate program
+ 172 00bc               	
+ 173 00bc               error_num_fv:
+ 174 00bc 34020004		li	$v0, PRINT_STRING			# load the syscall code
+ 175 00c0 3C040000		la	$a0, invalid_num_fv			# load the address to the string
      00c4 34840000
- 177 00c8 0000000C		syscall							# tell the OS to print
- 178 00cc 3402000A		li	$v0, EXIT
- 179 00d0 0000000C		syscall							# terminate program
- 180 00d4               	
- 181 00d4               error_fv_input:
- 182 00d4 34020004		li	$v0, PRINT_STRING			# load the syscall code
- 183 00d8 3C040000		la	$a0, illegal_fv_input		# load the address to the string
+ 176 00c8 0000000C		syscall							# tell the OS to print
+ 177 00cc 3402000A		li	$v0, EXIT
+ 178 00d0 0000000C		syscall							# terminate program
+ 179 00d4               	
+ 180 00d4               error_fv_input:
+ 181 00d4 34020004		li	$v0, PRINT_STRING			# load the syscall code
+ 182 00d8 3C040000		la	$a0, illegal_fv_input		# load the address to the string
      00dc 34840000
- 184 00e0 0000000C		syscall							# tell the OS to print
- 185 00e4 3402000A		li	$v0, EXIT
- 186 00e8 0000000C		syscall							# terminate program
- 187 00ec               	
- 188 00ec               error_impossible_puzzle:
- 189 00ec 34020004		li	$v0, PRINT_STRING			# load the syscall code
- 190 00f0 3C040000		la	$a0, impossible_puzzle		# load the address to the string
+ 183 00e0 0000000C		syscall							# tell the OS to print
+ 184 00e4 3402000A		li	$v0, EXIT
+ 185 00e8 0000000C		syscall							# terminate program
+ 186 00ec               	
+ 187 00ec               error_impossible_puzzle:
+ 188 00ec 34020004		li	$v0, PRINT_STRING			# load the syscall code
+ 189 00f0 3C040000		la	$a0, impossible_puzzle		# load the address to the string
      00f4 34840000
- 191 00f8 0000000C		syscall							# tell the OS to print
- 192 00fc 3402000A		li	$v0, EXIT
- 193 0100 0000000C		syscall							# terminate program
- 194 0104               
- 195 0104               parse_board_perim:
- 196 0104 34080000		li	$t0, 0						# counter for the number of values read in
- 197 0108               	
- 198 0108               pbp_loop:
- 199 0108 1117000D		beq	$t0, $s7, pbp_done
- 200 010c 34020005		li	$v0, READ_INT				# read in a single perimeter value
- 201 0110 0000000C		syscall
- 202 0114               	
- 203 0114 34020001		li	$v0, PRINT_INT
- 204 0118 00402021		move $a0, $v0
- 205 011c 0000000C		syscall
- 206 0120               	
- 207 0120 0040082A		blt	$v0, $zero, error_input_value				# validate input
-     0124 1420FFDF
- 208 0128 02E2082A		bgt	$v0, $s7, error_input_value					# validate input
-     012c 1420FFDD
- 209 0130               	
- 210 0130 00801021		move	$v0, $a0				# store the perimeter value
- 211 0134 20840004		addi	$a0, $a0, 4				# move address to base pointer over
- 212 0138 21080001		addi	$t0, $t0, 1				# increment counter
- 213 013c 08000042		j	pbp_loop
- 214 0140               
- 215 0140               pbp_done:
- 216 0140 03E00008		jr	$ra
- 217 0144               	
- 218 0144               parse_board:
- 219 0144 34080000		li	$t0, 0						# counter for the number of values read in
- 220 0148               	
- 221 0148               pb_loop:
- 222 0148 11050020		beq	$t0, $a1, pb_done			# no fixed values to be read
- 223 014c               
- 224 014c 34020005		li	$v0, READ_INT				# read in the row
- 225 0150 0000000C		syscall
- 226 0154 0040082A		blt	$v0, $zero, error_fv_input					# validate input
-     0158 1420FFDE
- 227 015c 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
-     0160 1420FFDC
- 228 0164 00408021		move	$s0, $v0				# store the row value
- 229 0168               	
- 230 0168 34020005		li	$v0, READ_INT				# read in the col value
- 231 016c 0000000C		syscall
- 232 0170 0040082A		blt	$v0, $zero, error_fv_input					# validate input
-     0174 1420FFD7
- 233 0178 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
-     017c 1420FFD5
- 234 0180 00408821		move	$s1, $v0				# store the col value
- 235 0184               	
- 236 0184 34020005		li	$v0, READ_INT				# read in the fixed value
- 237 0188 0000000C		syscall
- 238 018c 28410001		blt	$v0, MIN_HEIGHT, error_fv_input				# validate input
-     0190 1420FFD0
- 239 0194 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
-     0198 1420FFCE
- 240 019c 00409021		move	$s2, $v0				# store the fixed value
- 241 01a0               	
- 242 01a0 02170018		mul	$s3, $s0, $s7
-     01a4 00009812
- 243 01a8 02719820		add	$s3, $s3, $s1				# get the index of the piece
- 244 01ac               	
- 245 01ac 34190004		li	$t9, 4
- 246 01b0 02790018		mul	$s3, $s3, $t9				# get the displacement/offset
-     01b4 00009812
- 247 01b8 02649820		add	$s3, $s3, $a0				# move the pointer over
- 248 01bc               	
- 249 01bc AE720000		sw	$s2, 0($s3)					# store the fixed value
- 250 01c0               	
- 251 01c0 20840004		addi	$a0, $a0, 4				# move address to base pointer over
- 252 01c4 21080001		addi	$t0, $t0, 1				# increment counter
- 253 01c8 08000052		j	pb_loop
- 254 01cc               	
- 255 01cc               pb_done:
- 256 01cc 03E00008		jr	$ra
+ 190 00f8 0000000C		syscall							# tell the OS to print
+ 191 00fc 3402000A		li	$v0, EXIT
+ 192 0100 0000000C		syscall							# terminate program
+ 193 0104               
+ 194 0104               parse_board_perim:
+ 195 0104 34080000		li	$t0, 0						# counter for the number of values read in
+ 196 0108               	
+ 197 0108               pbp_loop:
+ 198 0108 1117000A		beq	$t0, $s7, pbp_done
+ 199 010c 34020005		li	$v0, READ_INT				# read in a single perimeter value
+ 200 0110 0000000C		syscall
+ 201 0114               	
+ 202 0114 0040082A		blt	$v0, $zero, error_input_value				# validate input
+     0118 1420FFE2
+ 203 011c 02E2082A		bgt	$v0, $s7, error_input_value					# validate input
+     0120 1420FFE0
+ 204 0124               	
+ 205 0124 00801021		move	$v0, $a0				# store the perimeter value
+ 206 0128 20840004		addi	$a0, $a0, 4				# move address to base pointer over
+ 207 012c 21080001		addi	$t0, $t0, 1				# increment counter
+ 208 0130 08000042		j	pbp_loop
+ 209 0134               
+ 210 0134               pbp_done:
+ 211 0134 03E00008		jr	$ra
+ 212 0138               	
+ 213 0138               parse_board:
+ 214 0138 34080000		li	$t0, 0						# counter for the number of values read in
+ 215 013c               	
+ 216 013c               pb_loop:
+ 217 013c 11050020		beq	$t0, $a1, pb_done			# no fixed values to be read
+ 218 0140               
+ 219 0140 34020005		li	$v0, READ_INT				# read in the row
+ 220 0144 0000000C		syscall
+ 221 0148 0040082A		blt	$v0, $zero, error_fv_input					# validate input
+     014c 1420FFE1
+ 222 0150 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
+     0154 1420FFDF
+ 223 0158 00408021		move	$s0, $v0				# store the row value
+ 224 015c               	
+ 225 015c 34020005		li	$v0, READ_INT				# read in the col value
+ 226 0160 0000000C		syscall
+ 227 0164 0040082A		blt	$v0, $zero, error_fv_input					# validate input
+     0168 1420FFDA
+ 228 016c 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
+     0170 1420FFD8
+ 229 0174 00408821		move	$s1, $v0				# store the col value
+ 230 0178               	
+ 231 0178 34020005		li	$v0, READ_INT				# read in the fixed value
+ 232 017c 0000000C		syscall
+ 233 0180 28410001		blt	$v0, MIN_HEIGHT, error_fv_input				# validate input
+     0184 1420FFD3
+ 234 0188 02E2082A		bgt	$v0, $s7, error_fv_input					# validate input
+     018c 1420FFD1
+ 235 0190 00409021		move	$s2, $v0				# store the fixed value
+ 236 0194               	
+ 237 0194 02170018		mul	$s3, $s0, $s7
+     0198 00009812
+ 238 019c 02719820		add	$s3, $s3, $s1				# get the index of the piece
+ 239 01a0               	
+ 240 01a0 34190004		li	$t9, 4
+ 241 01a4 02790018		mul	$s3, $s3, $t9				# get the displacement/offset
+     01a8 00009812
+ 242 01ac 02649820		add	$s3, $s3, $a0				# move the pointer over
+ 243 01b0               	
+ 244 01b0 AE720000		sw	$s2, 0($s3)					# store the fixed value
+ 245 01b4               	
+ 246 01b4 20840004		addi	$a0, $a0, 4				# move address to base pointer over
+ 247 01b8 21080001		addi	$t0, $t0, 1				# increment counter
+ 248 01bc 0800004F		j	pb_loop
+ 249 01c0               	
+ 250 01c0               pb_done:
+ 251 01c0 03E00008		jr	$ra
 
 
 EXIT                     = 0000000A   
@@ -366,31 +361,31 @@ error_fv_input             000000D4 R  text
 error_impossible_puzzle    000000EC R  text 
 error_input_value          000000A4 R  text 
 error_num_fv               000000BC R  text 
-final_msg                  000001D1 R  data 
-four_spaces                000001F2 R  data 
-illegal_fv_input           0000028D R  data 
-illegal_input              00000226 R  data 
-impossible_puzzle          000002C2 R  data 
-initial_msg                000001C0 R  data 
-invalid_board_size         000001F9 R  data 
-invalid_num_fv             00000254 R  data 
+final_msg                  000001D3 R  data 
+four_spaces                000001F4 R  data 
+illegal_fv_input           0000028F R  data 
+illegal_input              00000228 R  data 
+impossible_puzzle          000002C4 R  data 
+initial_msg                000001C2 R  data 
+invalid_board_size         000001FB R  data 
+invalid_num_fv             00000256 R  data 
 main                       00000000 RG text 
-new_line                   000001F7 R  data 
+new_line                   000001F9 R  data 
 north_array                00000104 R  data 
-parse_board                00000144 R  text 
+parse_board                00000138 R  text 
 parse_board_perim          00000104 R  text 
-pb_done                    000001CC R  text 
-pb_loop                    00000148 R  text 
-pbp_done                   00000140 R  text 
+pb_done                    000001C0 R  text 
+pb_loop                    0000013C R  text 
+pbp_done                   00000134 R  text 
 pbp_loop                   00000108 R  text 
 print_banner               ******** XG
 print_final_puzzle         ******** XG
 print_initial_puzzle       ******** XG
-row_terminator             000001E6 R  data 
-single_col_separator       000001E4 R  data 
-single_row_separator       000001E0 R  data 
+row_terminator             000001E8 R  data 
+single_col_separator       000001E6 R  data 
+single_row_separator       000001E2 R  data 
 south_array                00000144 R  data 
-space                      000001E9 R  data 
-three_spaces               000001EE R  data 
-two_spaces                 000001EB R  data 
+space                      000001EB R  data 
+three_spaces               000001F0 R  data 
+two_spaces                 000001ED R  data 
 west_array                 00000164 R  data 

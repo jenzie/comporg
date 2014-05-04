@@ -63,15 +63,15 @@ print_final_puzzle:
 	j	print_board
 	
 print_board:
-									# save for print_north_row
+									# save for print_board to go to skyscrapers
 	addi	$sp, $sp, -4			# save return address of the caller
 	sw	$ra, 0($sp)
 	
 	jal	print_north_row
-	jal	print_west_east_rows
-	jal	print_south_row
+	#jal	print_west_east_rows
+	#jal	print_south_row
 	
-									# restore for print_north_row
+									# restore for print_board to go skyscrapers
 	lw	$ra, 0($sp)					# restore return address of the caller
 	addi	$sp, $sp, 4
 	
@@ -131,8 +131,8 @@ print_we_loop:
 	beq	$t8, $s7, print_we_done		# check counter for num rows
 	
 									# print west value
-	li 	$v0, PRINT_STRING			# load the syscall code
-	move	$a0, $t1				# load the address to the string
+	li 	$v0, PRINT_INT				# load the syscall code
+	move	$a0, $t2				# load the address to the string
 	syscall							# tell the OS to print
 	
 	li 	$v0, PRINT_STRING			# load the syscall code
@@ -152,8 +152,8 @@ print_we_loop:
 	syscall							# tell the OS to print
 	
 									# print east value
-	li 	$v0, PRINT_STRING			# load the syscall code
-	move	$a0, $t3				# load the address to the string
+	li 	$v0, PRINT_INT				# load the syscall code
+	move	$a0, $t4				# load the address to the string
 	syscall							# tell the OS to print
 	
 	li 	$v0, PRINT_STRING			# load the syscall code
@@ -229,8 +229,8 @@ print_tile:
 	la	$a0, space					# load the address to the string
 	syscall							# tell the OS to print
 	
-	li 	$v0, PRINT_STRING			# load the syscall code
-	move 	$a0, $t5					# load the address to the string
+	li 	$v0, PRINT_INT				# load the syscall code
+	move 	$a0, $t6				# load the address to the string
 	syscall							# tell the OS to print
 	
 	li 	$v0, PRINT_STRING			# load the syscall code

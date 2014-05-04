@@ -2,44 +2,44 @@ Load map
 ========
 
 Module:  skyscrapers.obj
- Text segment:  464 bytes, load point 0x00400000
+ Text segment:  452 bytes, load point 0x00400000
  Data segment:  728 bytes, load point 0x10000000
  Symbols:
                      Name Section Mode    Value
-               two_spaces   Data   R   0x100001eb
-           row_terminator   Data   R   0x100001e6
-              initial_msg   Data   R   0x100001c0
-        impossible_puzzle   Data   R   0x100002c2
-       invalid_board_size   Data   R   0x100001f9
+               two_spaces   Data   R   0x100001ed
+           row_terminator   Data   R   0x100001e8
+              initial_msg   Data   R   0x100001c2
+        impossible_puzzle   Data   R   0x100002c4
+       invalid_board_size   Data   R   0x100001fb
          error_board_size   Text   R   0x0040008c
                west_array   Data   R   0x10000164
               north_array   Data   R   0x10000104
               board_array   Data   R   0x10000004
-     single_col_separator   Data   R   0x100001e4
+     single_col_separator   Data   R   0x100001e6
                board_size   Data   R   0x10000000
              error_num_fv   Text   R   0x004000bc
                  READ_INT          A   0x00000005
                MIN_HEIGHT          A   0x00000001
-              parse_board   Text   R   0x00400144
+              parse_board   Text   R   0x00400138
         error_input_value   Text   R   0x004000a4
-                  pb_done   Text   R   0x004001cc
-                 new_line   Data   R   0x100001f7
+                  pb_done   Text   R   0x004001c0
+                 new_line   Data   R   0x100001f9
            error_fv_input   Text   R   0x004000d4
-                 pbp_done   Text   R   0x00400140
-                final_msg   Data   R   0x100001d1
+                 pbp_done   Text   R   0x00400134
+                final_msg   Data   R   0x100001d3
                  MAX_SIZE          A   0x00000008
-             three_spaces   Data   R   0x100001ee
-           invalid_num_fv   Data   R   0x10000254
+             three_spaces   Data   R   0x100001f0
+           invalid_num_fv   Data   R   0x10000256
         parse_board_perim   Text   R   0x00400104
              PRINT_STRING          A   0x00000004
                      main   Text   RG  0x00400000
               south_array   Data   R   0x10000144
-     single_row_separator   Data   R   0x100001e0
-                    space   Data   R   0x100001e9
-         illegal_fv_input   Data   R   0x1000028d
-              four_spaces   Data   R   0x100001f2
-            illegal_input   Data   R   0x10000226
-                  pb_loop   Text   R   0x00400148
+     single_row_separator   Data   R   0x100001e2
+                    space   Data   R   0x100001eb
+         illegal_fv_input   Data   R   0x1000028f
+              four_spaces   Data   R   0x100001f4
+            illegal_input   Data   R   0x10000228
+                  pb_loop   Text   R   0x0040013c
                  MIN_SIZE          A   0x00000003
                      EXIT          A   0x0000000a
                east_array   Data   R   0x10000124
@@ -49,35 +49,35 @@ Module:  skyscrapers.obj
                 PRINT_INT          A   0x00000001
 
 Module:  printers.obj
- Text segment:  624 bytes, load point 0x004001d0
+ Text segment:  616 bytes, load point 0x004001c4
  Symbols:
                      Name Section Mode    Value
-             print_loop_s   Text   R   0x00400338
-       print_final_puzzle   Text   R   0x004001f8
-            print_we_loop   Text   R   0x004002b8
-               print_loop   Text   R   0x0040037c
+             print_loop_s   Text   R   0x00400324
+       print_final_puzzle   Text   R   0x004001ec
+            print_we_loop   Text   R   0x004002a4
+               print_loop   Text   R   0x00400368
                  READ_INT          A   0x00000005
-        print_one_divider   Text   R   0x00400410
-               print_tile   Text   R   0x004003b0
-     print_west_east_rows   Text   R   0x00400284
-         print_empty_tile   Text   R   0x004003e4
+        print_one_divider   Text   R   0x004003fc
+               print_tile   Text   R   0x0040039c
+     print_west_east_rows   Text   R   0x00400270
+         print_empty_tile   Text   R   0x004003d0
              PRINT_STRING          A   0x00000004
-             print_banner   Text   R   0x004001d0
-            print_we_done   Text   R   0x0040032c
-        print_row_divider   Text   R   0x004003f8
-           print_div_done   Text   R   0x0040042c
-               print_done   Text   R   0x00400394
-              print_board   Text   R   0x0040020c
-     print_initial_puzzle   Text   R   0x004001e4
-          print_north_row   Text   R   0x0040022c
+             print_banner   Text   R   0x004001c4
+            print_we_done   Text   R   0x00400318
+        print_row_divider   Text   R   0x004003e4
+           print_div_done   Text   R   0x00400418
+               print_done   Text   R   0x00400380
+              print_board   Text   R   0x00400200
+     print_initial_puzzle   Text   R   0x004001d8
+          print_north_row   Text   R   0x00400218
                      EXIT          A   0x0000000a
-             print_done_s   Text   R   0x00400360
-          print_south_row   Text   R   0x00400258
+             print_done_s   Text   R   0x0040034c
+          print_south_row   Text   R   0x00400244
                 PRINT_INT          A   0x00000001
 
 Module:  r2k_startup.obj
- Text segment:  36 bytes, load point 0x00400440
+ Text segment:  36 bytes, load point 0x0040042c
  Symbols:
                      Name Section Mode    Value
                 SYS_EXIT2          A   0x00000011
-           __r2k__entry__   Text   RG  0x00400444
+           __r2k__entry__   Text   RG  0x00400430
