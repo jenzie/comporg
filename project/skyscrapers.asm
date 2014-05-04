@@ -107,7 +107,6 @@ impossible_puzzle:
 	.globl	print_banner			# from printers.asm
 	.globl	print_initial_puzzle	# from printers.asm
 	.globl	print_final_puzzle		# from printers.asm
-	.globl	print_board				# from printers.asm
 	
 #
 # Name:		MAIN PROGRAM
