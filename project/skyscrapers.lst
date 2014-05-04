@@ -108,69 +108,70 @@
           0A0A00  
   64 01e2               	
   65 01e2               single_row_separator:
-  66 01e2 2B2D2D00		.asciiz "+--"
-  67 01e6               
-  68 01e6               single_col_separator:
-  69 01e6 7C00    		.asciiz "|"
-  70 01e8               	
-  71 01e8               row_terminator:
-  72 01e8 2B0A00  		.asciiz "+\n"
-  73 01eb               
-  74 01eb               space:
-  75 01eb 2000    		.asciiz " "
-  76 01ed               	
-  77 01ed               two_spaces:
-  78 01ed 202000  		.asciiz "  "
-  79 01f0               	
-  80 01f0               three_spaces:
-  81 01f0 20202000		.asciiz "   "
-  82 01f4               	
-  83 01f4               four_spaces:
-  84 01f4 20202020		.asciiz	"    "
+  66 01e2 2B2D2D2D		.asciiz "+---"
           00      
-  85 01f9               	
-  86 01f9               new_line:
-  87 01f9 0A00    		.asciiz "\n"
-  88 01fb               	
-  89 01fb               invalid_board_size:
-  90 01fb 496E7661		.asciiz "Invalid board size, Skyscrapers terminating\n"
+  67 01e7               
+  68 01e7               single_col_separator:
+  69 01e7 7C00    		.asciiz "|"
+  70 01e9               	
+  71 01e9               row_terminator:
+  72 01e9 2B0A00  		.asciiz "+\n"
+  73 01ec               
+  74 01ec               space:
+  75 01ec 2000    		.asciiz " "
+  76 01ee               	
+  77 01ee               two_spaces:
+  78 01ee 202000  		.asciiz "  "
+  79 01f1               	
+  80 01f1               three_spaces:
+  81 01f1 20202000		.asciiz "   "
+  82 01f5               	
+  83 01f5               four_spaces:
+  84 01f5 20202020		.asciiz	"    "
+          00      
+  85 01fa               	
+  86 01fa               new_line:
+  87 01fa 0A00    		.asciiz "\n"
+  88 01fc               	
+  89 01fc               invalid_board_size:
+  90 01fc 496E7661		.asciiz "Invalid board size, Skyscrapers terminating\n"
           6C696420
           626F6172
           64207369
           7A652C20
           536B7973
-  91 0228               	
-  92 0228               illegal_input:
-  93 0228 496C6C65		.asciiz "Illegal input value, Skyscrapers terminating\n"
+  91 0229               	
+  92 0229               illegal_input:
+  93 0229 496C6C65		.asciiz "Illegal input value, Skyscrapers terminating\n"
           67616C20
           696E7075
           74207661
           6C75652C
           20536B79
-  94 0256               	
-  95 0256               invalid_num_fv:
-  96 0256 496E7661		.asciiz "Invalid number of fixed values, Skyscrapers terminating\n"
+  94 0257               	
+  95 0257               invalid_num_fv:
+  96 0257 496E7661		.asciiz "Invalid number of fixed values, Skyscrapers terminating\n"
           6C696420
           6E756D62
           6572206F
           66206669
           78656420
-  97 028f               	
-  98 028f               illegal_fv_input:
-  99 028f 496C6C65		.asciiz "Illegal fixed input values, Skyscrapers terminating\n"
+  97 0290               	
+  98 0290               illegal_fv_input:
+  99 0290 496C6C65		.asciiz "Illegal fixed input values, Skyscrapers terminating\n"
           67616C20
           66697865
           6420696E
           70757420
           76616C75
- 100 02c4               	
- 101 02c4               impossible_puzzle:
- 102 02c4 496D706F		.asciiz "Impossible Puzzle\n\n"
+ 100 02c5               	
+ 101 02c5               impossible_puzzle:
+ 102 02c5 496D706F		.asciiz "Impossible Puzzle\n\n"
           73736962
           6C652050
           757A7A6C
           650A0A00
- 103 02d8               	
+ 103 02d9               	
  104 0000               	.text							# this is program code
  105 0000               	.align	2						# instructions must be on word boundaries
  106 0000               	
@@ -288,7 +289,7 @@
  203 011c 02E2082A		bgt	$v0, $s7, error_input_value					# validate input
      0120 1420FFE0
  204 0124               	
- 205 0124 00801021		move	$v0, $a0				# store the perimeter value
+ 205 0124 AC820000		sw	$v0, 0($a0)					# store the perimeter value
  206 0128 20840004		addi	$a0, $a0, 4				# move address to base pointer over
  207 012c 21080001		addi	$t0, $t0, 1				# increment counter
  208 0130 08000042		j	pbp_loop
@@ -362,15 +363,15 @@ error_impossible_puzzle    000000EC R  text
 error_input_value          000000A4 R  text 
 error_num_fv               000000BC R  text 
 final_msg                  000001D3 R  data 
-four_spaces                000001F4 R  data 
-illegal_fv_input           0000028F R  data 
-illegal_input              00000228 R  data 
-impossible_puzzle          000002C4 R  data 
+four_spaces                000001F5 R  data 
+illegal_fv_input           00000290 R  data 
+illegal_input              00000229 R  data 
+impossible_puzzle          000002C5 R  data 
 initial_msg                000001C2 R  data 
-invalid_board_size         000001FB R  data 
-invalid_num_fv             00000256 R  data 
+invalid_board_size         000001FC R  data 
+invalid_num_fv             00000257 R  data 
 main                       00000000 RG text 
-new_line                   000001F9 R  data 
+new_line                   000001FA R  data 
 north_array                00000104 R  data 
 parse_board                00000138 R  text 
 parse_board_perim          00000104 R  text 
@@ -381,11 +382,11 @@ pbp_loop                   00000108 R  text
 print_banner               ******** XG
 print_final_puzzle         ******** XG
 print_initial_puzzle       ******** XG
-row_terminator             000001E8 R  data 
-single_col_separator       000001E6 R  data 
+row_terminator             000001E9 R  data 
+single_col_separator       000001E7 R  data 
 single_row_separator       000001E2 R  data 
 south_array                00000144 R  data 
-space                      000001EB R  data 
-three_spaces               000001F0 R  data 
-two_spaces                 000001ED R  data 
+space                      000001EC R  data 
+three_spaces               000001F1 R  data 
+two_spaces                 000001EE R  data 
 west_array                 00000164 R  data 

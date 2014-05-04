@@ -63,7 +63,7 @@ final_msg:
 	.asciiz "Final Puzzle\n\n"
 	
 single_row_separator:
-	.asciiz "+--"
+	.asciiz "+---"
 
 single_col_separator:
 	.asciiz "|"
@@ -202,7 +202,7 @@ pbp_loop:
 	blt	$v0, $zero, error_input_value				# validate input
 	bgt	$v0, $s7, error_input_value					# validate input
 	
-	move	$v0, $a0				# store the perimeter value
+	sw	$v0, 0($a0)					# store the perimeter value
 	addi	$a0, $a0, 4				# move address to base pointer over
 	addi	$t0, $t0, 1				# increment counter
 	j	pbp_loop
