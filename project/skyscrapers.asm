@@ -147,15 +147,18 @@ main:
 	li	$v0, READ_INT		# read in the value of the next integer parameter
 	syscall
 	
-	move	$a2, $v0		# store the number of fixed values
-	blt	$a2, $zero, error_num_fv					# validate input
+	move	$a0, $v0		# store the number of fixed values
+	blt	$a0, $zero, error_num_fv					# validate input
 	
-	la	$a0, board_array	# store the address of the pointer to board_array
-	la	$a1, board_copy		# store the address of the pointer to board_copy
+	la	$s4, board_array	# store the address of the pointer to board_array
+	la	$s5, board_copy		# store the address of the pointer to board_copy
 	jal	parse_board			# parse the input for board
 	
 	jal	print_banner
 	jal	print_initial_puzzle
+	
+	jal	solve_puzzle
+	
 	jal	print_final_puzzle
 	
 	li	$v0, EXIT
@@ -219,7 +222,7 @@ parse_board:
 	li	$t0, 0						# counter for the number of values read in
 	
 pb_loop:
-	beq	$t0, $a2, pb_done			# no fixed values to be read
+	beq	$t0, $a0, pb_done			# no fixed values to be read
 
 	# to-do: change the bgt s7 to s7 - 1
 	
@@ -250,12 +253,12 @@ pb_loop:
 	mul	$s3, $s3, $t9				# get the displacement/offset
 	
 									# store the value into the board_array
-	add	$t9, $s3, $a0				# move the pointer over
+	add	$t9, $s3, $s4				# move the pointer over
 	sw	$s2, 0($t9)					# store the fixed value
 	
 									# store the value into the board_copy
-	sub	$t9, $s3, $a0				# unmove the pointer over
-	add	$t9, $s3, $a1				# move the pointer over
+	sub	$t9, $s3, $s4				# unmove the pointer over
+	add	$t9, $s3, $s5				# move the pointer over
 	sw	$s2, 0($t9)					# store the fixed value
 	
 	addi	$t0, $t0, 1				# increment counter
