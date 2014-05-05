@@ -55,6 +55,7 @@ west_array:			# room for input values, size for 8 words
 	.align 0
 
 banner_msg:	
+	.ascii	"\n"
 	.ascii	"*******************\n"
 	.ascii	"**  SKYSCRAPERS  **\n"
 	.asciiz	"*******************\n\n"

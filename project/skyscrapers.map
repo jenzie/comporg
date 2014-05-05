@@ -6,17 +6,17 @@ Module:  skyscrapers.obj
  Data segment:  992 bytes, load point 0x10000000
  Symbols:
                      Name Section Mode    Value
-               two_spaces   Data   R   0x100002ee
-           row_terminator   Data   R   0x100002e9
-              initial_msg   Data   R   0x100002c2
-        impossible_puzzle   Data   R   0x100003c5
+               two_spaces   Data   R   0x100002ef
+           row_terminator   Data   R   0x100002ea
+              initial_msg   Data   R   0x100002c3
+        impossible_puzzle   Data   R   0x100003c6
                board_copy   Data   R   0x10000104
-       invalid_board_size   Data   R   0x100002fc
+       invalid_board_size   Data   R   0x100002fd
          error_board_size   Text   R   0x00400094
                west_array   Data   R   0x10000264
               north_array   Data   R   0x10000204
               board_array   Data   R   0x10000004
-     single_col_separator   Data   R   0x100002e7
+     single_col_separator   Data   R   0x100002e8
                board_size   Data   R   0x10000000
              error_num_fv   Text   R   0x004000c4
                  READ_INT          A   0x00000005
@@ -24,22 +24,22 @@ Module:  skyscrapers.obj
               parse_board   Text   R   0x00400140
         error_input_value   Text   R   0x004000ac
                   pb_done   Text   R   0x004001d4
-                 new_line   Data   R   0x100002fa
+                 new_line   Data   R   0x100002fb
            error_fv_input   Text   R   0x004000dc
                  pbp_done   Text   R   0x0040013c
-                final_msg   Data   R   0x100002d3
+                final_msg   Data   R   0x100002d4
                  MAX_SIZE          A   0x00000008
-             three_spaces   Data   R   0x100002f1
-           invalid_num_fv   Data   R   0x10000357
+             three_spaces   Data   R   0x100002f2
+           invalid_num_fv   Data   R   0x10000358
         parse_board_perim   Text   R   0x0040010c
              PRINT_STRING          A   0x00000004
                      main   Text   RG  0x00400000
               south_array   Data   R   0x10000244
-     single_row_separator   Data   R   0x100002e2
-                    space   Data   R   0x100002ec
-         illegal_fv_input   Data   R   0x10000390
-              four_spaces   Data   R   0x100002f5
-            illegal_input   Data   R   0x10000329
+     single_row_separator   Data   R   0x100002e3
+                    space   Data   R   0x100002ed
+         illegal_fv_input   Data   R   0x10000391
+              four_spaces   Data   R   0x100002f6
+            illegal_input   Data   R   0x1000032a
                   pb_loop   Text   R   0x00400144
                  MIN_SIZE          A   0x00000003
                      EXIT          A   0x0000000a

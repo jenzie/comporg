@@ -135,7 +135,7 @@
      00dc 356B0000
  126 00e0 8D6C0000		lw	$t4, 0($t3)					# load the value of the element in east
  127 00e4               	
- 128 00e4 3C0D0000		la	$t5, board_copy			# load the address of an element in board
+ 128 00e4 3C0D0000		la	$t5, board_array			# load the address of an element in board
      00e8 35AD0000
  129 00ec 8DAE0000		lw	$t6, 0($t5)					# load the value of the element in board
  130 00f0               	
