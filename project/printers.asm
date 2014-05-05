@@ -18,6 +18,7 @@ EXIT = 10
 									# global data
 	.globl	board_size
 	.globl	board_array
+	.globl	board_copy
 	.globl	north_array
 	.globl	east_array
 	.globl	south_array

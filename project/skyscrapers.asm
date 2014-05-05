@@ -34,6 +34,9 @@ board_size:
 board_array:
 	.space	8*8*4	# room for input values, size for 8 by 8 words
 	
+board_copy:
+	.space	8*8*4	# room for input values, size for 8 by 8 words
+	
 north_array:		# room for input values, size for 8 words
 	.space	8*4	
 
@@ -143,10 +146,11 @@ main:
 	li	$v0, READ_INT		# read in the value of the next integer parameter
 	syscall
 	
-	move	$a1, $v0		# store the number of fixed values
-	blt	$a1, $zero, error_num_fv					# validate input
+	move	$a2, $v0		# store the number of fixed values
+	blt	$a2, $zero, error_num_fv					# validate input
 	
 	la	$a0, board_array	# store the address of the pointer to board_array
+	la	$a1, board_copy		# store the address of the pointer to board_copy
 	jal	parse_board			# parse the input for board
 	
 	jal	print_banner
@@ -214,7 +218,7 @@ parse_board:
 	li	$t0, 0						# counter for the number of values read in
 	
 pb_loop:
-	beq	$t0, $a1, pb_done			# no fixed values to be read
+	beq	$t0, $a2, pb_done			# no fixed values to be read
 
 	# to-do: change the bgt s7 to s7 - 1
 	
@@ -243,9 +247,15 @@ pb_loop:
 	
 	li	$t9, 4						# 4 bytes in a word
 	mul	$s3, $s3, $t9				# get the displacement/offset
-	add	$s3, $s3, $a0				# move the pointer over
 	
-	sw	$s2, 0($s3)					# store the fixed value
+									# store the value into the board_array
+	add	$t9, $s3, $a0				# move the pointer over
+	sw	$s2, 0($t9)					# store the fixed value
+	
+									# store the value into the board_copy
+	sub	$t9, $s3, $a0				# unmove the pointer over
+	add	$t9, $s3, $a1				# move the pointer over
+	sw	$s2, 0($t9)					# store the fixed value
 	
 	addi	$t0, $t0, 1				# increment counter
 	j	pb_loop
