@@ -16,7 +16,7 @@ RLINK = /home/fac/wrc/bin/rlink
 #
 # Object files
 #
-OBJFILES = skyscrapers.obj printers.obj
+OBJFILES = skyscrapers.obj printers.obj solvers.obj
 
 #
 # Transformation rule: .asm into .obj

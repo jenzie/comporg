@@ -113,6 +113,7 @@ impossible_puzzle:
 	.globl	print_banner			# from printers.asm
 	.globl	print_initial_puzzle	# from printers.asm
 	.globl	print_final_puzzle		# from printers.asm
+	.globl	solve_puzzle			# from solvers.asm
 	
 #
 # Name:		MAIN PROGRAM
