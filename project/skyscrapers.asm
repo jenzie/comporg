@@ -48,6 +48,9 @@ south_array:		# room for input values, size for 8 words
 
 west_array:			# room for input values, size for 8 words
 	.space	8*4	
+
+taken_array:
+	.space	8*4
 	
 	#
 	# the print constants for the code
@@ -166,6 +169,7 @@ main:
 	syscall							# terminate program
 	
 error_board_size:
+	jal	print_banner
 	li	$v0, PRINT_STRING			# load the syscall code
 	la	$a0, invalid_board_size		# load the address to the string
 	syscall							# tell the OS to print
@@ -173,6 +177,7 @@ error_board_size:
 	syscall							# terminate program
 	
 error_input_value:
+	jal	print_banner
 	li	$v0, PRINT_STRING			# load the syscall code
 	la	$a0, illegal_input			# load the address to the string
 	syscall							# tell the OS to print
@@ -180,6 +185,7 @@ error_input_value:
 	syscall							# terminate program
 	
 error_num_fv:
+	jal	print_banner
 	li	$v0, PRINT_STRING			# load the syscall code
 	la	$a0, invalid_num_fv			# load the address to the string
 	syscall							# tell the OS to print
@@ -187,6 +193,7 @@ error_num_fv:
 	syscall							# terminate program
 	
 error_fv_input:
+	jal	print_banner
 	li	$v0, PRINT_STRING			# load the syscall code
 	la	$a0, illegal_fv_input		# load the address to the string
 	syscall							# tell the OS to print
@@ -194,6 +201,7 @@ error_fv_input:
 	syscall							# terminate program
 	
 error_impossible_puzzle:
+	jal	print_banner
 	li	$v0, PRINT_STRING			# load the syscall code
 	la	$a0, impossible_puzzle		# load the address to the string
 	syscall							# tell the OS to print
@@ -266,4 +274,10 @@ pb_loop:
 	j	pb_loop
 	
 pb_done:
+	beq	$t0, $zero, pb_imp
 	jr	$ra
+
+pb_imp:
+	li 	$v0, PRINT_STRING			# load the syscall code
+	la	$a0, error_impossible_puzzle		# load the address to the string
+	syscall							# tell the OS to print

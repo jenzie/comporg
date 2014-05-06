@@ -2,113 +2,123 @@ Load map
 ========
 
 Module:  skyscrapers.obj
- Text segment:  476 bytes, load point 0x00400000
- Data segment:  992 bytes, load point 0x10000000
+ Text segment:  496 bytes, load point 0x00400000
+ Data segment:  1024 bytes, load point 0x10000000
  Symbols:
                          Name Section Mode    Value
-                   two_spaces   Data   R   0x100002ef
-               row_terminator   Data   R   0x100002ea
-                  initial_msg   Data   R   0x100002c3
-            impossible_puzzle   Data   R   0x100003c6
+                   two_spaces   Data   R   0x1000030f
+               row_terminator   Data   R   0x1000030a
+                  initial_msg   Data   R   0x100002e3
+                  taken_array   Data   R   0x10000284
+            impossible_puzzle   Data   R   0x100003e6
                    board_copy   Data   R   0x10000104
-           invalid_board_size   Data   R   0x100002fd
+           invalid_board_size   Data   R   0x1000031d
              error_board_size   Text   R   0x00400098
                    west_array   Data   R   0x10000264
                   north_array   Data   R   0x10000204
                   board_array   Data   R   0x10000004
-         single_col_separator   Data   R   0x100002e8
+         single_col_separator   Data   R   0x10000308
                    board_size   Data   R   0x10000000
-                 error_num_fv   Text   R   0x004000c8
+                 error_num_fv   Text   R   0x004000d0
                      READ_INT          A   0x00000005
                    MIN_HEIGHT          A   0x00000001
-                  parse_board   Text   R   0x00400144
-            error_input_value   Text   R   0x004000b0
-                      pb_done   Text   R   0x004001d8
-                     new_line   Data   R   0x100002fb
-               error_fv_input   Text   R   0x004000e0
-                     pbp_done   Text   R   0x00400140
-                    final_msg   Data   R   0x100002d4
+                  parse_board   Text   R   0x00400158
+            error_input_value   Text   R   0x004000b4
+                      pb_done   Text   R   0x004001ec
+                     new_line   Data   R   0x1000031b
+               error_fv_input   Text   R   0x004000ec
+                     pbp_done   Text   R   0x00400154
+                    final_msg   Data   R   0x100002f4
                      MAX_SIZE          A   0x00000008
-                 three_spaces   Data   R   0x100002f2
-               invalid_num_fv   Data   R   0x10000358
-            parse_board_perim   Text   R   0x00400110
+                 three_spaces   Data   R   0x10000312
+               invalid_num_fv   Data   R   0x10000378
+            parse_board_perim   Text   R   0x00400124
                  PRINT_STRING          A   0x00000004
                          main   Text   RG  0x00400000
                   south_array   Data   R   0x10000244
-         single_row_separator   Data   R   0x100002e3
-                        space   Data   R   0x100002ed
-             illegal_fv_input   Data   R   0x10000391
-                  four_spaces   Data   R   0x100002f6
-                illegal_input   Data   R   0x1000032a
-                      pb_loop   Text   R   0x00400148
+         single_row_separator   Data   R   0x10000303
+                        space   Data   R   0x1000030d
+             illegal_fv_input   Data   R   0x100003b1
+                  four_spaces   Data   R   0x10000316
+                illegal_input   Data   R   0x1000034a
+                      pb_loop   Text   R   0x0040015c
                      MIN_SIZE          A   0x00000003
                          EXIT          A   0x0000000a
                    east_array   Data   R   0x10000224
-                   banner_msg   Data   R   0x10000284
-      error_impossible_puzzle   Text   R   0x004000f8
-                     pbp_loop   Text   R   0x00400114
+                   banner_msg   Data   R   0x100002a4
+      error_impossible_puzzle   Text   R   0x00400108
+                     pbp_loop   Text   R   0x00400128
                     PRINT_INT          A   0x00000001
 
 Module:  printers.obj
- Text segment:  712 bytes, load point 0x004001dc
+ Text segment:  728 bytes, load point 0x004001f0
  Symbols:
                          Name Section Mode    Value
-                 print_next_w   Text   R   0x00400300
-                 print_loop_s   Text   R   0x0040038c
-           print_final_puzzle   Text   R   0x00400204
-                print_we_loop   Text   R   0x004002d4
-                   print_loop   Text   R   0x004003d0
+                 print_next_w   Text   R   0x00400324
+                 print_loop_s   Text   R   0x004003b0
+           print_final_puzzle   Text   R   0x00400218
+                print_we_loop   Text   R   0x004002f8
+                   print_loop   Text   R   0x004003f4
                      READ_INT          A   0x00000005
-            print_one_divider   Text   R   0x00400474
-                   print_tile   Text   R   0x00400414
-         print_west_east_rows   Text   R   0x004002a0
-             print_empty_tile   Text   R   0x00400448
+            print_one_divider   Text   R   0x00400498
+                   print_tile   Text   R   0x00400438
+         print_west_east_rows   Text   R   0x004002c4
+             print_empty_tile   Text   R   0x0040046c
                  PRINT_STRING          A   0x00000004
-                 print_banner   Text   R   0x004001dc
-                print_empty_e   Text   R   0x0040033c
-                print_we_done   Text   R   0x00400374
-            print_row_divider   Text   R   0x0040045c
-               print_div_done   Text   R   0x00400490
-                print_empty_w   Text   R   0x004002f0
-                   print_done   Text   R   0x004003f8
-                  print_board   Text   R   0x00400218
-         print_initial_puzzle   Text   R   0x004001f0
-              print_north_row   Text   R   0x00400248
-            print_loop_s_init   Text   R   0x00400384
+                 print_banner   Text   R   0x004001f0
+                print_empty_e   Text   R   0x00400360
+                print_we_done   Text   R   0x00400398
+            print_row_divider   Text   R   0x00400480
+               print_div_done   Text   R   0x004004b4
+                print_empty_w   Text   R   0x00400314
+                   print_done   Text   R   0x0040041c
+                  print_board   Text   R   0x0040022c
+         print_initial_puzzle   Text   R   0x00400204
+              print_north_row   Text   R   0x0040026c
+            print_loop_s_init   Text   R   0x004003a8
                          EXIT          A   0x0000000a
-                 print_done_s   Text   R   0x004003b4
-              print_south_row   Text   R   0x00400274
+                 print_done_s   Text   R   0x004003d8
+              print_south_row   Text   R   0x00400298
                     PRINT_INT          A   0x00000001
-                 print_next_e   Text   R   0x0040034c
+                 print_next_e   Text   R   0x00400370
 
 Module:  solvers.obj
- Text segment:  560 bytes, load point 0x004004a4
+ Text segment:  760 bytes, load point 0x004004c8
  Symbols:
                          Name Section Mode    Value
-  check_if_valid_loop_success   Text   R   0x004006c4
-          check_if_valid_done   Text   R   0x00400650
-      check_if_already_solved   Text   R   0x004006d4
-          try_tile_loop_start   Text   R   0x00400508
-                try_tile_loop   Text   R   0x0040050c
-               try_tile_taken   Text   R   0x0040055c
-                 solve_puzzle   Text   R   0x004004a4
-     check_if_valid_loop_done   Text   R   0x004006bc
-                try_tile_full   Text   R   0x00400554
-               try_tile_value   Text   R   0x004004cc
-           try_tile_backtrack   Text   R   0x00400540
-          check_if_valid_loop   Text   R   0x00400698
-          cant_see_all_towers   Text   R   0x004006cc
-                try_tile_done   Text   R   0x00400568
-                can_see_tower   Text   R   0x004006ac
-     check_if_valid_loop_incr   Text   R   0x004006b0
-               check_if_valid   Text   R   0x00400580
-    check_if_valid_loop_start   Text   R   0x0040066c
-            solve_puzzle_done   Text   R   0x004004c0
-       check_if_valid_invalid   Text   R   0x0040064c
+  check_if_valid_loop_success   Text   R   0x00400778
+          check_if_valid_done   Text   R   0x004006a4
+  check_if_valid_loop_is_done   Text   R   0x00400760
+      check_if_already_solved   Text   R   0x00400794
+          try_tile_loop_start   Text   R   0x00400538
+                try_tile_loop   Text   R   0x0040053c
+               try_tile_taken   Text   R   0x0040059c
+            setup_taken_array   Text   R   0x00400794
+                 solve_puzzle   Text   R   0x004004c8
+     check_if_valid_loop_done   Text   R   0x00400770
+                   taken_loop   Text   R   0x004007a4
+                try_tile_full   Text   R   0x00400594
+             duplicate_towers   Text   R   0x00400788
+               try_tile_value   Text   R   0x004004f4
+           try_tile_backtrack   Text   R   0x0040057c
+          check_if_valid_loop   Text   R   0x0040070c
+                 PRINT_STRING          A   0x00000004
+          cant_see_all_towers   Text   R   0x00400780
+             try_tile_success   Text   R   0x004005b0
+                try_tile_done   Text   R   0x004005ac
+                can_see_tower   Text   R   0x00400748
+             setup_taken_done   Text   R   0x004007bc
+     check_if_valid_loop_incr   Text   R   0x0040074c
+               check_if_valid   Text   R   0x004005cc
+   check_if_valid_loop_return   Text   R   0x00400788
+    check_if_valid_loop_start   Text   R   0x004006c0
+     check_if_valid_loop_decr   Text   R   0x0040075c
+            solve_puzzle_done   Text   R   0x004004e8
+       check_if_valid_invalid   Text   R   0x004006a0
 
 Module:  r2k_startup.obj
- Text segment:  36 bytes, load point 0x004006d4
+ Text segment:  36 bytes, load point 0x004007c0
  Symbols:
                          Name Section Mode    Value
                     SYS_EXIT2          A   0x00000011
-               __r2k__entry__   Text   RG  0x004006d8
+               __r2k__entry__   Text   RG  0x004007c4

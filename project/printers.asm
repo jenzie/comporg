@@ -65,7 +65,9 @@ print_final_puzzle:
 	
 print_board:
 									# save for print_board to go to skyscrapers
-	addi	$sp, $sp, -4			# save return address of the caller
+	addi	$sp, $sp, -12			# save return address of the caller
+	sw	$s1, 8($sp)
+	sw	$s2, 4($sp)
 	sw	$ra, 0($sp)
 	
 	jal	print_north_row
@@ -78,7 +80,9 @@ print_board:
 	
 									# restore for print_board to go skyscrapers
 	lw	$ra, 0($sp)					# restore return address of the caller
-	addi	$sp, $sp, 4
+	lw	$s0, 4($sp)
+	lw	$s1, 8($sp)
+	addi	$sp, $sp, 12
 	
 	jr	$ra
 	

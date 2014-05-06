@@ -7,261 +7,348 @@
    7 0000               # Returns:
    8 0000               #
    9 0000               
-  10 0000               	.text							# this is program code
-  11 0000               	
-  12 0000               									# global data
-  13 0000               	.globl	board_size
-  14 0000               	.globl	board_array
-  15 0000               	.globl	board_copy
-  16 0000               	.globl	north_array
-  17 0000               	.globl	east_array
-  18 0000               	.globl	south_array
-  19 0000               	.globl	west_array
-  20 0000               
-  21 0000               #
-  22 0000               # Name: solve_puzzle
-  23 0000               #
-  24 0000               # Description:	Solve a single Skyscrapers puzzle.
-  25 0000               # Arguments:
-  26 0000               #
-  27 0000               
-  28 0000               solve_puzzle:
-  29 0000               									# save for print_board to go to skyscrapers
-  30 0000 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
-  31 0004 AFBF0000		sw	$ra, 0($sp)
-  32 0008               	
-  33 0008 02F70018		mul	$s6, $s7, $s7
+  10 0000               PRINT_STRING = 4
+  11 0000               
+  12 0000               	.text							# this is program code
+  13 0000               	
+  14 0000               									# global data
+  15 0000               	.globl	board_size
+  16 0000               	.globl	board_array
+  17 0000               	.globl	board_copy
+  18 0000               	.globl	north_array
+  19 0000               	.globl	east_array
+  20 0000               	.globl	south_array
+  21 0000               	.globl	west_array
+  22 0000               	.globl	single_col_separator
+  23 0000               	.globl	print_final_puzzle
+  24 0000               	.globl	taken_array
+  25 0000               	.globl	taken_array_orig
+  26 0000               
+  27 0000               #
+  28 0000               # Name: solve_puzzle
+  29 0000               #
+  30 0000               # Description:	Solve a single Skyscrapers puzzle.
+  31 0000               # Arguments:
+  32 0000               #
+  33 0000               
+  34 0000               solve_puzzle:
+  35 0000               									# save for print_board to go to skyscrapers
+  36 0000 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+  37 0004 AFBF0000		sw	$ra, 0($sp)
+  38 0008               	
+  39 0008 02F70018		mul	$s6, $s7, $s7
      000c 0000B012
-  34 0010 22D6FFFF		addi	$s6, $s6, -1			# $s6 = maximum index of board
-  35 0014               	
-  36 0014 00002021		move	$a0, $zero				# index of tile to try to modify
-  37 0018               	
-  38 0018 0C00000A		jal	try_tile_value				# Start backtracking algorithm
-  39 001c               	
-  40 001c               solve_puzzle_done:
-  41 001c               									# restore for print_board to go skyscrapers
-  42 001c 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
-  43 0020 23BD0004		addi	$sp, $sp, 4
-  44 0024               	
-  45 0024 03E00008		jr	$ra
-  46 0028               	
-  47 0028               try_tile_value:	
-  48 0028 23BDFFF4		addi	$sp, $sp, -12			# save return address of the caller
-  49 002c AFB20008		sw	$s2, 8($sp)
-  50 0030 AFB00004		sw	$s0, 4($sp)
-  51 0034 AFBF0000		sw	$ra, 0($sp)
-  52 0038               	
-  53 0038 00808021		move	$s0, $a0				# save the index for the tile to modify
-  54 003c               	
-  55 003c 0C000037		jal check_if_valid
-  56 0040 02D0082A		bgt	$s0, $s6, try_tile_full		# check index of tile
-     0044 1420001A
-  57 0048 1040001E		beq	$v0, $zero, try_tile_done
-  58 004c               	
-  59 004c 34190004		li	$t9, 4
-  60 0050 02190018		mul	$s1, $s0, $t9
-     0054 00008812
-  61 0058 02358820		add	$s1, $s1, $s5				# get the index of the tile on board_copy
-  62 005c 8E390000		lw	$t9, 0($s1)					# load the value of the tile on board_copy
-  63 0060 17200015		bne	$t9, $zero, try_tile_taken	# tile has a value on the board already
-  64 0064               	
-  65 0064               try_tile_loop_start:
-  66 0064 34120001		li	$s2, 1						# initial guess for the tile
-  67 0068               	
-  68 0068               try_tile_loop:
-  69 0068 34190004		li	$t9, 4						# 4 bytes in a word
-  70 006c 02190018		mul	$s1, $s0, $t9				
-     0070 00008812
-  71 0074 02348820		add $s1, $s1, $s4				# offset into original board
-  72 0078 AE320000		sw	$s2, 0($s1)					# store the guess into the board
-  73 007c               
-  74 007c 02002021		move	$a0, $s0
-  75 0080 20840001		addi	$a0, $a0, 1
-  76 0084 0C00000A		jal	try_tile_value				# recurse to next tile
-  77 0088 1440000E		bne	$v0, $zero, try_tile_done	# check if puzzle solved (solved = 1)
-  78 008c               	
-  79 008c 22520001		addi	$s2, $s2, 1
-  80 0090 02F2082A		bgt	$s2, $s7, try_tile_backtrack	# out of guesses, backtrack to parent
-     0094 14200001
-  81 0098 0800001A		j	try_tile_loop
-  82 009c               	
-  83 009c               try_tile_backtrack:
-  84 009c 2252FFFF		addi	$s2, $s2, -1
-  85 00a0 02190018		mul	$s1, $s0, $t9				
-     00a4 00008812
-  86 00a8 02348820		add $s1, $s1, $s4				# offset into original board
-  87 00ac AE200000		sw	$zero, 0($s1)				# remove the guess from the board
-  88 00b0               	
-  89 00b0               	
-  90 00b0               try_tile_full:
-  91 00b0 10400004		beq	$v0, $zero, try_tile_done	# tile is invalid
-  92 00b4 34020001		li	$v0, 1						# puzzle has been solved!
-  93 00b8               	
-  94 00b8               try_tile_taken:
-  95 00b8 02002021		move	$a0, $s0
-  96 00bc 20840001		addi	$a0, $a0, 1
-  97 00c0 0C00000A		jal	try_tile_value				# recurse to next tile
-  98 00c4               	
-  99 00c4               try_tile_done:
- 100 00c4 8FB20008		lw	$s2, 8($sp)
- 101 00c8 8FB00004		lw	$s0, 4($sp)
- 102 00cc 8FBF0000		lw	$ra, 0($sp)
- 103 00d0 23BD000C		addi	$sp, $sp, 12			# restore return address of the caller
- 104 00d4               	
- 105 00d4 00001021		move	$v0, $zero				# tell the parent to backtrack
- 106 00d8               	
- 107 00d8 03E00008		jr	$ra
- 108 00dc               
- 109 00dc               #
- 110 00dc               # Checks the last modified tile for correctness along the column and row.
- 111 00dc               #
- 112 00dc               # Arguments:	$a0, the index (+1) of the last modified cell.
- 113 00dc               #
- 114 00dc               check_if_valid:
- 115 00dc 23BDFFEC		addi	$sp, $sp, -20			# save return address of the caller
- 116 00e0 AFB30010		sw	$s3, 16($sp)
- 117 00e4 AFB2000C		sw	$s2, 12($sp)
- 118 00e8 AFB10008		sw	$s1, 8($sp)
- 119 00ec AFB00004		sw	$s0, 4($sp)
- 120 00f0 AFBF0000		sw	$ra, 0($sp)
- 121 00f4               	
- 122 00f4 00004021		move	$t0, $zero				# initial bitfield for used values
- 123 00f8               	
- 124 00f8 1080002C		beq	$a0, $zero, check_if_valid_done	# don't want to check empty puzzle
- 125 00fc 2090FFFF		addi	$s0, $a0, -1			# offset for index to last modified tile
- 126 0100 0217001A		div	$s0, $s7					
- 127 0104 00008812		mflo	$s1						# row, quotient
- 128 0108 00009010		mfhi	$s2						# col, remainder (modulo)
- 129 010c               	
- 130 010c 3C080000		la	$t0, north_array			# array to check
-     0110 35080000
- 131 0114 02E04821		move	$t1, $s7				# direction (positive row length)
- 132 0118 02205021		move	$t2, $s1				# index (offset into north array)
- 133 011c 02405821		move	$t3, $s2				# start index (col)
- 134 0120 0C000072		jal	check_if_valid_loop_start
- 135 0124 10400020		beq	$v0, $zero, check_if_valid_invalid
- 136 0128               	
- 137 0128 3C080000		la	$t0, south_array			# array to check
-     012c 35080000
- 138 0130 2409FFFF		li	$t1, -1
- 139 0134 01370018		mul	$t1, $t1, $s7				# direction (negative row length)
-     0138 00004812
- 140 013c 02205021		move	$t2, $s1				# index (offset into south array)
- 141 0140 02F70018		mul	$t4, $s7, $s7
-     0144 00006012
- 142 0148 02F15822		sub	$t3, $s7, $s1
- 143 014c 016C5820		add	$t3, $t3, $t4				# start index (size^2 - (size - col))
- 144 0150 0C000072		jal check_if_valid_loop_start
- 145 0154 10400014		beq	$v0, $zero, check_if_valid_invalid
- 146 0158               	
- 147 0158 3C080000		la	$t0, east_array				# array to check
-     015c 35080000
- 148 0160 2409FFFF		li	$t1, -1						# direction (move across row, backwards)
- 149 0164 02405021		move	$t2, $s2				# index (offset into east array)
- 150 0168 02F10018		mul	$t3, $s7, $s1
-     016c 00005812
- 151 0170 01775820		add	$t3, $t3, $s7
- 152 0174 216BFFFF		addi	$t3, $t3, -1			# start index ((row*size)+(size - 1))
- 153 0178 0C000072		jal check_if_valid_loop_start
- 154 017c 1040000A		beq	$v0, $zero, check_if_valid_invalid
- 155 0180               	
- 156 0180 3C080000		la	$t0, west_array				# array to check
+  40 0010 22D6FFFF		addi	$s6, $s6, -1			# $s6 = maximum index of board
+  41 0014               	
+  42 0014 00002021		move	$a0, $zero				# index of tile to try to modify
+  43 0018 0C0000B3		jal setup_taken_array
+  44 001c               	
+  45 001c 0C00000B		jal	try_tile_value				# Start backtracking algorithm
+  46 0020               	
+  47 0020               solve_puzzle_done:
+  48 0020               									# restore for print_board to go skyscrapers
+  49 0020 8FBF0000		lw	$ra, 0($sp)					# restore return address of the caller
+  50 0024 23BD0004		addi	$sp, $sp, 4
+  51 0028               	
+  52 0028 03E00008		jr	$ra
+  53 002c               	
+  54 002c               try_tile_value:	
+  55 002c 23BDFFEC		addi	$sp, $sp, -20			# save return address of the caller
+  56 0030 AFB40010		sw	$s4, 16($sp)
+  57 0034 AFB2000C		sw	$s2, 12($sp)
+  58 0038 AFB10008		sw	$s1, 8($sp)
+  59 003c AFB00004		sw	$s0, 4($sp)
+  60 0040 AFBF0000		sw	$ra, 0($sp)
+  61 0044               	
+  62 0044 00808021		move	$s0, $a0				# save the index for the tile to modify
+  63 0048               
+  64 0048 0C000041		jal check_if_valid
+  65 004c               	
+  66 004c 02D0082A		bgt	$s0, $s6, try_tile_full		# check index of tile
+     0050 1420001E
+  67 0054 10400023		beq	$v0, $zero, try_tile_done
+  68 0058               	
+  69 0058 34190004		li	$t9, 4
+  70 005c 02190018		mul	$s1, $s0, $t9
+     0060 00008812
+  71 0064 02358820		add	$s1, $s1, $s5				# get the index of the tile on board_copy
+  72 0068 8E390000		lw	$t9, 0($s1)					# load the value of the tile on board_copy
+  73 006c 17200019		bne	$t9, $zero, try_tile_taken	# tile has a value on the board already
+  74 0070               	
+  75 0070               try_tile_loop_start:
+  76 0070 34120001		li	$s2, 1						# initial guess for the tile
+  77 0074               	
+  78 0074               try_tile_loop:
+  79 0074 34190004		li	$t9, 4						# 4 bytes in a word
+  80 0078 3C140000		la	$s4, board_array
+     007c 36940000
+  81 0080 02190018		mul	$s1, $s0, $t9				
+     0084 00008812
+  82 0088 02348820		add $s1, $s1, $s4				# offset into original board
+  83 008c 3403004D		li	$v1, 77
+  84 0090 AE320000		sw	$s2, 0($s1)					# store the guess into the board
+  85 0094               
+  86 0094 02002021		move	$a0, $s0
+  87 0098 20840001		addi	$a0, $a0, 1
+  88 009c 0C00000B		jal	try_tile_value				# recurse to next tile
+  89 00a0 14400011		bne	$v0, $zero, try_tile_success	# check if puzzle solved (solved = 1)
+  90 00a4               	
+  91 00a4 22520001		addi	$s2, $s2, 1
+  92 00a8 02F2082A		bgt	$s2, $s7, try_tile_backtrack	# out of guesses, backtrack to parent
+     00ac 14200001
+  93 00b0 0800001D		j	try_tile_loop
+  94 00b4               	
+  95 00b4               try_tile_backtrack:
+  96 00b4 2252FFFF		addi	$s2, $s2, -1
+  97 00b8 34190004		li	$t9, 4
+  98 00bc 02190018		mul	$s1, $s0, $t9				
+     00c0 00008812
+  99 00c4 02348820		add $s1, $s1, $s4				# offset into original board
+ 100 00c8 AE200000		sw	$zero, 0($s1)				# remove the guess from the board
+ 101 00cc               	
+ 102 00cc               	
+ 103 00cc               try_tile_full:
+ 104 00cc 10400005		beq	$v0, $zero, try_tile_done	# tile is invalid
+ 105 00d0 34020001		li	$v0, 1						# puzzle has been solved!
+ 106 00d4               	
+ 107 00d4               try_tile_taken:
+ 108 00d4 02002021		move	$a0, $s0
+ 109 00d8 20840001		addi	$a0, $a0, 1
+ 110 00dc 0C00000B		jal	try_tile_value				# recurse to next tile
+ 111 00e0 0800003A		j	try_tile_success
+ 112 00e4               	
+ 113 00e4               try_tile_done:	
+ 114 00e4 00001021		move	$v0, $zero				# tell the parent to backtrack	
+ 115 00e8               	
+ 116 00e8               try_tile_success:	
+ 117 00e8 8FB40010		lw	$s4, 16($sp)
+ 118 00ec 8FB2000C		lw	$s2, 12($sp)
+ 119 00f0 8FB10008		lw	$s1, 8($sp)
+ 120 00f4 8FB00004		lw	$s0, 4($sp)
+ 121 00f8 8FBF0000		lw	$ra, 0($sp)
+ 122 00fc 23BD0014		addi	$sp, $sp, 20			# restore return address of the caller	
+ 123 0100 03E00008		jr	$ra
+ 124 0104               
+ 125 0104               #
+ 126 0104               # Checks the last modified tile for correctness along the column and row.
+ 127 0104               #
+ 128 0104               # Arguments:	$a0, the index (+1) of the last modified cell.
+ 129 0104               #
+ 130 0104               check_if_valid:
+ 131 0104 23BDFFEC		addi	$sp, $sp, -20			# save return address of the caller
+ 132 0108 AFB30010		sw	$s3, 16($sp)
+ 133 010c AFB2000C		sw	$s2, 12($sp)
+ 134 0110 AFB10008		sw	$s1, 8($sp)
+ 135 0114 AFB00004		sw	$s0, 4($sp)
+ 136 0118 AFBF0000		sw	$ra, 0($sp)
+ 137 011c               	
+ 138 011c 00004021		move	$t0, $zero				# initial bitfield for used values
+ 139 0120               	
+ 140 0120 1080002E		beq	$a0, $zero, check_if_valid_done	# don't want to check empty puzzle
+ 141 0124 2090FFFF		addi	$s0, $a0, -1			# offset for index to last modified tile
+ 142 0128 0217001A		div	$s0, $s7					
+ 143 012c 00008812		mflo	$s1						# row, quotient
+ 144 0130 00009010		mfhi	$s2						# col, remainder (modulo)
+ 145 0134               	
+ 146 0134 3C080000		la	$t0, north_array			# array to check
+     0138 35080000
+ 147 013c 02E04821		move	$t1, $s7				# direction (positive row length)
+ 148 0140 02405021		move	$t2, $s2				# index (offset into north array)
+ 149 0144 02405821		move	$t3, $s2				# start index (col)
+ 150 0148 340C0001		li	$t4, 1						# positive direction
+ 151 014c 0C00007E		jal	check_if_valid_loop_start
+ 152 0150 10400021		beq	$v0, $zero, check_if_valid_invalid
+ 153 0154               	
+ 154 0154 3C080000		la	$t0, south_array			# array to check
+     0158 35080000
+ 155 015c 02E04821		move	$t1, $s7				# direction (negative row length)
+ 156 0160 02405021		move	$t2, $s2				# index (offset into south array)
+ 157 0164 02F70018		mul	$t4, $s7, $s7
+     0168 00006012
+ 158 016c 02F25822		sub	$t3, $s7, $s2
+ 159 0170 018B5822		sub	$t3, $t4, $t3				# start index (size^2 - (size - col))
+ 160 0174 00006021		move	$t4, $zero				# negative direction
+ 161 0178 0C00007E		jal check_if_valid_loop_start
+ 162 017c 10400016		beq	$v0, $zero, check_if_valid_invalid
+ 163 0180               
+ 164 0180 3C080000		la	$t0, east_array				# array to check
      0184 35080000
- 157 0188 34090001		li	$t1, 1						# direction (move across row, forwards)
- 158 018c 02405021		move	$t2, $s2				# offset into array
- 159 0190 02F10018		mul	$t3, $s7, $s1				# index to start (row*size)
+ 165 0188 34090001		li	$t1, 1						# direction (move across row, backwards)
+ 166 018c 02405021		move	$t2, $s2				# index (offset into east array)
+ 167 0190 02F10018		mul	$t3, $s7, $s1
      0194 00005812
- 160 0198 0C000072		jal check_if_valid_loop_start
- 161 019c 10400002		beq	$v0, $zero, check_if_valid_invalid
- 162 01a0               	
- 163 01a0               	
- 164 01a0 34020001		li	$v0, 1						# current board is valid
- 165 01a4 0800006B		j	check_if_valid_done
- 166 01a8               	
- 167 01a8               check_if_valid_invalid:
- 168 01a8 34020000		li	$v0, 0
- 169 01ac               	
- 170 01ac               check_if_valid_done:				# check for the given row and column
- 171 01ac 8FB30010		lw	$s3, 16($sp)
- 172 01b0 8FB2000C		lw	$s2, 12($sp)
- 173 01b4 8FB10008		lw	$s1, 8($sp)
- 174 01b8 8FB00004		lw	$s0, 4($sp)
- 175 01bc 8FBF0000		lw	$ra, 0($sp)
- 176 01c0 23BD0014		addi	$sp, $sp, 20			# restore return address of the caller
- 177 01c4 03E00008		jr	$ra
- 178 01c8               	
- 179 01c8               #	Arguments: 	$t0: perimeter array to check
- 180 01c8               #				$t1: offset amount (direction to check in)
- 181 01c8               #				$t2: offset into perimeter array
- 182 01c8               #				$t3: start index
- 183 01c8               check_if_valid_loop_start:
- 184 01c8 340C0004		li	$t4, 4
- 185 01cc 012C0018		mul	$t1, $t1, $t4				# offset into integer array
-     01d0 00004812
- 186 01d4 014C0018		mul	$t2, $t2, $t4				# offset into integer array
-     01d8 00005012
- 187 01dc 016C0018		mul	$t3, $t3, $t4				# offset into integer array
-     01e0 00005812
- 188 01e4 010A4020		add	$t0, $t0, $t2
- 189 01e8 8D080000		lw	$t0, 0($t0)					# number of towers need to see
- 190 01ec               	
- 191 01ec 00001021		move	$v0, $zero
- 192 01f0 00005021		move	$t2, $zero				# initial previous value
- 193 01f4               	
- 194 01f4               check_if_valid_loop:
- 195 01f4 8D6C0000		lw	$t4, 0($t3)					# get tile value
- 196 01f8 11800009		beq	$t4, $zero, check_if_valid_loop_success	# tile has no guess, so is good
- 197 01fc 014C082A		bgt	$t4, $t2, can_see_tower
-     0200 14200001
- 198 0204 08000083		j	check_if_valid_loop_incr
- 199 0208               	
- 200 0208               can_see_tower:
- 201 0208 20420001		addi	$v0, 1					# can see another tower
- 202 020c               check_if_valid_loop_incr:
- 203 020c 01695820		add	$t3, $t3, $t1
- 204 0210 11770001		beq	$t3, $s7, check_if_valid_loop_done
- 205 0214 0800007D		j	check_if_valid_loop
- 206 0218               	
- 207 0218               check_if_valid_loop_done:
- 208 0218 0048082A		bgt	$t0, $v0, cant_see_all_towers
-     021c 14200002
- 209 0220               	
- 210 0220               check_if_valid_loop_success:
- 211 0220 34020001		li	$v0, 1						# True case
- 212 0224 03E00008		jr	$ra
- 213 0228               	
- 214 0228               cant_see_all_towers:
- 215 0228 34020000		li	$v0, 0						# False case
- 216 022c 03E00008		jr	$ra
- 217 0230               	
- 218 0230               	
- 219 0230               check_if_already_solved:			# check for the entire board
+ 168 0198 01775820		add	$t3, $t3, $s7
+ 169 019c 216BFFFF		addi	$t3, $t3, -1			# start index ((row*size)+(size - 1))
+ 170 01a0 00006021		move	$t4, $zero				# negative direction
+ 171 01a4 0C00007E		jal check_if_valid_loop_start
+ 172 01a8 1040000B		beq	$v0, $zero, check_if_valid_invalid
+ 173 01ac               
+ 174 01ac 3C080000		la	$t0, west_array				# array to check
+     01b0 35080000
+ 175 01b4 34090001		li	$t1, 1						# direction (move across row, forwards)
+ 176 01b8 02405021		move	$t2, $s2				# offset into array
+ 177 01bc 02F10018		mul	$t3, $s7, $s1				# index to start (row*size)
+     01c0 00005812
+ 178 01c4 340C0001		li	$t4, 1						# positive direction
+ 179 01c8 0C00007E		jal check_if_valid_loop_start
+ 180 01cc 10400002		beq	$v0, $zero, check_if_valid_invalid
+ 181 01d0               	
+ 182 01d0 34020001		li	$v0, 1						# current board is valid
+ 183 01d4 08000077		j	check_if_valid_done
+ 184 01d8               	
+ 185 01d8               check_if_valid_invalid:
+ 186 01d8 34020000		li	$v0, 0
+ 187 01dc               	
+ 188 01dc               check_if_valid_done:				# check for the given row and column
+ 189 01dc 8FB30010		lw	$s3, 16($sp)
+ 190 01e0 8FB2000C		lw	$s2, 12($sp)
+ 191 01e4 8FB10008		lw	$s1, 8($sp)
+ 192 01e8 8FB00004		lw	$s0, 4($sp)
+ 193 01ec 8FBF0000		lw	$ra, 0($sp)
+ 194 01f0 23BD0014		addi	$sp, $sp, 20			# restore return address of the caller
+ 195 01f4 03E00008		jr	$ra
+ 196 01f8               	
+ 197 01f8               #	Arguments: 	$t0: perimeter array to check
+ 198 01f8               #				$t1: offset amount (direction to check in)
+ 199 01f8               #				$t2: offset into perimeter array
+ 200 01f8               #				$t3: start index
+ 201 01f8               #				$t4: add or subtract direction (positive or negative)
+ 202 01f8               check_if_valid_loop_start:
+ 203 01f8 23BDFFFC		addi	$sp, $sp, -4			# save return address of the caller
+ 204 01fc AFBF0000		sw	$ra, 0($sp)
+ 205 0200               	
+ 206 0200 0C0000B3		jal setup_taken_array
+ 207 0204               	
+ 208 0204 340D0004		li	$t5, 4
+ 209 0208 012D0018		mul	$t1, $t1, $t5				# offset into integer array
+     020c 00004812
+ 210 0210 014D0018		mul	$t2, $t2, $t5				# offset into integer array
+     0214 00005012
+ 211 0218 016D0018		mul	$t3, $t3, $t5				# offset into integer array
+     021c 00005812
+ 212 0220 3C0D0000		la	$t5, board_array
+     0224 35AD0000
+ 213 0228 016D5820		add	$t3, $t3, $t5				# offset into board
+ 214 022c 010A4020		add	$t0, $t0, $t2
+ 215 0230 8D080000		lw	$t0, 0($t0)					# number of towers need to see
+ 216 0234 1100001E		beq	$t0, $zero, check_if_valid_loop_success
+ 217 0238               	
+ 218 0238 00001021		move	$v0, $zero				# number of towers seen
+ 219 023c 00005021		move	$t2, $zero				# initial previous value
+ 220 0240 340E0001		li	$t6, 1				# counter, done when $t6 > $s7
+ 221 0244               	
+ 222 0244               check_if_valid_loop:
+ 223 0244 8D6D0000		lw	$t5, 0($t3)					# get tile value
+ 224 0248 34190004		li	$t9, 4
+ 225 024c 01B90018		mul	$t9, $t5, $t9
+     0250 0000C812
+ 226 0254 3C180000		la	$t8, taken_array
+     0258 37180000
+ 227 025c 0319C820		add $t9, $t8, $t9
+ 228 0260 2339FFFC		addi	$t9, $t9, -4						# towers are one-indexed
+ 229 0264 8F380000		lw	$t8, 0($t9)
+ 230 0268 13000015		beq	$t8, $zero, duplicate_towers 		# duplicate tower
+ 231 026c AF200000		sw	$zero, 0($t9)							# mark tower used
+ 232 0270 11A0000F		beq	$t5, $zero, check_if_valid_loop_success	# tile has no guess, so is good
+ 233 0274 014D082A		bgt	$t5, $t2, can_see_tower
+     0278 14200001
+ 234 027c 080000A1		j	check_if_valid_loop_incr
+ 235 0280               	
+ 236 0280               can_see_tower:
+ 237 0280 20420001		addi	$v0, 1					# can see another tower
+ 238 0284               check_if_valid_loop_incr:
+ 239 0284 01A05021		move	$t2, $t5				# update previous value
+ 240 0288 11800002		beq	$t4, $zero, check_if_valid_loop_decr
+ 241 028c 01695820		add	$t3, $t3, $t1
+ 242 0290 080000A6		j	check_if_valid_loop_is_done
+ 243 0294               
+ 244 0294               check_if_valid_loop_decr:			# for convenience of negatives, just sub
+ 245 0294 01695822		sub	$t3, $t3, $t1
+ 246 0298               	
+ 247 0298               check_if_valid_loop_is_done:
+ 248 0298 21CE0001		addi	$t6, $t6, 1
+ 249 029c 02EE082A		bgt	$t6, $s7, check_if_valid_loop_done
+     02a0 14200001
+ 250 02a4 08000091		j	check_if_valid_loop
+ 251 02a8               	
+ 252 02a8               check_if_valid_loop_done:			# Counted all the towers
+ 253 02a8 0048082A		bgt	$t0, $v0, cant_see_all_towers
+     02ac 14200002
+ 254 02b0               	
+ 255 02b0               check_if_valid_loop_success:		# can see the correct number of towers
+ 256 02b0 34020001		li	$v0, 1						# True case
+ 257 02b4 080000B0		j	check_if_valid_loop_return
+ 258 02b8               	
+ 259 02b8               cant_see_all_towers:				# can't see all the correct number of towers
+ 260 02b8 34020000		li	$v0, 0						# False case
+ 261 02bc 080000B0		j check_if_valid_loop_return
+ 262 02c0               
+ 263 02c0               duplicate_towers:
+ 264 02c0               	
+ 265 02c0               check_if_valid_loop_return:
+ 266 02c0 8FBF0000		lw	$ra, 0($sp)
+ 267 02c4 23BD0004		addi	$sp, $sp, 4			# restore return address of the caller
+ 268 02c8 03E00008		jr	$ra
+ 269 02cc               	
+ 270 02cc               	
+ 271 02cc               check_if_already_solved:			# check for the entire board
+ 272 02cc               
+ 273 02cc               
+ 274 02cc               setup_taken_array:
+ 275 02cc 34190001		la $t9, 1
+ 276 02d0 340F0001		la $t7, 1
+ 277 02d4 3C180000		la $t8, taken_array
+     02d8 37180000
+ 278 02dc               
+ 279 02dc               taken_loop:
+ 280 02dc A3190000		sb	$t9, 0($t8)
+ 281 02e0 21EF0001		addi	$t7, $t7, 1
+ 282 02e4 23180001		addi	$t8, $t8, 1
+ 283 02e8 02EF082A		bgt	$t7, $s7, setup_taken_done
+     02ec 14200001
+ 284 02f0 080000B7		j taken_loop
+ 285 02f4               	
+ 286 02f4               setup_taken_done:
+ 287 02f4 03E00008		jr $ra
 
 
+PRINT_STRING                 = 00000004   
 board_array                    ******** XG
 board_copy                     ******** XG
 board_size                     ******** XG
-can_see_tower                  00000208 R  text 
-cant_see_all_towers            00000228 R  text 
-check_if_already_solved        00000230 R  text 
-check_if_valid                 000000DC R  text 
-check_if_valid_done            000001AC R  text 
-check_if_valid_invalid         000001A8 R  text 
-check_if_valid_loop            000001F4 R  text 
-check_if_valid_loop_done       00000218 R  text 
-check_if_valid_loop_incr       0000020C R  text 
-check_if_valid_loop_start      000001C8 R  text 
-check_if_valid_loop_success    00000220 R  text 
+can_see_tower                  00000280 R  text 
+cant_see_all_towers            000002B8 R  text 
+check_if_already_solved        000002CC R  text 
+check_if_valid                 00000104 R  text 
+check_if_valid_done            000001DC R  text 
+check_if_valid_invalid         000001D8 R  text 
+check_if_valid_loop            00000244 R  text 
+check_if_valid_loop_decr       00000294 R  text 
+check_if_valid_loop_done       000002A8 R  text 
+check_if_valid_loop_incr       00000284 R  text 
+check_if_valid_loop_is_done    00000298 R  text 
+check_if_valid_loop_return     000002C0 R  text 
+check_if_valid_loop_start      000001F8 R  text 
+check_if_valid_loop_success    000002B0 R  text 
+duplicate_towers               000002C0 R  text 
 east_array                     ******** XG
 north_array                    ******** XG
+print_final_puzzle             ******** XG
+setup_taken_array              000002CC R  text 
+setup_taken_done               000002F4 R  text 
+single_col_separator           ******** XG
 solve_puzzle                   00000000 R  text 
-solve_puzzle_done              0000001C R  text 
+solve_puzzle_done              00000020 R  text 
 south_array                    ******** XG
-try_tile_backtrack             0000009C R  text 
-try_tile_done                  000000C4 R  text 
-try_tile_full                  000000B0 R  text 
-try_tile_loop                  00000068 R  text 
-try_tile_loop_start            00000064 R  text 
-try_tile_taken                 000000B8 R  text 
-try_tile_value                 00000028 R  text 
+taken_array                    ******** XG
+taken_array_orig               ******** XG
+taken_loop                     000002DC R  text 
+try_tile_backtrack             000000B4 R  text 
+try_tile_done                  000000E4 R  text 
+try_tile_full                  000000CC R  text 
+try_tile_loop                  00000074 R  text 
+try_tile_loop_start            00000070 R  text 
+try_tile_success               000000E8 R  text 
+try_tile_taken                 000000D4 R  text 
+try_tile_value                 0000002C R  text 
 west_array                     ******** XG
